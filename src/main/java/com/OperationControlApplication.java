@@ -17,18 +17,7 @@ public class OperationControlApplication {
 		 context = new SpringApplicationBuilder(OperationControlApplication.class)
 				.headless(false).run(args);
 		 consumerController = context.getBean(ConsumerController.class);
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 		 //consumerController.routine();
 	}
-	
-=======
-=======
->>>>>>> parent of 823efec (teste)
-=======
->>>>>>> parent of 823efec (teste)
-		 consumerController.routine();
-	}
->>>>>>> parent of 823efec (teste)
 }
