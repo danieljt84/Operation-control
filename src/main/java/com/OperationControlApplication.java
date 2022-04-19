@@ -24,8 +24,4 @@ public class OperationControlApplication {
 		 //consumerController.routine();
 	}
 	
-	@Bean
-	BCryptPasswordEncoder bCryptPasswordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
 }

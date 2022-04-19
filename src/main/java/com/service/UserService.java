@@ -18,13 +18,13 @@ import com.repository.RoleRepository;
 import com.repository.UserRepository;
 
 @Service 
-public class UserService implements UserDetailsService{
+public class UserService {
 	
 	@Autowired
 	UserRepository userRepository;
 	@Autowired
 	RoleRepository roleRepository;
-	@Override
+	
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = getUser(username);
 		if(user == null) {
