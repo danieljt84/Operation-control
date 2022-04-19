@@ -11,7 +11,7 @@
 				"host": "localhost",
 				"port": "5432",
 				"url": "jdbc:postgresql://localhost:5432/",
-				"home": "postgresql-x64-13",
+				"home": "postgresql-x64-14",
 				"type": "dev",
 				"provider-properties": {
 					"@dbeaver-show-non-default-db@": "true",
@@ -23,8 +23,7 @@
 					"postgresql.dd.plain.string": "false",
 					"postgresql.dd.tag.string": "false"
 				},
-				"auth-model": "native",
-				"handlers": {}
+				"auth-model": "native"
 			}
 		}
 	},

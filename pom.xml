@@ -53,9 +53,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
+<<<<<<< HEAD
 		<!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
 		
 
+=======
+>>>>>>> parent of 823efec (teste)
 	</dependencies>
 
 	<build>
