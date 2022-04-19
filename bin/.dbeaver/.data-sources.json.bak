@@ -11,7 +11,7 @@
 				"host": "localhost",
 				"port": "5432",
 				"url": "jdbc:postgresql://localhost:5432/",
-				"home": "postgresql-x64-13",
+				"home": "postgresql-x64-14",
 				"type": "dev",
 				"provider-properties": {
 					"@dbeaver-show-non-default-db@": "true",
@@ -25,25 +25,6 @@
 				},
 				"auth-model": "native",
 				"handlers": {}
-			}
-		}
-	},
-	"virtual-models": {
-		"postgres-jdbc-17fe6455df3-4ac51ce167f7b44c": {
-			"4pteste": {
-				"public": {
-					":whatsappgroup_shop": {
-						"constraints": {
-							"VIRTUAL_PK": {
-								"type": "vpk",
-								"useAllColumns": true
-							}
-						}
-					},
-					":shop": {
-						"description": "\"name\""
-					}
-				}
 			}
 		}
 	},
