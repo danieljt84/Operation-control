@@ -1,6 +1,5 @@
 package com.model;
 
-import javax.annotation.Generated;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,6 +11,12 @@ public class Team {
 	private Long id;
 	private String name;
 	
+	public Team() {
+		super();
+	}
+	public Team(String name) {
+		this.name = name;
+	}
 	public Long getId() {
 		return id;
 	}

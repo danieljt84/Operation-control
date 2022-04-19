@@ -6,19 +6,17 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Shop {
-	
-	@Id@GeneratedValue(strategy = GenerationType.IDENTITY)
+public class Brand {
+	@Id@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String name;
 	
-	public Shop() {
+	public Brand() {
 		super();
 	}
-	public Shop(String name) {
+	public Brand(String name) {
 		this.name = name;
 	}
-	
 	public Long getId() {
 		return id;
 	}
@@ -31,4 +29,6 @@ public class Shop {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	
 }

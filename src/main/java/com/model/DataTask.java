@@ -22,7 +22,8 @@ public class DataTask{
 	@ManyToOne(cascade ={CascadeType.ALL})
 	@JoinColumn(name="promoter_id", referencedColumnName = "id")
 	private Promoter promoter;
-	private String team;
+	@ManyToOne
+	private Team team;
 	private String situation;
 	private int taskTotal;
 	private int taskCanceled;
@@ -55,10 +56,10 @@ public class DataTask{
 	public void setPromoter(Promoter promoter) {
 		this.promoter = promoter;
 	}
-	public String getTeam() {
+	public Team getTeam() {
 		return team;
 	}
-	public void setTeam(String team) {
+	public void setTeam(Team team) {
 		this.team = team;
 	}
 	public Long getId() {

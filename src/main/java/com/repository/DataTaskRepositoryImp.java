@@ -19,7 +19,7 @@ public class DataTaskRepositoryImp {
 
 	@Autowired
 	private EntityManager entityManager;
-	@Transactional
+	@Transactional(noRollbackFor = UnexpectedRollbackException.class)
 	public void checkDataTask(DataTask dataTask) {
 		Long id = null;
 		try {
@@ -27,19 +27,18 @@ public class DataTaskRepositoryImp {
 
 			if (id != null) {
 				dataTask.setId(id);
-				this.entityManager.merge(dataTask);
+				this.entityManager.merge(dataTask);;
 			} else {
 				this.entityManager.persist(dataTask);
 			}
 		} catch (Exception e) {
-			e.getMessage();
 		}
 	}
-    @Transactional(readOnly = false )
+    @Transactional(readOnly = false)
 	public Long findIdDataTask(DataTask dataTask) {
 		Session session = (Session) entityManager.getDelegate();
 		try {
-			String hql = "select dt.id from DataTask dt, Promoter promoter where dt.promoter.name =:promoter and dt.date = :data";
+			String hql = "select dt.id from DataTask dt where dt.date = :data and dt.promoter.name=:promoter";
 			Query query = session.createQuery(hql);
 			query.setParameter("promoter", dataTask.getPromoter().getName());
 			query.setParameter("data", dataTask.getDate());

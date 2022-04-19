@@ -32,11 +32,21 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.model.Activity;
+import com.model.Brand;
 import com.model.DataTask;
 import com.model.Promoter;
+import com.model.Shop;
 import com.model.Task;
+import com.model.Team;
+import com.repository.BrandRepository;
+import com.repository.BrandRepositoryImp;
 import com.repository.PromoterRepository;
+import com.repository.PromoterRepositoryImp;
 import com.repository.ShopRepository;
+import com.repository.ShopRepositoryImp;
+import com.repository.TeamRepositoryImp;
+import com.util.ProjectAdapter;
+import com.util.PropertiesReader;
 
 @Service
 public class ApiService {
@@ -44,23 +54,27 @@ public class ApiService {
 	RestTemplate restTemplate;
 	ObjectMapper objectMapper;
 	@Autowired
-	ShopRepository shopRepository;
+	ShopRepositoryImp shopRepository;
 	@Autowired
-	PromoterRepository promoterRepository;
+	PromoterRepositoryImp promoterRepository;
+	@Autowired
+	BrandRepositoryImp brandRepository;
+	@Autowired
+	TeamRepositoryImp teamRepository;
 	String project;
 
-	public List<DataTask> getResume(ConfigurableApplicationContext context) {
+	public List<DataTask> getResume(String _project,LocalDate date) {
 		objectMapper = new ObjectMapper();
 		restTemplate = new RestTemplate();
 		String response = null;
-		String urlLaivon = "https://back2-dashboard.laivon.com/io/api/v1/4p/resume";
+		project = _project;
+		String urlLaivon = PropertiesReader.getProp().getProperty("api.url");
 		JSONObject bodyJSON = new JSONObject();
-		project = "4pmktcfixo";
-		bodyJSON.put("password", "-LwaViadoec5");
-		bodyJSON.put("tokenapi", "5156d8bc-ecb5-4cf4-9139-decbb26c2365");
-		bodyJSON.put("dateInit", "2022-04-08");
-		bodyJSON.put("dateEnd", "2022-04-08");
-		bodyJSON.put("enviroment", project);
+		bodyJSON.put("password", PropertiesReader.getProp().getProperty("api.password"));
+		bodyJSON.put("tokenapi",PropertiesReader.getProp().getProperty("api.token"));
+		bodyJSON.put("dateInit", date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+		bodyJSON.put("dateEnd", date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+		bodyJSON.put("enviroment", _project);
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -70,7 +84,7 @@ public class ApiService {
 			response = restTemplate.postForEntity(urlLaivon, request, String.class).getBody();
 		} catch (Exception e) {
 			System.err.println("ERRO DE CONEXÃO");
-			getResume(context);
+			getResume(project,date);
 		}
 
 		try {
@@ -92,14 +106,13 @@ public class ApiService {
 
 		for (JsonNode dado : root.path("dados")) {
 			String namePromoter = dado.path("agente").asText();
-			Promoter promoter = promoterRepository.findByName(namePromoter);
-			if (promoter == null)
-				promoter = new Promoter(namePromoter);
-			String nameTeam = dado.path("equipe").asText();
+			Team team = teamRepository.checkTeam(dado.path("equipe").asText());
+			Promoter promoter = promoterRepository.checkPromoter(namePromoter);
+			promoterRepository.updateIfHasUpdateTeam(promoter, team);
 			for (JsonNode node_tasks : dado.path("dados_agente")) {
 				DataTask dataTask = new DataTask();
 				dataTask.setProject(project);
-				dataTask.setTeam(nameTeam);
+				dataTask.setTeam(team);
 				dataTask.setPromoter(promoter);
 				dataTask.setSituation(node_tasks.path("situação").asText());
 				dataTask.setTaskTotal(node_tasks.path("tarefas totais").asInt());
@@ -111,7 +124,11 @@ public class ApiService {
 				List<Task> tasks = new ArrayList<>();
 				for(JsonNode node_task : node_tasks.path("dados_tarefa")) {
 					Task task = new Task();
-					task.setShop(shopRepository.findByName(node_task.path("local").asText()));
+					Shop shop = shopRepository.checkShop(node_task.path("local").asText());
+				    if(shop==null) {
+				    	shop = new Shop(node_task.path("local").asText());
+				    }
+					task.setShop(shop);
 					task.setActivityTotal(node_task.path("atividades totais").asInt());
 					task.setActivityDone(node_task.path("atividades executadas").asInt());
 					task.setActivityMissing(node_task.path("atividades não executadas").asInt());
@@ -121,6 +138,8 @@ public class ApiService {
 					for(JsonNode node_activities: node_task.path("dados_atividade")) {
 						Activity activity = new Activity();
 						activity.setDescription(node_activities.path("descricao").asText());
+						Brand brand = brandRepository.checkBrand(this.getNameBrand(node_activities.path("descricao").asText()));
+						activity.setBrand(brand);
 						activity.setSituation(node_activities.path("situação").asText());
 						activity.setStart(convertLocalDate(node_activities.path("inicio").asText()));
 						activity.setEnd(convertLocalDate(node_activities.path("fim").asText()));
@@ -142,6 +161,14 @@ public class ApiService {
 			return LocalDateTime.ofInstant(instant, ZoneId.of("Europe/Paris"));
 		}
 		return null;
+	}
+	
+	public String getNameBrand(String description) {
+		try {
+			return description.split("- ")[1];
+		}catch (Exception e) {
+			return null;
+		}
 	}
 
 }

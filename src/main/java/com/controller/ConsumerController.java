@@ -1,5 +1,7 @@
 package com.controller;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,6 +17,7 @@ import com.model.Task;
 import com.repository.DataTaskRepository;
 import com.repository.DataTaskRepositoryImp;
 import com.service.ApiService;
+import com.util.ProjectAdapter;
 @Component
 public class ConsumerController {
 
@@ -23,22 +26,33 @@ public class ConsumerController {
 	DataTaskRepositoryImp dataTaskRepositoryImp;
 	@Autowired
 	DataTaskRepository dataTaskRepository;
+	@Autowired
+	ApiService apiService;
 
 	public ConsumerController(ConfigurableApplicationContext context) {
 		this.context = context;
 	}
-
-    @Transactional(noRollbackFor = UnexpectedRollbackException.class)
+	@Transactional(noRollbackFor = UnexpectedRollbackException.class)
 	public void routine() {
-		ApiService apiService = context.getBean(ApiService.class);
-		List<DataTask> datas = apiService.getResume(context);
-		for (DataTask data : datas) {
-			eliminateChecks(data);
-			calculateInfoDataTask(data);
-		}
-		for(DataTask dataTask:datas) {
-			dataTaskRepositoryImp.checkDataTask(dataTask);
-		}
+    	LocalDate startDate = LocalDate.of(2022, 04,18);
+        LocalDate endDate = LocalDate.of(2022, 04,19);
+        endDate = endDate.withDayOfMonth(endDate.lengthOfMonth());
+        long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
+        for(int i = 0; i < 1; i++){
+            for(ProjectAdapter project : ProjectAdapter.values()) {
+        		List<DataTask> datas = apiService.getResume(project.getDescription(),startDate.plusDays(i));
+        		for (DataTask data : datas) {
+        			eliminateChecks(data);
+        			calculateInfoDataTask(data);
+        		}
+        		System.out.println(i);
+        		for(DataTask dataTask:datas) {
+        			dataTaskRepositoryImp.checkDataTask(dataTask);
+        		}
+        	}
+        }
+    	
+    	
 	}
 
 	// Elimino as atividades de checkin e checkout da lista
