@@ -18,10 +18,13 @@ public class OperationControlApplication {
 				.headless(false).run(args);
 		 consumerController = context.getBean(ConsumerController.class);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 //consumerController.routine();
 	}
 	
 =======
+=======
+>>>>>>> parent of 823efec (teste)
 		 consumerController.routine();
 	}
 >>>>>>> parent of 823efec (teste)
