@@ -19,10 +19,13 @@ public class OperationControlApplication {
 		 consumerController = context.getBean(ConsumerController.class);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 //consumerController.routine();
 	}
 	
 =======
+=======
+>>>>>>> parent of 823efec (teste)
 =======
 >>>>>>> parent of 823efec (teste)
 		 consumerController.routine();
