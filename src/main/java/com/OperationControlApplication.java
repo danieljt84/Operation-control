@@ -1,7 +1,9 @@
 package com;
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -19,5 +21,9 @@ public class OperationControlApplication {
 		 consumerController = context.getBean(ConsumerController.class);
 
 		 //consumerController.routine();
+	}
+	@Bean
+	ModelMapper ModelMapper() {
+		return new ModelMapper();
 	}
 }

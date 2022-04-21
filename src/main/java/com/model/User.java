@@ -1,13 +1,18 @@
 package com.model;
 
 import java.util.Collection;
+import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.ManyToAny;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -18,7 +23,23 @@ public class User implements UserDetails{
 	private Long id;
 	private String username;
 	private String password;
+	@ManyToOne
+	private Role role;
+	@ManyToMany
+	private List<Team> teams;
 	
+	public Role getRole() {
+		return role;
+	}
+	public void setRole(Role role) {
+		this.role = role;
+	}
+	public List<Team> getTeams() {
+		return teams;
+	}
+	public void setTeams(List<Team> teams) {
+		this.teams = teams;
+	}
 	public Long getId() {
 		return id;
 	}

@@ -1,5 +1,8 @@
 package com.controller;
 
+import java.util.Map;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,33 +15,39 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dto.TokenDTO;
+import com.dto.UserDTO;
 import com.model.User;
+import com.service.TokenService;
 
 @RestController
 @RequestMapping(value = "/login")
 public class LoginController {
 	@Autowired
 	private AuthenticationManager authManager;
+
+	@Autowired
+	private TokenService tokenService;
 	
 	@Autowired
-	private com.service.TokenService tokenService;
-	
+	ModelMapper modelMapper;
+
 	@PostMapping
 	public ResponseEntity login(@RequestBody User user) {
-UsernamePasswordAuthenticationToken dadosLogin = converter(user);
-		
+		UsernamePasswordAuthenticationToken dadosLogin = converter(user);
+
 		try {
 			Authentication authentication = authManager.authenticate(dadosLogin);
-			String token = tokenService.gerarToken(authentication);
-			return ResponseEntity.ok(new TokenDTO(token, "Bearer"));
+			Map<String, Object> user_token = tokenService.gerarToken(authentication);
+			return ResponseEntity.ok().body(new TokenDTO((String) user_token.get("token")
+					,"Bearer"
+					,new UserDTO().convertToDTO((User) user_token.get("user"), modelMapper)));
 		} catch (AuthenticationException e) {
 			return ResponseEntity.badRequest().build();
 		}
 	}
-	
+
 	public UsernamePasswordAuthenticationToken converter(User user) {
 		return new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
 	}
-
 
 }

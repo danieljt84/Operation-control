@@ -13,9 +13,10 @@ public class PromoterService {
 	@Autowired
 	PromoterRepository promoterRepository;
 	
-	public List<Promoter> findByTeam(){
-		return null;
+	public List<Promoter> findByTeam(String nameTeam){
+		return promoterRepository.findByNameTeam(nameTeam);
 	}
+	   
 	
 	
 }
