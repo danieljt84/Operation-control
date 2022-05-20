@@ -42,8 +42,8 @@ public class DataTaskService {
 	        arr[1]= dataTask.getTeam().getName();
 	        arr[2]= dataTask.getPromoter().getName();
 	        arr[3]= dataTask.getSituation();
-	        var starts = filterStart(dataTask);
-			var ends = filterEnds(dataTask);
+	        List<LocalDateTime> starts = filterStart(dataTask);
+	        List<LocalDateTime> ends = filterEnds(dataTask);
 	        arr[4]= subtractDate(getMostNewDate(starts),getMostOldDate(ends));
 	        objects.add(arr);
 	    }

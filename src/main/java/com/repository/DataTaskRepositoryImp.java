@@ -30,7 +30,7 @@ public class DataTaskRepositoryImp {
 		try {
 			id = findIdDataTask(dataTask);
 
-			if (!id.isEmpty()) {
+			if (id.isPresent()) {
 				dataTask.setId(id.get());
 				this.entityManager.merge(dataTask);;
 			} else {
