@@ -6,6 +6,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.client.RestTemplate;
 
 import com.controller.ConsumerController;
 
@@ -19,11 +20,15 @@ public class OperationControlApplication {
 		 context = new SpringApplicationBuilder(OperationControlApplication.class)
 				.headless(false).run(args);
 		 consumerController = context.getBean(ConsumerController.class);
-
 		 //consumerController.routine();
+		 //consumerController.createExcel();
 	}
 	@Bean
 	ModelMapper ModelMapper() {
 		return new ModelMapper();
+	}
+	@Bean
+	RestTemplate restTemplate() {
+		return new RestTemplate();
 	}
 }

@@ -5,6 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class PropertiesReader {
 	public static Properties getProp() {
 		Properties props = new Properties();

@@ -1,11 +1,14 @@
 package com.model;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,17 +22,17 @@ public class Task {
 
 	@Id@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@OneToOne(cascade = {CascadeType.ALL})
+	@OneToOne
 	private Shop shop;
 	private String situation;
-	private Date start;
+	private LocalTime start;
 	@Column(name = "_end")
-	private Date end;
-	private Date duration;
+	private LocalTime end;
+	private LocalTime duration;
 	private Integer activityTotal;
 	private Integer activityDone;
 	private Integer activityMissing;
-	@OneToMany(cascade = {CascadeType.ALL})
+	@OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.EAGER)
 	private List<Activity> activities;
 	
 	public Task() {
@@ -69,27 +72,27 @@ public class Task {
 		this.situation = situation;
 	}
 
-	public Date getStart() {
+	public LocalTime getStart() {
 		return start;
 	}
 
-	public void setStart(Date start) {
+	public void setStart(LocalTime start) {
 		this.start = start;
 	}
 
-	public Date getEnd() {
+	public LocalTime getEnd() {
 		return end;
 	}
 
-	public void setEnd(Date end) {
+	public void setEnd(LocalTime end) {
 		this.end = end;
 	}
 
-	public Date getDuration() {
+	public LocalTime getDuration() {
 		return duration;
 	}
 
-	public void setDuration(Date duration) {
+	public void setDuration(LocalTime duration) {
 		this.duration = duration;
 	}
 

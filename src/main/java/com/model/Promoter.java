@@ -11,14 +11,25 @@ public class Promoter {
 	@Id@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String name;
+	private String cpf;
 	private String grade;
 	@ManyToOne
 	private Team team;
+	private Double mediaPassagem;
+	private String enterprise;
 	
 	public Promoter() {
 		super();
 	}
 	
+	public String getEnterprise() {
+		return enterprise;
+	}
+
+	public void setEnterprise(String enterprise) {
+		this.enterprise = enterprise;
+	}
+
 	public Promoter(String name) {
 		this.name = name;
 		this.setGrade();
@@ -51,4 +62,21 @@ public class Promoter {
 	public String getGrade() {
 		return grade;
 	}
+
+	public Double getMediaPassagem() {
+		return mediaPassagem;
+	}
+
+	public void setMediaPassagem(Double mediaPassagem) {
+		this.mediaPassagem = mediaPassagem;
+	}
+
+	public String getCpf() {
+		return cpf;
+	}
+
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
+	}
+	
 }

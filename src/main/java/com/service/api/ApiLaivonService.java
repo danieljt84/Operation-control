@@ -1,36 +1,29 @@
-package com.service;
+package com.service.api;
 
-import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+import java.util.stream.Collectors;
 
-import org.apache.catalina.core.ApplicationContext;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters.LocalDateConverter;
-import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters.LocalTimeConverter;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.model.Activity;
 import com.model.Brand;
 import com.model.DataTask;
@@ -38,18 +31,14 @@ import com.model.Promoter;
 import com.model.Shop;
 import com.model.Task;
 import com.model.Team;
-import com.repository.BrandRepository;
 import com.repository.BrandRepositoryImp;
-import com.repository.PromoterRepository;
 import com.repository.PromoterRepositoryImp;
-import com.repository.ShopRepository;
 import com.repository.ShopRepositoryImp;
 import com.repository.TeamRepositoryImp;
-import com.util.ProjectAdapter;
 import com.util.PropertiesReader;
 
 @Service
-public class ApiService {
+public class ApiLaivonService {
 
 	RestTemplate restTemplate;
 	ObjectMapper objectMapper;
@@ -120,7 +109,7 @@ public class ApiService {
 						LocalDate.parse(node_tasks.path("data").asText(), DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 				dataTask.setTaskDone(node_tasks.path("tarefas executadas").asInt());
 				dataTask.setTaskCanceled(node_tasks.path("tarefas canceladas").asInt());
-				dataTask.setSituation(node_tasks.path("situação").asText());
+				dataTask.setSituation(node_tasks.path("situacao").asText());
 				List<Task> tasks = new ArrayList<>();
 				for(JsonNode node_task : node_tasks.path("dados_tarefa")) {
 					Task task = new Task();
@@ -133,16 +122,17 @@ public class ApiService {
 					task.setActivityDone(node_task.path("atividades executadas").asInt());
 					task.setActivityMissing(node_task.path("atividades não executadas").asInt());
 					task.setSituation(node_task.path("situacao").asText());
-					Task taskAux = task;
+					task.setStart(convertTime(node_task.path("inicio").asText()));
+					task.setEnd(convertTime(node_task.path("fim").asText()));
 					List<Activity> activities = new ArrayList<>();
 					for(JsonNode node_activities: node_task.path("dados_atividade")) {
 						Activity activity = new Activity();
 						activity.setDescription(node_activities.path("descricao").asText());
 						Brand brand = brandRepository.checkBrand(this.getNameBrand(node_activities.path("descricao").asText()));
 						activity.setBrand(brand);
-						activity.setSituation(node_activities.path("situação").asText());
 						activity.setStart(convertLocalDate(node_activities.path("inicio").asText()));
 						activity.setEnd(convertLocalDate(node_activities.path("fim").asText()));
+						activity.setSituation(node_activities.path("situação").asText());
 						activities.add(new Activity(activity));
 					}
 					task.setActivities(activities);
@@ -153,6 +143,13 @@ public class ApiService {
 			}
 		}
 		return datasTask;
+	}
+	
+	public LocalTime convertTime(String time) {
+		if(!time.equals("")) {
+			return LocalTime.parse(time,DateTimeFormatter.ofPattern("HH:mm:ss"));
+		}
+		return null;
 	}
 
 	public LocalDateTime convertLocalDate(String date) {
@@ -170,5 +167,6 @@ public class ApiService {
 			return null;
 		}
 	}
+
 
 }

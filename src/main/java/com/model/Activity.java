@@ -1,5 +1,6 @@
 package com.model;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,13 +18,14 @@ public class Activity {
 	private Long id;
 	private String type;
 	private String description;
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name="brand_id")
 	private Brand brand;
 	private String situation;
 	private LocalDateTime start;
 	@Column(name = "_end")
 	private LocalDateTime end;
+	private LocalTime duration;
 	
 	public Activity(Activity activity) {
 		this.description = activity.getDescription();
@@ -32,6 +34,7 @@ public class Activity {
 		this.end = activity.getEnd();
 		this.brand = activity.getBrand();
 		this.type = activity.getType();
+		this.duration = activity.getDuration();
 	}
 	public Activity() {
 	}
@@ -78,5 +81,11 @@ public class Activity {
 	}
 	public void setBrand(Brand brand) {
 		this.brand = brand;
+	}
+	public LocalTime getDuration() {
+		return duration;
+	}
+	public void setDuration(LocalTime duration) {
+		this.duration = duration;
 	}
 }

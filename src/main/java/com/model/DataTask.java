@@ -1,11 +1,15 @@
 package com.model;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,12 +18,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import org.hibernate.annotations.Type;
+
 @Entity
 public class DataTask{
 	@Id@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private LocalDate date;
-	@ManyToOne(cascade ={CascadeType.ALL})
+	@ManyToOne(cascade ={CascadeType.MERGE})
 	@JoinColumn(name="promoter_id", referencedColumnName = "id")
 	private Promoter promoter;
 	@ManyToOne
@@ -28,14 +34,13 @@ public class DataTask{
 	private int taskTotal;
 	private int taskCanceled;
 	private int taskDone;
-	private Date duration;
-	@OneToMany(cascade = {CascadeType.ALL})
+	private int taskDoing;
+	@OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.EAGER)
 	private List<Task> tasks;
 	private String project;
 	
 	public DataTask(DataTask data) {
 		this.date = data.getDate();
-		this.duration = data.getDuration();
 		this.situation = data.getSituation();
 		this.taskCanceled = data.getTaskCanceled();
 		this.taskDone = data.getTaskDone();
@@ -46,10 +51,16 @@ public class DataTask{
 		this.promoter = data.getPromoter();
 	}
 	
-	public DataTask() {
-		
-	}
+	public DataTask() {}
 	
+	public int getTaskDoing() {
+		return taskDoing;
+	}
+
+	public void setTaskDoing(int taskDoing) {
+		this.taskDoing = taskDoing;
+	}
+
 	public Promoter getPromoter() {
 		return promoter;
 	}
@@ -99,12 +110,6 @@ public class DataTask{
 	}
 	public void setTaskDone(int taskDone) {
 		this.taskDone = taskDone;
-	}
-	public Date getDuration() {
-		return duration;
-	}
-	public void setDuration(Date duration) {
-		this.duration = duration;
 	}
 	public List<Task> getTasks() {
 		return tasks;
