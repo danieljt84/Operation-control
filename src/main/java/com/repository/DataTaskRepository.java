@@ -18,5 +18,7 @@ public interface DataTaskRepository extends JpaRepository<DataTask, Long>{
 			@Param("shop")String shop);
 	
 	List<DataTask> findByDate(LocalDate date);
-
+	
+	List<DataTask> findByDateBetween(LocalDate start, LocalDate end);
+	List<DataTask> findByDateBetweenAndProject(LocalDate start, LocalDate end,String project);
 }

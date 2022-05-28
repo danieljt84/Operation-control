@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Convert;
+import javax.persistence.Converter;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -19,6 +21,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.Type;
+
+import com.util.DurationConverter;
 
 @Entity
 public class DataTask{
@@ -37,7 +41,9 @@ public class DataTask{
 	private int taskDoing;
 	@OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.EAGER)
 	private List<Task> tasks;
-	private String project;
+	private String project;	
+	@Convert(converter = DurationConverter.class)
+	private Duration duration;
 	
 	public DataTask(DataTask data) {
 		this.date = data.getDate();
@@ -51,6 +57,14 @@ public class DataTask{
 		this.promoter = data.getPromoter();
 	}
 	
+	public Duration getDuration() {
+		return duration;
+	}
+
+	public void setDuration(Duration duration) {
+		this.duration = duration;
+	}
+
 	public DataTask() {}
 	
 	public int getTaskDoing() {

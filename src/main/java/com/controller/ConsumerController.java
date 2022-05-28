@@ -56,7 +56,7 @@ public class ConsumerController {
 
 	public void routine() {
 		LocalDate endDate = LocalDate.now();
-		LocalDate startDate = endDate.minusDays(5);
+		LocalDate startDate = endDate.withDayOfMonth(1);
 		long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
 		for (int i = 0; i <= daysBetween; i++) {
 			for (ProjectAdapter project : ProjectAdapter.values()) {
@@ -72,22 +72,12 @@ public class ConsumerController {
 		}
 	}
 
-	public void updateBase() {
-		for(Promoter promoter: promoterRepository.findAll()) {
-			
-		}
-	}
-	
-	public void createExcel() {
-		excelService.createExcel();
-	}
-	
-	public void getEmployee(String cpf) {
-		apiEmployeeService.getEmployeeByCpfAndApi("15001565740");
+	public void createExcel(String start, String end) {
+		excelService.createExcelAjudaDeCusto(start,end);
 	}
 
 	// Elimino as atividades decheckout da lista e somo a duração das atividades
-	private static void eliminateChecksDataTaskAndSetDuration(DataTask dataTask) {
+	private  void eliminateChecksDataTaskAndSetDuration(DataTask dataTask) {
 		for (Task task : dataTask.getTasks()) {
 			List<Activity> filterActivities = task.getActivities().stream()
 					.filter(activity -> !activity.getDescription().equals("Check Out")).collect(Collectors.toList());
@@ -103,7 +93,7 @@ public class ConsumerController {
 	}
 
 	// Após filtragem, calcula as atividades canceladas,realizadas e totalizada
-	private static void calculateInfoDataTask(DataTask dataTask) {
+	private void calculateInfoDataTask(DataTask dataTask) {
 		int total = dataTask.getTasks().size();
 		int done = dataTask.getTasks().stream().filter(task -> task.getSituation().equals("COMPLETO"))
 				.collect(Collectors.toList()).size();
@@ -116,10 +106,11 @@ public class ConsumerController {
 		dataTask.setTaskCanceled(cancelled);
 		dataTask.setTaskDoing(doing);
 		dataTask.setTaskTotal(total);
+		dataTaskService.generateDurationDataTask(dataTask);
 	}
 
 	// Após filtragem, calcula as atividades canceladas,realizadas e totalizada
-	private static void calculateInfoTask(Task task) {
+	private void calculateInfoTask(Task task) {
 		task.setActivityTotal(task.getActivities().size());
 		int done = task.getActivities().stream().filter(activity -> activity.getSituation().equals("completa"))
 				.collect(Collectors.toList()).size();
@@ -130,7 +121,7 @@ public class ConsumerController {
 	}
 
 	// Defino o status de toda a atividade
-	private static void defSituationDataTask(DataTask dataTask) {
+	private  void defSituationDataTask(DataTask dataTask) {
 		if (dataTask.getTaskTotal() == dataTask.getTaskDone())
 			dataTask.setSituation("COMPLETO");
 		if (dataTask.getTaskDone() == 0)
@@ -144,7 +135,7 @@ public class ConsumerController {
 	}
 
 	// Defino o status da tarefa
-	private static void defSituationTask(Task task) {
+	private  void defSituationTask(Task task) {
 		if (task.getSituation().equals("Cancelada")) {
 			task.setSituation("CANCELADA");
 			return;
@@ -161,35 +152,19 @@ public class ConsumerController {
 			task.setSituation("NÃO REALIZADO");
 	}
 
-	public static Duration subtractDate(LocalDateTime first, LocalDateTime second) {
+	public  Duration subtractDateDuration(LocalDateTime first, LocalDateTime second) {
 		try {
-			LocalDateTime tempDateTime = LocalDateTime.from(first);
-
-			/*
-			 * long days = tempDateTime.until( second, ChronoUnit.DAYS ); tempDateTime =
-			 * tempDateTime.plusDays( days );
-			 * 
-			 * long hours = tempDateTime.until(second, ChronoUnit.HOURS); tempDateTime =
-			 * tempDateTime.plusHours(hours);
-			 * 
-			 * long minutes = tempDateTime.until(second, ChronoUnit.MINUTES); tempDateTime =
-			 * tempDateTime.plusMinutes(minutes); long seconds = tempDateTime.until(second,
-			 * ChronoUnit.SECONDS);
-			 */
-
 			Duration duration = Duration.between(first, second);
 			long hours = duration.toHours();
 			int minutes = (int) ((duration.getSeconds() % (60 * 60)) / 60);
 			int seconds = (int) (duration.getSeconds() % 60);
-
 			return duration;
-
 		} catch (Exception e) {
 			return null;
 		}
 	}
 
-	public static LocalTime subtractDateTime(LocalDateTime first, LocalDateTime second) {
+	public LocalTime subtractDateTime(LocalDateTime first, LocalDateTime second) {
 		try {
 			LocalTime tempDateTime = LocalTime.from(first);
 
@@ -207,7 +182,7 @@ public class ConsumerController {
 		}
 	}
 
-	public static LocalTime sumTime(List<LocalTime> datas) {
+	public LocalTime sumTime(List<LocalTime> datas) {
 		try {
 			LocalTime timeTotal = null;
 			for (int i = 0; i < datas.size(); i++) {
@@ -227,7 +202,7 @@ public class ConsumerController {
 		}
 	}
 
-	public static LocalDateTime getMostOldDate(List<LocalDateTime> datas) {
+	public LocalDateTime getMostOldDate(List<LocalDateTime> datas) {
 		LocalDateTime old = null;
 		for (int i = 0; i < datas.size(); i++) {
 			if (datas.get(i) != null) {
@@ -244,7 +219,7 @@ public class ConsumerController {
 		return old;
 	}
 
-	public static LocalDateTime getMostNewDate(List<LocalDateTime> datas) {
+	public LocalDateTime getMostNewDate(List<LocalDateTime> datas) {
 		LocalDateTime _new = null;
 		for (int i = 0; i < datas.size(); i++) {
 			if (datas.get(i) != null) {
@@ -261,7 +236,7 @@ public class ConsumerController {
 		return _new;
 	}
 
-	public static List<LocalDateTime> filterStart(DataTask dataTask) {
+	public List<LocalDateTime> filterStart(DataTask dataTask) {
 		List<LocalDateTime> starts = new ArrayList<LocalDateTime>();
 
 		for (Task task : dataTask.getTasks()) {
@@ -272,7 +247,7 @@ public class ConsumerController {
 		return starts;
 	}
 
-	public static List<LocalDateTime> filterEnds(DataTask dataTask) {
+	public List<LocalDateTime> filterEnds(DataTask dataTask) {
 		List<LocalDateTime> ends = new ArrayList<LocalDateTime>();
 
 		for (Task task : dataTask.getTasks()) {

@@ -1,4 +1,5 @@
 package com;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -9,24 +10,30 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 
 import com.controller.ConsumerController;
+import com.controller.RoutineController;
 
 @SpringBootApplication
 @EnableJpaRepositories
 @EnableTransactionManagement
 public class OperationControlApplication {
 	static ConfigurableApplicationContext context;
-	static ConsumerController consumerController;
+	static RoutineController routineController;
+
 	public static void main(String[] args) {
-		 context = new SpringApplicationBuilder(OperationControlApplication.class)
-				.headless(false).run(args);
-		 consumerController = context.getBean(ConsumerController.class);
-		 //consumerController.routine();
-		 //consumerController.createExcel();
+		context = new SpringApplicationBuilder(OperationControlApplication.class).headless(false).run(args);
+		routineController = context.getBean(RoutineController.class);
+		try {
+			routineController.run();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
+
 	@Bean
 	ModelMapper ModelMapper() {
 		return new ModelMapper();
 	}
+
 	@Bean
 	RestTemplate restTemplate() {
 		return new RestTemplate();

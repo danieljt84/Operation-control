@@ -25,28 +25,6 @@
 				},
 				"auth-model": "native"
 			}
-		},
-		"mysql8-180b8bd19e2-4a2b34e4383c1738": {
-			"provider": "mysql",
-			"driver": "mysql8",
-			"name": "quatrop_operation_control",
-			"save-password": true,
-			"read-only": false,
-			"configuration": {
-				"host": "108.167.181.21",
-				"port": "3306",
-				"database": "quatrop_operation_control",
-				"url": "jdbc:mysql://108.167.181.21:3306/quatrop_operation_control",
-				"home": "C:\\Program Files\\MySQL\\MySQL Router 8.0",
-				"type": "dev",
-				"properties": {
-					"connectTimeout": "20000",
-					"rewriteBatchedStatements": "true",
-					"enabledTLSProtocols": "TLSv1,TLSv1.1,TLSv1.2"
-				},
-				"auth-model": "native",
-				"handlers": {}
-			}
 		}
 	},
 	"virtual-models": {
