@@ -12,7 +12,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Operation-control</name>
 	<properties>
-		<java.version>9</java.version>
+		<java.version>11</java.version>
 	</properties>
 	<description>Servidor do Painel 4p</description>
 	<dependencies>
