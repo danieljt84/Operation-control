@@ -56,7 +56,7 @@ public class ConsumerController {
 
 	public void routine() {
 		LocalDate endDate = LocalDate.now();
-		LocalDate startDate = endDate.withDayOfMonth(1);
+		LocalDate startDate = LocalDate.of(2022, 5, 11);
 		long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
 		for (int i = 0; i <= daysBetween; i++) {
 			for (ProjectAdapter project : ProjectAdapter.values()) {
