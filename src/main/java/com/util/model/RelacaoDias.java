@@ -1,4 +1,4 @@
-package com.util;
+package com.util.model;
 
 public class RelacaoDias {
 	
@@ -9,6 +9,7 @@ public class RelacaoDias {
 	private int sextasFeitas;
 	private int sabadosFeitas;
 	private int diasCompletos;
+	private int diasNaoFeitos;
 	
 	public int getSegundasFeitas() {
 		return segundasFeitas;
@@ -51,5 +52,11 @@ public class RelacaoDias {
 	}
 	public void setDiasCompletos(int diasCompletos) {
 		this.diasCompletos = diasCompletos;
+	}
+	public int getDiasNaoFeitos() {
+		return diasNaoFeitos;
+	}
+	public void setDiasNaoFeitos(int diasNaoFeitos) {
+		this.diasNaoFeitos = diasNaoFeitos;
 	}
 }

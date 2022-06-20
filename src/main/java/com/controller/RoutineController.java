@@ -2,11 +2,15 @@ package com.controller;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.model.Promoter;
+import com.service.DataTaskService;
 import com.service.ExcelService;
+import com.service.PromoterService;
 
 @Controller
 public class RoutineController {
@@ -15,6 +19,10 @@ public class RoutineController {
 	ConsumerController consumerController;
 	@Autowired
 	ExcelService excelService;
+	@Autowired
+	PromoterService promoterService;
+	@Autowired
+	DataTaskService dataTaskService;
 	
 	public void run() throws InterruptedException {
 		while(true) {
@@ -23,11 +31,23 @@ public class RoutineController {
 			}
 			Thread.sleep(3600000);
 		}
-		
 	}
-	
 	public void run2() {
-		excelService.createExcelAjudaDeCusto("01/05/2022", "10/05/2022");
+		excelService.createExcelAjudaDeCusto("01/05/2022", "31/05/2022");
+	}	
+	public void run3() {
+		consumerController.routine();
+	}
+	public void run4() {
+		excelService.createExcel("01/05/2022", "31/05/2022");
+	}
+	public void testeInfo() {
+		dataTaskService.generatePercentual("2022-06-13");
+	}
+	public void testePlanilha() {
+		List<Promoter> promoters = promoterService.findAll();
+		promoters.forEach(promoter -> excelService.findInfoInExcelPlanilhaCusto(promoter));
+		System.out.println(promoters);
 	}
 	
 	public static boolean isBeforeMin(){
@@ -43,7 +63,7 @@ public class RoutineController {
 	
 	public static boolean isAfterMax(){
 		LocalTime agora = LocalTime.now();
-		LocalTime limite =  LocalTime.parse("20:00", 
+		LocalTime limite =  LocalTime.parse("14:00", 
 	            DateTimeFormatter.ISO_TIME);
 		if(agora.isAfter(limite)){
 			return true;

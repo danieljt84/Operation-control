@@ -24,7 +24,7 @@ public class TokenService {
 		Date hoje = new Date();
 		Date dataExpiracao = new Date(hoje.getTime() + Long.parseLong("1000000"));
 		Map<String,Object> _return = new HashMap<String,Object>();
-        _return.put("token", Jwts.builder().setIssuer("API do Fórum da Alura").setSubject(logado.getId().toString()).setIssuedAt(hoje)
+        _return.put("token", Jwts.builder().setSubject(logado.getId().toString()).setIssuedAt(hoje)
 				.setExpiration(dataExpiracao).signWith(SignatureAlgorithm.HS256, "danielmoreira").compact());
         _return.put("user",logado);
 		

@@ -26,6 +26,14 @@ public class PromoterController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
+	@GetMapping()
+	public ResponseEntity findAll() {
+		try {
+			return ResponseEntity.status(HttpStatus.OK).body(promoterService.findAll());
+		}catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
 	
 	
 

@@ -6,6 +6,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import com.util.Status;
+
 @Entity
 public class Promoter {
 	@Id@GeneratedValue(strategy = GenerationType.AUTO)
@@ -17,6 +19,7 @@ public class Promoter {
 	private Team team;
 	private Double mediaPassagem;
 	private String enterprise;
+	private Status status;
 	
 	public Promoter() {
 		super();
@@ -32,6 +35,7 @@ public class Promoter {
 
 	public Promoter(String name) {
 		this.name = name;
+		this.status = Status.ATIVO;
 		this.setGrade();
 	}
 	public void setTeam(Team team) {
@@ -78,5 +82,15 @@ public class Promoter {
 	public void setCpf(String cpf) {
 		this.cpf = cpf;
 	}
-	
+
+	public Status getStatus() {
+		return status;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+	public void setGrade(String grade) {
+		this.grade = grade;
+	}
 }

@@ -25,7 +25,7 @@ public class RelatorioController {
 	@GetMapping
 	@RequestMapping(value = "/cargahoraria")
 	public ResponseEntity getCargaHorariaByProject(@RequestParam String project,@RequestParam String dtFinal,@RequestParam String dtInicial) {
-		return ResponseEntity.status(HttpStatus.OK).body((dataTaskService.getReportDTOs(dtInicial,dtFinal,project)));
+		return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getReportDTOs(dtInicial,dtFinal,project));
 	}
 	
 	private ResponseEntity<byte[]>  createResponseEntity(byte[] report,String filename) {

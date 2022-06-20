@@ -1,4 +1,4 @@
-package com.dto;
+package com.controller.dto;
 
 public class TeamDTO {
 	

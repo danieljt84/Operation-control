@@ -32,9 +32,9 @@ public class DataTaskRepositoryImp {
 
 			if (id.isPresent()) {
 				dataTask.setId(id.get());
-				this.entityManager.merge(dataTask);;
+				this.dataTaskRepository.saveAndFlush(dataTask);
 			} else {
-				this.entityManager.merge(dataTask);;
+				this.dataTaskRepository.saveAndFlush(dataTask);
 			}
 		} catch (Exception e) {
 			System.out.println(e.getMessage());

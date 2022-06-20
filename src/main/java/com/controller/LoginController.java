@@ -9,13 +9,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dto.TokenDTO;
-import com.dto.UserDTO;
+import com.controller.dto.TokenDTO;
+import com.controller.dto.UserDTO;
 import com.model.User;
 import com.service.TokenService;
 
@@ -24,6 +25,8 @@ import com.service.TokenService;
 public class LoginController {
 	@Autowired
 	private AuthenticationManager authManager;
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@Autowired
 	private TokenService tokenService;

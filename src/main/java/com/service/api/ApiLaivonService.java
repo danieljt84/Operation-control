@@ -96,8 +96,9 @@ public class ApiLaivonService {
 		for (JsonNode dado : root.path("dados")) {
 			String namePromoter = dado.path("agente").asText();
 			Team team = teamRepository.checkTeam(dado.path("equipe").asText());
+			String cpf = dado.path("agente_matricula").asText();
 			Promoter promoter = promoterRepository.checkPromoter(namePromoter);
-			promoterRepository.updateIfHasUpdateTeam(promoter, team);
+			promoterRepository.updateIfHasUpdate(promoter,team,cpf);
 			for (JsonNode node_tasks : dado.path("dados_agente")) {
 				DataTask dataTask = new DataTask();
 				dataTask.setProject(project);

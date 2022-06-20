@@ -6,6 +6,8 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 
@@ -23,7 +25,7 @@ public class OperationControlApplication {
 		context = new SpringApplicationBuilder(OperationControlApplication.class).headless(false).run(args);
 		routineController = context.getBean(RoutineController.class);
 		try {
-			routineController.run();
+			routineController.testeInfo();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -38,4 +40,5 @@ public class OperationControlApplication {
 	RestTemplate restTemplate() {
 		return new RestTemplate();
 	}
+	
 }

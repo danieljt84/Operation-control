@@ -17,6 +17,8 @@ public class PromoterService {
 		return promoterRepository.findByNameTeam(nameTeam);
 	}
 	   
-	
-	
+	public List<Promoter> findAll(){
+	  return promoterRepository.findAll();
+	}
+
 }

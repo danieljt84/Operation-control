@@ -1,4 +1,4 @@
-package com.util;
+package com.util.model;
 
 import com.model.Promoter;
 
