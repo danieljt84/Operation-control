@@ -1,33 +1,43 @@
 package com.service;
 
-import java.io.Console;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import javax.xml.crypto.Data;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.controller.dto.CargaHorariaDTO;
+import com.controller.dto.CountActivityCompleteByPromoterDTO;
+import com.controller.dto.CountActivityCompleteDTO;
+import com.controller.dto.PercentByDateAndTeamDTO;
+import com.controller.form.FilterForm;
 import com.model.Activity;
+import com.model.Brand;
 import com.model.DataTask;
 import com.model.Holyday;
 import com.model.Project;
 import com.model.Promoter;
 import com.model.Task;
+import com.model.Team;
+import com.repository.DataTaskCustomRepository;
 import com.repository.DataTaskRepository;
+import com.repository.TeamRepository;
+import com.util.ProjectAdapter;
 import com.util.Status;
 import com.util.model.AjudaDeCusto;
 import com.util.model.InfoPercentual;
@@ -39,7 +49,11 @@ public class DataTaskService {
 	@Autowired
 	DataTaskRepository dataTaskRepository;
 	@Autowired
+	DataTaskCustomRepository dataTaskCustomRepository;
+	@Autowired
 	HolydayService holydayService;
+	@Autowired
+	TeamRepository teamRepository;
 
 	// Verifica se existe no banco de dados, caso não, salva o mesmo
 	public void checkAndSaveDataTask(DataTask dataTask) {
@@ -72,13 +86,12 @@ public class DataTaskService {
 	public void generatePercentual(String date) {
 		LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		List<DataTask> datas = dataTaskRepository.findByDate(localDate);
-		for(DataTask data : datas) {
+		for (DataTask data : datas) {
 			InfoPercentual infoPercentual = new InfoPercentual();
-			data.getTasks().stream().map(t ->t.getActivities()).findAny().ifPresentOrElse(list-> {
+			data.getTasks().stream().map(t -> t.getActivities()).findAny().ifPresentOrElse(list -> {
 				infoPercentual.setCountActivities((long) list.size());
-				
-			},
-					() -> System.out.println("u"));
+
+			}, () -> System.out.println("u"));
 			infoPercentual.setCountActivities(null);
 		}
 	}
@@ -119,11 +132,32 @@ public class DataTaskService {
 		}
 		return objects;
 	}
+	// Transforma os dados para o envio da api do excel, busca por data e Team
+
+	public List<PercentByDateAndTeamDTO> getPercentByTeam(String _date, String teamName) {
+		LocalDate date = LocalDate.parse(_date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		Team team = teamRepository.findByName(teamName);
+		List<DataTask> datas = dataTaskRepository.findByDateAndPromoterTeam(date, team);
+		List<PercentByDateAndTeamDTO> percentByDateAndTeamDTOs = new ArrayList<PercentByDateAndTeamDTO>();
+		for (DataTask dataTask : datas) {
+			eliminateCheckInDataTask(dataTask);
+			Integer activitiesDone = dataTask.getTasks().stream().map(task -> task.getActivityDone()).reduce(0,
+					(subtotal, element) -> subtotal + element);
+			Integer activitiesTotal = dataTask.getTasks().stream().map(task -> task.getActivityTotal()).reduce(0,
+					(subtotal, element) -> subtotal + element);
+			PercentByDateAndTeamDTO percentByDateAndTeamDTO = new PercentByDateAndTeamDTO();
+			percentByDateAndTeamDTO.setPromoter(dataTask.getPromoter().getName());
+			percentByDateAndTeamDTO.setRealizado(activitiesDone);
+			percentByDateAndTeamDTO.setPrevisto(activitiesTotal);
+			percentByDateAndTeamDTOs.add(percentByDateAndTeamDTO);
+		}
+		return percentByDateAndTeamDTOs;
+	}
 
 	// Transforma obejos para o envio de relatorio, busca por data
 	public List<Object[]> convertToReport(String _start, String _end) {
-		LocalDate start = LocalDate.parse(_start, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-		LocalDate end = LocalDate.parse(_end, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		LocalDate start = LocalDate.parse(_start, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		LocalDate end = LocalDate.parse(_end, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
 		List<DataTask> datas = dataTaskRepository.findByDateBetweenAndPromoterStatus(start, end, Status.ATIVO);
 		List<Object[]> objects = new ArrayList<Object[]>();
@@ -369,6 +403,14 @@ public class DataTaskService {
 		}
 	}
 
+	public void eliminateCheckInDataTask(DataTask dataTask) {
+		for (Task task : dataTask.getTasks()) {
+			List<Activity> filterActivities = task.getActivities().stream()
+					.filter(activity -> !activity.getDescription().equals("Check In")).collect(Collectors.toList());
+			task.setActivities(filterActivities);
+		}
+	}
+
 	// Soma o tempo de uma lista de LocalTime
 	public LocalTime sumTime(List<LocalTime> datas) {
 		try {
@@ -466,6 +508,136 @@ public class DataTaskService {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	// API//
+
+	public List<CountActivityCompleteDTO> getCountActivityCompleteByTeam(LocalDate date, List<Team> teams) {
+		List<CountActivityCompleteDTO> countActivityCompleteDTOs = new ArrayList<>();
+		for (Team team : teams) {
+			CountActivityCompleteDTO countActivityCompleteDTO = new CountActivityCompleteDTO();
+			int countComplete = dataTaskRepository.getCountActivityCompleteByTeam(date, team.getId());
+			int countMissing = dataTaskRepository.getCountActivityMissingByTeam(date, team.getId());
+			if (countComplete > 0 || countMissing > 0) {
+				countActivityCompleteDTO.setTeamName(team.getName());
+				countActivityCompleteDTO.setCountComplete(countComplete);
+				countActivityCompleteDTO.setCountMissing(countMissing);
+				countActivityCompleteDTOs.add(countActivityCompleteDTO);
+			}
+		}
+		return countActivityCompleteDTOs;
+	}
+
+	public Integer getCountActivityCompleteByBrand(LocalDate date, Brand brand) {
+		return dataTaskRepository.getCountActivityCompleteByBrand(date, date.plusDays(1), brand.getId());
+	}
+	
+	public Integer getCountActivityCompleteBetweenDateByBrand(LocalDate initialDate, LocalDate finalDate, Brand brand) {
+		return dataTaskRepository.getCountActivityCompleteByBrand(initialDate, finalDate.plusDays(1), brand.getId());
+	}
+	
+	public Integer getCountActivityCompleteBetweenDateByBrand(LocalDate initialDate, LocalDate finalDate, Brand brand,Map<String, String[]> filter) {
+		return (Integer) dataTaskCustomRepository.getCountActivityCompleteByBrand(initialDate, finalDate.plusDays(1), brand.getId(),filter);
+	}
+	
+	public Map<LocalDate, Integer> getCountActivityCompleteWithDateBetweenDateByBrand(LocalDate initialDate, LocalDate finalDate, Brand brand){
+		long daysBetween = ChronoUnit.DAYS.between(initialDate, finalDate);
+		Map<LocalDate, Integer> date_count = new HashMap<>();
+		for(int i = 0; i<= daysBetween;i++) {
+			Integer count = dataTaskRepository.getCountActivityCompleteByBrand(initialDate.plusDays(i), initialDate.plusDays(i+1), brand.getId());
+			date_count.put(initialDate.plusDays(i), count);
+		}
+		return date_count;
+	}
+	
+	public Map<LocalDate, Integer> getCountActivityCompleteWithDateBetweenDateByBrand(LocalDate initialDate, LocalDate finalDate, Brand brand,Map<String, String[]> filter){
+		long daysBetween = ChronoUnit.DAYS.between(initialDate, finalDate);
+		Map<LocalDate, Integer> date_count = new HashMap<>();
+		for(int i = 0; i<= daysBetween;i++) {
+			Integer count = dataTaskCustomRepository.getCountActivityCompleteByBrand(initialDate.plusDays(i), initialDate.plusDays(i+1), brand.getId(),filter);
+			date_count.put(initialDate.plusDays(i), count);
+		}
+		return date_count;
+	}
+
+	public Integer getCountActivityMissingByBrand(LocalDate date, Brand brand) {
+		return dataTaskRepository.getCountActivityMissingByBrand(date, brand.getId());
+	}
+	
+	public Integer getCountActivityMissingBetweenDateByBrand(LocalDate initialDate, LocalDate finalDate, Brand brand) {
+		return dataTaskRepository.getCountActivityMissingBetweenDateByBrand(initialDate,finalDate, brand.getId());
+	}
+	
+	public Integer getCountActivityMissingBetweenDateByBrand(LocalDate initialDate, LocalDate finalDate, Brand brand,Map<String, String[]> filter) {
+		return dataTaskCustomRepository.getCountActivityMissingBetweenDateByBrand(initialDate,finalDate, brand.getId(),filter);
+	}
+	
+	public Integer getCountActivityDoingByBrand(LocalDate date, Brand brand) {
+		return dataTaskRepository.getCountActivityDoingByBrand(date, brand.getId());
+	}
+
+	public List<CountActivityCompleteByPromoterDTO> getCountActivityCompleteByPromoterByTeam(LocalDate date,
+			List<Team> teams) {
+		List<CountActivityCompleteByPromoterDTO> activityCompleteByPromoterDTOs = new ArrayList<>();
+		for (Team team : teams) {
+			if (team.getName().contains("Marcela")) {
+				System.out.println("ok");
+			}
+			List<Object[]> promoters_complete = dataTaskRepository.getCountActivityCompleteByTeamAndPromoter(date,
+					team.getId());
+			List<Object[]> promoters_missing = dataTaskRepository.getCountActivityMissingByTeamAndPromoter(date,
+					team.getId());
+			List<String> promotersName = new ArrayList<>();
+			promotersName.addAll(
+					promoters_complete.stream().map(element -> (String) element[0]).collect(Collectors.toList()));
+			promotersName.addAll(
+					promoters_missing.stream().map(element -> (String) element[0]).collect(Collectors.toList()));
+			promotersName = promotersName.stream().distinct().collect(Collectors.toList());
+			for (String promoterName : promotersName) {
+				CountActivityCompleteByPromoterDTO countActivityCompleteByPromoterDTO = new CountActivityCompleteByPromoterDTO();
+				var data_complete_promoter = promoters_complete.stream()
+						.filter(element -> element[0].equals(promoterName)).findFirst();
+				var data_missing_promoter = promoters_missing.stream()
+						.filter(element -> element[0].equals(promoterName)).findFirst();
+				countActivityCompleteByPromoterDTO.setPromoterName(promoterName);
+				data_complete_promoter.ifPresentOrElse(element -> {
+					countActivityCompleteByPromoterDTO.setCountComplete(((BigInteger) element[2]).intValue());
+					countActivityCompleteByPromoterDTO.setTeamName((String) element[1]);
+				}, () -> {
+					countActivityCompleteByPromoterDTO.setCountComplete(0);
+				});
+				data_missing_promoter.ifPresentOrElse(element -> {
+					countActivityCompleteByPromoterDTO.setCountMissing(((BigInteger) element[2]).intValue());
+					countActivityCompleteByPromoterDTO.setTeamName((String) element[1]);
+				}, () -> {
+					countActivityCompleteByPromoterDTO.setCountMissing(0);
+				});
+
+				countActivityCompleteByPromoterDTO.setCountTotal(countActivityCompleteByPromoterDTO.getCountComplete()
+						+ countActivityCompleteByPromoterDTO.getCountMissing());
+				try {
+					countActivityCompleteByPromoterDTO
+							.setPercent(new BigDecimal(countActivityCompleteByPromoterDTO.getCountComplete())
+									.divide(new BigDecimal(countActivityCompleteByPromoterDTO.getCountTotal()), 2,
+											RoundingMode.HALF_EVEN)
+									.multiply(new BigDecimal(100)).setScale(2, RoundingMode.HALF_EVEN).intValue());
+				} catch (Exception e) {
+					countActivityCompleteByPromoterDTO.setPercent(0);
+				}
+				activityCompleteByPromoterDTOs.add(countActivityCompleteByPromoterDTO);
+			}
+		}
+		activityCompleteByPromoterDTOs = CountActivityCompleteByPromoterDTO
+				.orderByPercent(activityCompleteByPromoterDTOs);
+		return activityCompleteByPromoterDTOs;
+	}
+
+	public List<String[]> getPrevistoVsrealizado(LocalDate start, LocalDate end, ProjectAdapter[] projects) {
+		List<String[]> datas = new ArrayList<>();
+		for (ProjectAdapter project : projects) {
+			datas.addAll(dataTaskRepository.getRealizadovsProgramado(start, end, project.getDescription()));
+		}
+		return datas;
 	}
 
 }

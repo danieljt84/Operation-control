@@ -1,17 +1,15 @@
 package com;
 
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
-
-import com.controller.ConsumerController;
 import com.controller.RoutineController;
 
 @SpringBootApplication
@@ -21,14 +19,11 @@ public class OperationControlApplication {
 	static ConfigurableApplicationContext context;
 	static RoutineController routineController;
 
+	public static final Logger LOG = LoggerFactory.getLogger(OperationControlApplication.class);
+
 	public static void main(String[] args) {
 		context = new SpringApplicationBuilder(OperationControlApplication.class).headless(false).run(args);
 		routineController = context.getBean(RoutineController.class);
-		try {
-			routineController.testeInfo();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	@Bean
@@ -40,5 +35,5 @@ public class OperationControlApplication {
 	RestTemplate restTemplate() {
 		return new RestTemplate();
 	}
-	
+
 }

@@ -32,6 +32,7 @@ public class Task {
 	private Integer activityTotal;
 	private Integer activityDone;
 	private Integer activityMissing;
+	private String type;
 	@OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.EAGER)
 	private List<Activity> activities;
 	
@@ -49,6 +50,14 @@ public class Task {
 		this.activityDone = task.getActivityDone();
 		this.activityMissing = task.getActivityMissing();
 		this.activities = task.getActivities();
+		this.type = task.getType();
+	}
+
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
 	}
 	public Long getId() {
 		return id;

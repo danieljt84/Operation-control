@@ -71,23 +71,13 @@ public class ApiLaivonService {
 		try {
 			HttpEntity<String> request = new HttpEntity<String>(bodyJSON.toString(), headers);
 			response = restTemplate.postForEntity(urlLaivon, request, String.class).getBody();
-		} catch (Exception e) {
-			System.err.println("ERRO DE CONEXÃO");
-			getResume(project,date);
-		}
-
-		try {
 			JsonNode root = objectMapper.readTree(response);
 			return convertJSONToDataOperation(root);
-		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			System.err.println("ERRO DE CONEXÃO:"+e.getMessage());
+			return getResume(project,date);
+			
 		}
-
-		return null;
 	}
 
 	public List<DataTask> convertJSONToDataOperation(JsonNode root) {
@@ -163,7 +153,11 @@ public class ApiLaivonService {
 	
 	public String getNameBrand(String description) {
 		try {
-			return description.split("- ")[1];
+			if(description.contains("- ")) {
+				return description.split("- ")[1];
+			}else {
+				return description.split("Pesquisa ")[1];
+			}
 		}catch (Exception e) {
 			return null;
 		}

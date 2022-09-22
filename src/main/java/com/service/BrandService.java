@@ -23,5 +23,13 @@ public class BrandService {
 			throw new Exception("ERRO NO CARREGAMENTO DA LISTA");
 		}
 	}
+	
+	public Brand getBrandByNameContaining(String name) throws Exception {
+		try {
+			return brandRepository.findByNameContaining(name);
+		}catch (Exception e) {
+			throw new Exception("ERRO NO CARREGAMENTO DA BRAND");
+		}
+	}
 
 }

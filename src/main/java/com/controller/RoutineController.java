@@ -33,14 +33,12 @@ public class RoutineController {
 		}
 	}
 	public void run2() {
-		excelService.createExcelAjudaDeCusto("01/05/2022", "31/05/2022");
+		excelService.createExcelAjudaDeCusto("01/07/2022", "31/07/2022");
 	}	
 	public void run3() {
 		consumerController.routine();
 	}
-	public void run4() {
-		excelService.createExcel("01/05/2022", "31/05/2022");
-	}
+	
 	public void testeInfo() {
 		dataTaskService.generatePercentual("2022-06-13");
 	}
@@ -63,7 +61,7 @@ public class RoutineController {
 	
 	public static boolean isAfterMax(){
 		LocalTime agora = LocalTime.now();
-		LocalTime limite =  LocalTime.parse("14:00", 
+		LocalTime limite =  LocalTime.parse("09:00", 
 	            DateTimeFormatter.ISO_TIME);
 		if(agora.isAfter(limite)){
 			return true;
