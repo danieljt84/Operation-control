@@ -23,7 +23,6 @@ import com.model.Project;
 import com.model.Promoter;
 import com.model.Task;
 import com.repository.DataTaskRepository;
-import com.repository.DataTaskRepositoryImp;
 import com.repository.PromoterRepository;
 import com.service.DataTaskService;
 import com.service.ExcelService;
@@ -35,8 +34,7 @@ import com.util.ProjectAdapter;
 public class ConsumerController {
 
 	ConfigurableApplicationContext context;
-	@Autowired
-	DataTaskRepositoryImp dataTaskRepositoryImp;
+	
 	@Autowired
 	DataTaskRepository dataTaskRepository;
 	@Autowired
@@ -56,7 +54,7 @@ public class ConsumerController {
 
 	public void routine() {
 		LocalDate endDate = LocalDate.now();
-		LocalDate startDate = LocalDate.now().minusDays(7);
+		LocalDate startDate = LocalDate.now().minusDays(3);
 		long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
 		for (int i = 0; i <= daysBetween; i++) {
 			for (ProjectAdapter project : ProjectAdapter.values()) {
@@ -67,7 +65,6 @@ public class ConsumerController {
 					dataTaskService.calculateInfoDataTask(data);
 					dataTaskService.defSituationDataTask(data);
 					dataTaskService.checkAndSaveDataTask(data);
-					dataTaskRepositoryImp.checkDataTask(data);
 				}
 			}
 		}

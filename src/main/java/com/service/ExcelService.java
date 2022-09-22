@@ -36,47 +36,31 @@ public class ExcelService {
 	DataTaskService dataTaskService;
 
 	public ExcelService() {
-		try {
-			workbook = new XSSFWorkbook(new File("C:\\Users\\I7\\Downloads\\Pasta1.xlsx"));
-		} catch (InvalidFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		sheet = workbook.getSheet("ATIVOS");
 	}
 
-	public void createExcel(String start, String end) {
+	public byte[] createExcel(String start, String end) throws IOException {
 		workbook = new XSSFWorkbook();
 		sheet = workbook.createSheet();
-		try {
-			XSSFRow rowhead = sheet.createRow((short) 0);
-			rowhead.createCell(0).setCellValue("DATA");
-			rowhead.createCell(1).setCellValue("TIME");
-			rowhead.createCell(2).setCellValue("PROMOTER");
-			rowhead.createCell(3).setCellValue("SITUACAO");
-			rowhead.createCell(4).setCellValue("CARGA HORARIA");
-			int cont = 1;
-			for (Object[] data : dataTaskService.convertToReport(start, end)) {
-				XSSFRow row = sheet.createRow((short) cont);
-				row.createCell(0).setCellValue((String) data[0]);
-				row.createCell(1).setCellValue((String) data[1]);
-				row.createCell(2).setCellValue((String) data[2]);
-				row.createCell(3).setCellValue((String) data[3]);
-				row.createCell(4).setCellValue((String) data[4]);
-				cont++;
-			}
-			FileOutputStream fileOut = new FileOutputStream(
-					"C:\\Users\\I7\\Documents\\download-edge\\NewExcelFile.xlsx");
-			workbook.write(fileOut);
-			fileOut.close();
-			workbook.close();
-			System.out.println("Your excel file has been generated!");
-		} catch (Exception e) {
-			System.out.println(e);
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		XSSFRow rowhead = sheet.createRow((short) 0);
+		rowhead.createCell(0).setCellValue("DATA");
+		rowhead.createCell(1).setCellValue("TIME");
+		rowhead.createCell(2).setCellValue("PROMOTER");
+		rowhead.createCell(3).setCellValue("SITUACAO");
+		rowhead.createCell(4).setCellValue("CARGA HORARIA");
+		int cont = 1;
+		for (Object[] data : dataTaskService.convertToReport(start, end)) {
+			XSSFRow row = sheet.createRow((short) cont);
+			row.createCell(0).setCellValue((String) data[0]);
+			row.createCell(1).setCellValue((String) data[1]);
+			row.createCell(2).setCellValue((String) data[2]);
+			row.createCell(3).setCellValue((String) data[3]);
+			row.createCell(4).setCellValue((String) data[4]);
+			cont++;
 		}
+		workbook.write(bos);
+		workbook.close();
+		return bos.toByteArray();
 	}
 
 	public byte[] createExcelByte(String date) {
@@ -157,23 +141,23 @@ public class ExcelService {
 				row.createCell(8).setCellValue(data.getRelacaoDias().getSextasFeitas());
 				row.createCell(9).setCellValue(data.getRelacaoDias().getSabadosFeitas());
 				row.createCell(10).setCellValue(data.getRelacaoDias().getDiasCompletos());
-				row.createCell(11).setCellValue(data.getRelacaoDias().getDiasCompletos()+data.getRelacaoDias().getDiasNaoFeitos());
+				row.createCell(11).setCellValue(
+						data.getRelacaoDias().getDiasCompletos() + data.getRelacaoDias().getDiasNaoFeitos());
 				if (data.getPromoter().getMediaPassagem() == null) {
 					row.createCell(12).setCellValue("SEM PASSAGEM CADASTRADA");
 				} else {
 					row.createCell(12).setCellValue(
 							data.getRelacaoDias().getDiasCompletos() * data.getPromoter().getMediaPassagem());
-					row.createCell(13).setCellValue(data.getRelacaoDias().getDiasNaoFeitos()
-							* data.getPromoter().getMediaPassagem());
+					row.createCell(13).setCellValue(
+							data.getRelacaoDias().getDiasNaoFeitos() * data.getPromoter().getMediaPassagem());
 				}
-				row.createCell(16).setCellValue(data.getDiasDescontoVA()+data.getRelacaoDias().getDiasNaoFeitos());
+				row.createCell(16).setCellValue(data.getDiasDescontoVA() + data.getRelacaoDias().getDiasNaoFeitos());
 				row.createCell(17)
-						.setCellValue((data.getDiasDescontoVA()+data.getRelacaoDias().getDiasNaoFeitos()) * 19);
+						.setCellValue((data.getDiasDescontoVA() + data.getRelacaoDias().getDiasNaoFeitos()) * 19);
 				row.createCell(18).setCellValue(data.getDiasDescontoVA() * 19);
 				cont++;
 			}
-			FileOutputStream fileOut = new FileOutputStream(
-					"C:\\Users\\I7\\Documents\\download-edge\\RESUMO OPERACAO.xlsx");
+			FileOutputStream fileOut = new FileOutputStream("C:\\Users\\4P\\Documents\\RESUMO OPERACAO.xlsx");
 			workbook.write(fileOut);
 			fileOut.close();
 			workbook.close();
@@ -206,5 +190,5 @@ public class ExcelService {
 
 		}
 	}
-	
+
 }
