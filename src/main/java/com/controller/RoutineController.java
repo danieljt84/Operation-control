@@ -5,6 +5,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Controller;
 
 import com.model.Promoter;
@@ -24,12 +26,13 @@ public class RoutineController {
 	@Autowired
 	DataTaskService dataTaskService;
 	
+	@EventListener(ApplicationReadyEvent.class)
 	public void run() throws InterruptedException {
 		while(true) {
 			if(isBeforeMin() && isAfterMax()) {
 				consumerController.routine();
 			}
-			Thread.sleep(3600000);
+			Thread.sleep(12000000);
 		}
 	}
 	public void run2() {

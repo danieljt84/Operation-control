@@ -54,7 +54,11 @@ public class ConsumerController {
 
 	public void routine() {
 		LocalDate endDate = LocalDate.now();
+<<<<<<< HEAD
 		LocalDate startDate = LocalDate.now().minusDays(1);
+=======
+		LocalDate startDate = LocalDate.now().minusDays(3);
+>>>>>>> d5193faebdfc9221effa33a52c1bd86b63412fc0
 		long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
 		for (int i = 0; i <= daysBetween; i++) {
 			//for (ProjectAdapter project : ProjectAdapter.values()) {

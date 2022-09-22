@@ -13,7 +13,11 @@ public class PropertiesReader {
 		Properties props = new Properties();
 		FileInputStream file;
 		try {
+<<<<<<< HEAD
 			file = new FileInputStream("C:\\Users\\4P\\eclipse-workspace\\Operation-control\\src\\main\\resources\\data.properties");
+=======
+			file = new FileInputStream("C:\\Users\\SERVIDOR APP\\Documents\\Projetos\\Controle Operacional\\Operation-control\\src\\main\\resources\\data.properties");
+>>>>>>> d5193faebdfc9221effa33a52c1bd86b63412fc0
 			props.load(file);
 			return props;
 		} catch (FileNotFoundException e) {
