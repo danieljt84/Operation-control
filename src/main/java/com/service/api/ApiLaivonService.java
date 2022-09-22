@@ -115,6 +115,7 @@ public class ApiLaivonService {
 					task.setSituation(node_task.path("situacao").asText());
 					task.setStart(convertTime(node_task.path("inicio").asText()));
 					task.setEnd(convertTime(node_task.path("fim").asText()));
+					task.setType(node_task.path("tipo").asText());
 					List<Activity> activities = new ArrayList<>();
 					for(JsonNode node_activities: node_task.path("dados_atividade")) {
 						Activity activity = new Activity();
