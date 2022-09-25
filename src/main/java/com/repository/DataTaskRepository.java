@@ -55,6 +55,10 @@ public interface DataTaskRepository extends JpaRepository<DataTask, Long>{
 			+ " from data_task dt, task t ,activity a,shop s, brand b,data_task_tasks dtt , task_activities ta "
 			+ "where dt.id = dtt.data_task_id and dtt.tasks_id = t.id and t.id = ta.task_id and ta.activities_id = a.id and t.shop_id = s.id and a.brand_id = b.id and dt.\"date\" <= :end and dt.\"date\" >= :start and dt.project = :project and a.description like 'Pesquisa%' and b.\"name\" is not null  order by b.\"name\" asc, s.\"name\"  asc "
 			, nativeQuery = true)
-    
 	List<String[]> getRealizadovsProgramado(@Param(value = "start") LocalDate start,@Param(value = "end")  LocalDate end,@Param(value = "project") String project );
+    @Query(value = "select distinct  dt.\"date\", s.\"name\" , case a.situation when 'completa' then 'COMPLETA' when 'sem historico' then 'NÃO REALIZADO' END AS status\r\n"
+    		+ "from data_task dt, task t , data_task_tasks dtt  ,task_activities ta , activity a ,shop s \r\n"
+    		+ "where dt.id = dtt.data_task_id  and dtt.tasks_id  = t.id and ta.task_id = t.id and ta.activities_id = a.id and t.shop_id = s.id and \r\n"
+    		+ "a.brand_id = :idBrand  and dt.\"date\" >= :initialDate and dt.\"date\" <= :finalDate", nativeQuery = true)
+	List<String[]> getPrevistoRealizadoToReport(@Param(value = "initialDate") LocalDate start,@Param(value = "finalDate")  LocalDate end, @Param(value = "idBrand") Long idBrand);
 }
