@@ -1,5 +1,8 @@
 package com.controller;
 
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -7,6 +10,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 
 import com.model.Promoter;
@@ -32,11 +36,19 @@ public class RoutineController {
 			if(isBeforeMin() && isAfterMax()) {
 				consumerController.routine();
 			}
+			System.out.println("ATUALIZADO EM: "+LocalDateTime.now().toString());
 			Thread.sleep(12000000);
 		}
 	}
+	
 	public void run2() {
-		excelService.createExcelAjudaDeCusto("01/07/2022", "31/07/2022");
+		try {
+			excelService.createExcel("01/09/2022", "31/09/2022");
+		System.out.println("oi");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}	
 	public void run3() {
 		consumerController.routine();

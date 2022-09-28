@@ -53,30 +53,31 @@ public class ApiLaivonService {
 	String project;
 
 	public List<DataTask> getResume(String _project,LocalDate date) {
-		objectMapper = new ObjectMapper();
-		restTemplate = new RestTemplate();
-		String response = null;
-		project = _project;
-		String urlLaivon = PropertiesReader.getProp().getProperty("api.url");
-		JSONObject bodyJSON = new JSONObject();
-		bodyJSON.put("password", PropertiesReader.getProp().getProperty("api.password"));
-		bodyJSON.put("tokenapi",PropertiesReader.getProp().getProperty("api.token"));
-		bodyJSON.put("dateInit", date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-		bodyJSON.put("dateEnd", date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-		bodyJSON.put("enviroment", _project);
+		
+		while(true) {
+			objectMapper = new ObjectMapper();
+			restTemplate = new RestTemplate();
+			String response = null;
+			project = _project;
+			String urlLaivon = PropertiesReader.getProp().getProperty("api.url");
+			JSONObject bodyJSON = new JSONObject();
+			bodyJSON.put("password", PropertiesReader.getProp().getProperty("api.password"));
+			bodyJSON.put("tokenapi",PropertiesReader.getProp().getProperty("api.token"));
+			bodyJSON.put("dateInit", date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+			bodyJSON.put("dateEnd", date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+			bodyJSON.put("enviroment", _project);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
 
-		try {
-			HttpEntity<String> request = new HttpEntity<String>(bodyJSON.toString(), headers);
-			response = restTemplate.postForEntity(urlLaivon, request, String.class).getBody();
-			JsonNode root = objectMapper.readTree(response);
-			return convertJSONToDataOperation(root);
-		} catch (Exception e) {
-			System.err.println("ERRO DE CONEXÃO:"+e.getMessage());
-			return getResume(project,date);
-			
+			try {
+				HttpEntity<String> request = new HttpEntity<String>(bodyJSON.toString(), headers);
+				response = restTemplate.postForEntity(urlLaivon, request, String.class).getBody();
+				JsonNode root = objectMapper.readTree(response);
+				return convertJSONToDataOperation(root);
+			} catch (Exception e) {
+				
+			}
 		}
 	}
 

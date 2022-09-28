@@ -54,19 +54,18 @@ public class ConsumerController {
 
 	public void routine() {
 		LocalDate endDate = LocalDate.now();
-		LocalDate startDate = LocalDate.now().minusDays(3);
+		LocalDate startDate = LocalDate.now().minusDays(1);
 		long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
 		for (int i = 0; i <= daysBetween; i++) {
-			for (ProjectAdapter project : ProjectAdapter.values()) {
-				List<DataTask> datas = apiService.getResume(project.getDescription(), startDate.plusDays(i));
-				System.out.println(i);
+			//for (ProjectAdapter project : ProjectAdapter.values()) {
+				List<DataTask> datas = apiService.getResume(ProjectAdapter.FIXO_RJ.getDescription(), startDate.plusDays(i));
 				for (DataTask data : datas) {
 					dataTaskService.eliminateChecksDataTaskAndSetDuration(data);
 					dataTaskService.calculateInfoDataTask(data);
 					dataTaskService.defSituationDataTask(data);
 					dataTaskService.checkAndSaveDataTask(data);
 				}
-			}
+			//}
 		}
 	}
 }
