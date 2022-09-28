@@ -639,5 +639,10 @@ public class DataTaskService {
 		}
 		return datas;
 	}
+	
+	public List<String[]> getPrevistoRealizaoToReport(Brand brand, LocalDate start, LocalDate end){
+		return dataTaskRepository.getPrevistoRealizadoToReport(start, end, brand.getId());
+	}
 
+	
 }

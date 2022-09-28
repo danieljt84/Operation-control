@@ -35,8 +35,6 @@ public class ExcelService {
 	@Autowired
 	DataTaskService dataTaskService;
 
-	public ExcelService() {
-	}
 
 	public byte[] createExcel(String start, String end) throws IOException {
 		workbook = new XSSFWorkbook();
@@ -191,4 +189,28 @@ public class ExcelService {
 		}
 	}
 
+	public byte[] createExcelPrevistoRealizado(List<String[]> datas) {
+		workbook = new XSSFWorkbook();
+		sheet = workbook.createSheet();
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		int cont = 1;
+		
+		XSSFRow rowhead = sheet.createRow((short) 0);
+		rowhead.createCell(0).setCellValue("DATA");
+		rowhead.createCell(1).setCellValue("LOJA");
+		rowhead.createCell(2).setCellValue("STATUS");
+		
+		for(String[] data : datas) {
+			XSSFRow row = sheet.createRow((short) cont++);
+            row.createCell(0).setCellValue(data[0]);
+            row.createCell(1).setCellValue(data[1]);
+            row.createCell(2).setCellValue(data[2]);
+		}
+		try {
+			workbook.write(bos);
+			workbook.close();
+		}catch (Exception e) {
+		}
+		return bos.toByteArray();
+	}
 }

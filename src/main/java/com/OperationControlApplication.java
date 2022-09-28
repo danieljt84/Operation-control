@@ -23,8 +23,7 @@ public class OperationControlApplication {
 
 	public static void main(String[] args) {
 		context = new SpringApplicationBuilder(OperationControlApplication.class).headless(false).run(args);
-		routineController = context.getBean(RoutineController.class);
-	}
+		}
 
 	@Bean
 	ModelMapper ModelMapper() {

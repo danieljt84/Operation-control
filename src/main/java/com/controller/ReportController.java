@@ -1,5 +1,9 @@
 package com.controller;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -11,17 +15,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.model.Brand;
+import com.service.BrandService;
 import com.service.DataTaskService;
 import com.service.ExcelService;
 
 @RestController
 @RequestMapping(value = "/report")
-public class RelatorioController {
+public class ReportController {
 	
 	@Autowired
 	ExcelService excelService;
 	@Autowired
 	DataTaskService dataTaskService;	
+	@Autowired
+	BrandService brandService;
 	
 	@GetMapping
 	@RequestMapping(value = "/cargahoraria")
@@ -37,8 +45,9 @@ public class RelatorioController {
 	@RequestMapping("/resumooperacao")
 	public ResponseEntity getResumoOperacao(@RequestParam String start,@RequestParam String end) {
         HttpHeaders headers = new HttpHeaders();
+
         try {
-            return ResponseEntity
+        	return ResponseEntity
             		.ok()
             		.headers(headers)
             		.contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
@@ -46,19 +55,24 @@ public class RelatorioController {
         }catch (Exception e) {
 			return ResponseEntity.badRequest().build();
 		}
-
-
-		
 	}
-
 	
-	
-	private ResponseEntity<byte[]>  createResponseEntity(byte[] report,String filename) {
-		return ResponseEntity.ok() 
-        .contentType(MediaType.APPLICATION_OCTET_STREAM)
-        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"$fileName\"")
-        .body(report);
+	@GetMapping
+	@RequestMapping("/previstoxrealizado")
+	public ResponseEntity getPrevistoRealizado(@RequestParam  String nameBrand,@RequestParam  String initialDate,@RequestParam String finalDate) {
+        HttpHeaders headers = new HttpHeaders();
+		try {
+			Brand brand = brandService.getBrandByNameContaining(nameBrand);
+			List<String[]> datas = dataTaskService.getPrevistoRealizaoToReport(brand,LocalDate.parse(initialDate), LocalDate.parse(finalDate));
+		    byte[] excelFile = excelService.createExcelPrevistoRealizado(datas);
+		    
+		    return ResponseEntity
+            		.ok()
+            		.headers(headers)
+            		.contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+            		.body(excelFile);
+		}catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
-	        
-
 }

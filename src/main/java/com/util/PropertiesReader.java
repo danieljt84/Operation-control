@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,7 +14,7 @@ public class PropertiesReader {
 		Properties props = new Properties();
 		FileInputStream file;
 		try {
-			file = new FileInputStream("C:\\Users\\SERVIDOR APP\\Documents\\Projetos\\Controle Operacional\\Operation-control\\src\\main\\resources\\data.properties");
+			file = new FileInputStream(new ClassPathResource("data.properties").getFile());
 			props.load(file);
 			return props;
 		} catch (FileNotFoundException e) {
