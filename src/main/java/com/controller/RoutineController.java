@@ -30,7 +30,7 @@ public class RoutineController {
 	@Autowired
 	DataTaskService dataTaskService;
 	
-	//@EventListener(ApplicationReadyEvent.class)
+	@EventListener(ApplicationReadyEvent.class)
 	public void run() throws InterruptedException {
 		while(true) {
 			if(isBeforeMin() && isAfterMax()) {
@@ -76,7 +76,7 @@ public class RoutineController {
 	
 	public static boolean isAfterMax(){
 		LocalTime agora = LocalTime.now();
-		LocalTime limite =  LocalTime.parse("09:00", 
+		LocalTime limite =  LocalTime.parse("07:00", 
 	            DateTimeFormatter.ISO_TIME);
 		if(agora.isAfter(limite)){
 			return true;
