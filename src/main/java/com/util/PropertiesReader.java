@@ -1,5 +1,6 @@
 package com.util;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,7 +15,7 @@ public class PropertiesReader {
 		Properties props = new Properties();
 		FileInputStream file;
 		try {
-			file = new FileInputStream(new ClassPathResource("data.properties").getFile());
+			file = new FileInputStream(new File("C:\\Users\\SERVIDOR APP\\Documents\\bat\\resources\\operation-control\\data.properties"));
 			props.load(file);
 			return props;
 		} catch (FileNotFoundException e) {
