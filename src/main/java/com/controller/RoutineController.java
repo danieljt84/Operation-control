@@ -30,7 +30,7 @@ public class RoutineController {
 	@Autowired
 	DataTaskService dataTaskService;
 	
-	@EventListener(ApplicationReadyEvent.class)
+	//@EventListener(ApplicationReadyEvent.class)
 	public void run() throws InterruptedException {
 		while(true) {
 			if(isBeforeMin() && isAfterMax()) {
