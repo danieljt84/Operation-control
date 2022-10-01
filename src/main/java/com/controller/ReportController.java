@@ -60,7 +60,7 @@ public class ReportController {
 	
 	@PostMapping
 	@RequestMapping("/previstorealizado")
-	public ResponseEntity getPrevistoRealizado(@RequestParam  String nameBrand,@RequestParam  String initialDate,@RequestParam String finalDate) {
+	public ResponseEntity getPrevistoRealizado(@RequestParam(name = "nameBrand",required = false) String nameBrand,@RequestParam  String initialDate,@RequestParam String finalDate) {
         HttpHeaders headers = new HttpHeaders();
 		try {
 			Brand brand = brandService.getBrandByNameContaining(nameBrand);
