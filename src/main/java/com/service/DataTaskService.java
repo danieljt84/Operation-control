@@ -541,7 +541,7 @@ public class DataTaskService {
 	}
 	
 	public Map<LocalDate, Integer> getCountActivityCompleteWithDateBetweenDateByBrand(LocalDate initialDate, LocalDate finalDate, Brand brand){
-		long daysBetween = ChronoUnit.DAYS.between(initialDate, finalDate);
+		long daysBetween = ChronoUnit.DAYS.between(finalDate, initialDate);
 		Map<LocalDate, Integer> date_count = new HashMap<>();
 		for(int i = 0; i<= daysBetween;i++) {
 			Integer count = dataTaskRepository.getCountActivityCompleteByBrand(initialDate.plusDays(i), initialDate.plusDays(i+1), brand.getId());
