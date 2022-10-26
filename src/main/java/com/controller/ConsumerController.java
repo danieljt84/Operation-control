@@ -6,13 +6,17 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,11 +51,13 @@ public class ConsumerController {
 	ApiEmployeeService apiEmployeeService;
 	@Autowired
 	ExcelService excelService;
-
+	private static Logger logger = LoggerFactory.getLogger(RoutineController.class);
+	
 	public ConsumerController(ConfigurableApplicationContext context) {
 		this.context = context;
 	}
 
+	@Scheduled(fixedDelay =3600000, initialDelay = 10000)
 	public void routine() {
 		LocalDate endDate = LocalDate.now();
 		LocalDate startDate = endDate.minusDays(3);
@@ -66,6 +72,26 @@ public class ConsumerController {
 					dataTaskService.checkAndSaveDataTask(data);
 				}
 			}
+		}
+	}
+	
+	private static boolean isBeforeMin() {
+		LocalTime agora = LocalTime.now();
+		LocalTime limite = LocalTime.parse("23:59", DateTimeFormatter.ISO_TIME);
+		if (agora.isBefore(limite)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private static boolean isAfterMax() {
+		LocalTime agora = LocalTime.now();
+		LocalTime limite = LocalTime.parse("07:00", DateTimeFormatter.ISO_TIME);
+		if (agora.isAfter(limite)) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 }

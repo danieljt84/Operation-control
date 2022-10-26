@@ -15,7 +15,7 @@ public class PropertiesReader {
 		Properties props = new Properties();
 		FileInputStream file;
 		try {
-			file = new FileInputStream(new File("C:\\Users\\4P\\operacao\\Operation-control\\src\\main\\resources\\data.properties"));
+			file = new FileInputStream(new File("C:\\Users\\SERVIDOR APP\\Documents\\bat\\resources\\operation-control\\data.properties"));
 			props.load(file);
 			return props;
 		} catch (FileNotFoundException e) {
