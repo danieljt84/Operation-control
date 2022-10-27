@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.UnexpectedRollbackException;
@@ -58,9 +59,21 @@ public class ConsumerController {
 	}
 
 	@Scheduled(fixedDelay =3600000, initialDelay = 10000)
-	public void routine() {
+	public void run() {
+		if(isBeforeMin() && isAfterMax()) {
+			routineToConsumer(0);
+			logger.info("BASE ATUALIZADA EM: " + LocalDateTime.now().toString());
+		}
+	}
+	@Scheduled(cron = "* 0 23 * * *")
+	public void run2() {
+		routineToConsumer(3);
+		logger.info("BASE DE 3 DIAS ANTERIORES ATUALIZADA EM: " + LocalDateTime.now().toString());
+	}
+	
+	public void routineToConsumer(long daysToSubtract) {
 		LocalDate endDate = LocalDate.now();
-		LocalDate startDate = endDate.minusDays(3);
+		LocalDate startDate = endDate.minusDays(daysToSubtract);
 		long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
 		for (int i = 0; i <= daysBetween; i++) {
 			for (ProjectAdapter project : ProjectAdapter.values()) {
@@ -77,7 +90,7 @@ public class ConsumerController {
 	
 	private static boolean isBeforeMin() {
 		LocalTime agora = LocalTime.now();
-		LocalTime limite = LocalTime.parse("23:59", DateTimeFormatter.ISO_TIME);
+		LocalTime limite = LocalTime.parse("22:00", DateTimeFormatter.ISO_TIME);
 		if (agora.isBefore(limite)) {
 			return true;
 		} else {
@@ -87,7 +100,7 @@ public class ConsumerController {
 
 	private static boolean isAfterMax() {
 		LocalTime agora = LocalTime.now();
-		LocalTime limite = LocalTime.parse("07:00", DateTimeFormatter.ISO_TIME);
+		LocalTime limite = LocalTime.parse("08:00", DateTimeFormatter.ISO_TIME);
 		if (agora.isAfter(limite)) {
 			return true;
 		} else {

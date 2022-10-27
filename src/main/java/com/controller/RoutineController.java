@@ -34,38 +34,6 @@ public class RoutineController {
 	DataTaskService dataTaskService;
 	private static Logger logger = LoggerFactory.getLogger(RoutineController.class);
 
-	@Scheduled(fixedDelay =7200000, initialDelay = 10000)
-	public void run() {
-		if (isBeforeMin() && isAfterMax()) {
-			consumerController.routine();
-			logger.info("ATUALIZADO EM: " + LocalDateTime.now().toString());
-		}
-	}
-
-	public void run2() {
-		try {
-			excelService.createExcel("01/09/2022", "31/09/2022");
-			System.out.println("oi");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	public void run3() {
-		consumerController.routine();
-	}
-
-	public void testeInfo() {
-		dataTaskService.generatePercentual("2022-06-13");
-	}
-
-	public void testePlanilha() {
-		List<Promoter> promoters = promoterService.findAll();
-		promoters.forEach(promoter -> excelService.findInfoInExcelPlanilhaCusto(promoter));
-		System.out.println(promoters);
-	}
-
 	public static boolean isBeforeMin() {
 		LocalTime agora = LocalTime.now();
 		LocalTime limite = LocalTime.parse("23:59", DateTimeFormatter.ISO_TIME);
