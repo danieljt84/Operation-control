@@ -1,6 +1,8 @@
 package com.service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,5 +22,8 @@ public class PromoterService {
 	public List<Promoter> findAll(){
 	  return promoterRepository.findAll();
 	}
-
+	
+	public void updateStatusToInativo(Set<Long> idPromoterts) {
+		promoterRepository.updateStatusToInativo(idPromoterts);
+	}
 }

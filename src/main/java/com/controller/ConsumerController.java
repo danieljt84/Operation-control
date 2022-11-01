@@ -9,7 +9,9 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -31,6 +33,7 @@ import com.repository.DataTaskRepository;
 import com.repository.PromoterRepository;
 import com.service.DataTaskService;
 import com.service.ExcelService;
+import com.service.PromoterService;
 import com.service.api.ApiEmployeeService;
 import com.service.api.ApiLaivonService;
 import com.util.ProjectAdapter;
@@ -39,13 +42,10 @@ import com.util.ProjectAdapter;
 public class ConsumerController {
 
 	ConfigurableApplicationContext context;
-	
-	@Autowired
-	DataTaskRepository dataTaskRepository;
-	@Autowired
-	PromoterRepository promoterRepository;
 	@Autowired
 	DataTaskService dataTaskService;
+	@Autowired
+	PromoterService promoterService;
 	@Autowired
 	ApiLaivonService apiService;
 	@Autowired
@@ -71,10 +71,11 @@ public class ConsumerController {
 		logger.info("BASE DE 3 DIAS ANTERIORES ATUALIZADA EM: " + LocalDateTime.now().toString());
 	}
 	
-	public void routineToConsumer(long daysToSubtract) {
+	private void routineToConsumer(long daysToSubtract) {
 		LocalDate endDate = LocalDate.now();
 		LocalDate startDate = endDate.minusDays(daysToSubtract);
 		long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
+		Set<Long> idsPromoters = new HashSet<>();
 		for (int i = 0; i <= daysBetween; i++) {
 			for (ProjectAdapter project : ProjectAdapter.values()) {
 				List<DataTask> datas = apiService.getResume(project.getDescription(), startDate.plusDays(i));
@@ -83,9 +84,11 @@ public class ConsumerController {
 					dataTaskService.calculateInfoDataTask(data);
 					dataTaskService.defSituationDataTask(data);
 					dataTaskService.checkAndSaveDataTask(data);
+					idsPromoters.add(data.getId());
 				}
 			}
 		}
+		promoterService.updateStatusToInativo(null);
 	}
 	
 	private static boolean isBeforeMin() {

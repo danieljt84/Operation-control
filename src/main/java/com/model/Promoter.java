@@ -20,11 +20,21 @@ public class Promoter {
 	private Double mediaPassagem;
 	private String enterprise;
 	private Status status;
+	private Long idSystem;
 	
 	public Promoter() {
 		super();
 	}
-	
+		
+
+	public Long getIdSystem() {
+		return idSystem;
+	}
+
+	public void setIdSystem(Long idSystem) {
+		this.idSystem = idSystem;
+	}
+
 	public String getEnterprise() {
 		return enterprise;
 	}

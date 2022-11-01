@@ -11,6 +11,7 @@ public class Shop {
 	@Id@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
+	private Long idSystem;
 	
 	public Shop() {
 		super();
@@ -19,6 +20,12 @@ public class Shop {
 		this.name = name;
 	}
 	
+	public Long getIdSystem() {
+		return idSystem;
+	}
+	public void setIdSystem(Long idSystem) {
+		this.idSystem = idSystem;
+	}
 	public Long getId() {
 		return id;
 	}

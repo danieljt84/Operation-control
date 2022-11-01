@@ -88,8 +88,9 @@ public class ApiLaivonService {
 			String namePromoter = dado.path("agente").asText();
 			Team team = teamRepository.checkTeam(dado.path("equipe").asText());
 			String cpf = dado.path("agente_matricula").asText();
+			String idSystem = dado.path("agente_id").asText();
 			Promoter promoter = promoterRepository.checkPromoter(namePromoter);
-			promoterRepository.updateIfHasUpdate(promoter,team,cpf);
+			promoterRepository.updateIfHasUpdate(promoter,team,cpf,idSystem);
 			for (JsonNode node_tasks : dado.path("dados_agente")) {
 				DataTask dataTask = new DataTask();
 				dataTask.setProject(project);
@@ -108,6 +109,7 @@ public class ApiLaivonService {
 					Shop shop = shopRepository.checkShop(node_task.path("local").asText());
 				    if(shop==null) {
 				    	shop = new Shop(node_task.path("local").asText());
+				    	shop.setIdSystem(Long.parseLong(node_task.path("local_id").asText()));
 				    }
 					task.setShop(shop);
 					task.setActivityTotal(node_task.path("atividades totais").asInt());
@@ -121,6 +123,7 @@ public class ApiLaivonService {
 					for(JsonNode node_activities: node_task.path("dados_atividade")) {
 						Activity activity = new Activity();
 						activity.setDescription(node_activities.path("descricao").asText());
+						activity.setIdSystem(Long.parseLong(node_activities.path("id").asText()));
 						Brand brand = brandRepository.checkBrand(this.getNameBrand(node_activities.path("descricao").asText()));
 						activity.setBrand(brand);
 						activity.setStart(convertLocalDate(node_activities.path("inicio").asText()));
