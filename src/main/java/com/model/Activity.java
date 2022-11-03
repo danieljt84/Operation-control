@@ -26,6 +26,7 @@ public class Activity {
 	@Column(name = "_end")
 	private LocalDateTime end;
 	private LocalTime duration;
+	private Long idSystem;
 	
 	public Activity(Activity activity) {
 		this.description = activity.getDescription();
@@ -38,6 +39,14 @@ public class Activity {
 	}
 	public Activity() {
 	}
+	
+	public Long getIdSystem() {
+		return idSystem;
+	}
+	public void setIdSystem(Long idSystem) {
+		this.idSystem = idSystem;
+	}
+	
 	public Long getId() {
 		return id;
 	}

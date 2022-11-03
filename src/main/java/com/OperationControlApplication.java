@@ -8,6 +8,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 import com.controller.RoutineController;
@@ -15,15 +16,15 @@ import com.controller.RoutineController;
 @SpringBootApplication
 @EnableJpaRepositories
 @EnableTransactionManagement
+@EnableScheduling
 public class OperationControlApplication {
 	static ConfigurableApplicationContext context;
 	static RoutineController routineController;
-
 	public static final Logger LOG = LoggerFactory.getLogger(OperationControlApplication.class);
 
 	public static void main(String[] args) {
 		context = new SpringApplicationBuilder(OperationControlApplication.class).headless(false).run(args);
-		}
+	}
 
 	@Bean
 	ModelMapper ModelMapper() {

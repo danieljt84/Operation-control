@@ -76,6 +76,7 @@ public class DataTaskController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
+	
 	@RequestMapping(value = "/countactivitycompletebetweendatebybrand",method = RequestMethod.POST)
 	public ResponseEntity getCountActivityCompleteBetweenDateByBrand(@RequestParam String initialDate,@RequestParam String finalDate, @RequestParam(name = "brand") String nameBrand, @RequestBody FilterForm filterForm) {
 		try {
@@ -102,7 +103,6 @@ public class DataTaskController {
 		}
 	}
 	
-	
 	@RequestMapping(value = "/countactivitycompletewithdatebetweendatebybrand",method = RequestMethod.POST)
 	public ResponseEntity getCountActivityWithDateCompleteBetweenDateByBrand(@RequestParam String initialDate,@RequestParam String finalDate, @RequestParam(name = "brand") String nameBrand,@RequestBody FilterForm filterForm) {
 		try {
@@ -116,6 +116,7 @@ public class DataTaskController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
+	
 	@GetMapping
 	@RequestMapping("/countactivitymissingbybrand")
 	public ResponseEntity getCountActivityMissingByBrand(@RequestParam String date,@RequestParam(name = "brand") String nameBrand) {
