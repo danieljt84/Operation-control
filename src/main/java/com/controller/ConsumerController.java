@@ -88,7 +88,7 @@ public class ConsumerController {
 				}
 			}
 		}
-		promoterService.updateStatusToInativo(null);
+		promoterService.updateStatusToInativo(idsPromoters);
 	}
 	
 	private static boolean isBeforeMin() {

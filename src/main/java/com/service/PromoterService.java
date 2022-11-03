@@ -24,6 +24,11 @@ public class PromoterService {
 	}
 	
 	public void updateStatusToInativo(Set<Long> idPromoterts) {
-		promoterRepository.updateStatusToInativo(idPromoterts);
+		try {
+			promoterRepository.updateStatusToInativo(idPromoterts);
+
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 }
