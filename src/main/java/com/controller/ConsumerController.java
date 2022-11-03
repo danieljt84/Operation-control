@@ -64,6 +64,10 @@ public class ConsumerController {
 					dataTaskService.calculateInfoDataTask(data);
 					dataTaskService.defSituationDataTask(data);
 					dataTaskService.checkAndSaveDataTask(data);
+<<<<<<< Updated upstream
+=======
+					idsPromoters.add(data.getPromoter().getId());
+>>>>>>> Stashed changes
 				}
 			}
 		}

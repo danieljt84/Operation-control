@@ -8,6 +8,6 @@ import com.model.Shop;
 @Repository
 public interface ShopRepository extends JpaRepository<Shop,Long>{
 	
-	Shop findByName(String name);
+	Shop findByNameOrIdSystem(String name, Long idSystem);
 
 }

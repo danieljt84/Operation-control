@@ -35,6 +35,8 @@ import com.repository.BrandRepositoryImp;
 import com.repository.PromoterRepositoryImp;
 import com.repository.ShopRepositoryImp;
 import com.repository.TeamRepositoryImp;
+import com.service.PromoterService;
+import com.service.ShopService;
 import com.util.PropertiesReader;
 
 @Service
@@ -45,11 +47,13 @@ public class ApiLaivonService {
 	@Autowired
 	ShopRepositoryImp shopRepository;
 	@Autowired
-	PromoterRepositoryImp promoterRepository;
+	PromoterService promoterService;
 	@Autowired
 	BrandRepositoryImp brandRepository;
 	@Autowired
 	TeamRepositoryImp teamRepository;
+	@Autowired
+	ShopService shopService;
 	String project;
 
 	public List<DataTask> getResume(String _project,LocalDate date) {
@@ -88,8 +92,14 @@ public class ApiLaivonService {
 			String namePromoter = dado.path("agente").asText();
 			Team team = teamRepository.checkTeam(dado.path("equipe").asText());
 			String cpf = dado.path("agente_matricula").asText();
+<<<<<<< Updated upstream
 			Promoter promoter = promoterRepository.checkPromoter(namePromoter);
 			promoterRepository.updateIfHasUpdate(promoter,team,cpf);
+=======
+			String idSystem = dado.path("agente_id").asText();
+			Promoter promoter = promoterService.checkPromoter(namePromoter);
+			promoterService.updateIfHasUpdate(promoter,team,cpf,idSystem);
+>>>>>>> Stashed changes
 			for (JsonNode node_tasks : dado.path("dados_agente")) {
 				DataTask dataTask = new DataTask();
 				dataTask.setProject(project);
@@ -105,9 +115,19 @@ public class ApiLaivonService {
 				List<Task> tasks = new ArrayList<>();
 				for(JsonNode node_task : node_tasks.path("dados_tarefa")) {
 					Task task = new Task();
-					Shop shop = shopRepository.checkShop(node_task.path("local").asText());
+					Shop shop = shopRepository.checkShop(node_task.path("local").asText(),Long.parseLong(node_task.path("local_id").asText()));
 				    if(shop==null) {
 				    	shop = new Shop(node_task.path("local").asText());
+<<<<<<< Updated upstream
+=======
+				    	shop.setIdSystem(Long.parseLong(node_task.path("local_id").asText()));
+				    	shop = shopService.save(shop);
+				    }else {
+				    	if(shop.getIdSystem()==null) {
+				    		shop.setIdSystem(Long.parseLong(node_task.path("local_id").asText()));
+					    	shop = shopService.save(shop);
+				    	}
+>>>>>>> Stashed changes
 				    }
 					task.setShop(shop);
 					task.setActivityTotal(node_task.path("atividades totais").asInt());

@@ -15,8 +15,8 @@ public class ShopRepositoryImp {
 	@Autowired
 	ShopRepository shopRepository;
 	
-	public Shop checkShop(String name) {
-		Shop shop = shopRepository.findByName(name);
+	public Shop checkShop(String name,Long idSystem) {
+		Shop shop = shopRepository.findByNameOrIdSystem(name,idSystem);
 		if(shop == null) {
 			shop = new Shop(name);
 			shopRepository.save(shop);
