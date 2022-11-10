@@ -35,5 +35,4 @@ public class OperationControlApplication {
 	RestTemplate restTemplate() {
 		return new RestTemplate();
 	}
-
 }

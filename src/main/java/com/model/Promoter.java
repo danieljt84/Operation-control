@@ -1,5 +1,6 @@
 package com.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,6 +13,7 @@ import com.util.Status;
 public class Promoter {
 	@Id@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
+	@Column(unique = true)
 	private String name;
 	private String cpf;
 	private String grade;
@@ -20,6 +22,7 @@ public class Promoter {
 	private Double mediaPassagem;
 	private String enterprise;
 	private Status status;
+	@Column(unique = true)
 	private Long idSystem;
 	
 	public Promoter() {

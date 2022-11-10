@@ -31,5 +31,20 @@ public class BrandService {
 			throw new Exception("ERRO NO CARREGAMENTO DA BRAND");
 		}
 	}
+	
+	public Brand checkBrand(String name) {
+		try {
+			Brand brand = brandRepository.findByName(name);
+			if(brand == null && name!=null) {
+				brand = new Brand(name.toUpperCase());
+				brandRepository.save(brand);
+			}
+			return brand;
+		}catch (Exception e) {
+			System.out.println(e);
+			return null;
+		}
+		
+	}
 
 }

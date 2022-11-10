@@ -9,7 +9,7 @@ import com.model.Brand;
 
 @Repository
 public interface BrandRepository extends JpaRepository<Brand,Long> {
-
+	@Query(value = "select b from Brand b where upper(b.name) like (upper(:name))")
 	Brand findByName(String name);
 	
 	@Query(value = "select b from Brand b where upper(b.name) like CONCAT('%',upper(:name),'%')")

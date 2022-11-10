@@ -57,7 +57,7 @@ public class ConsumerController {
 	public ConsumerController(ConfigurableApplicationContext context) {
 		this.context = context;
 	}
-
+    
 	@Scheduled(fixedDelay =3600000, initialDelay = 10000)
 	public void run() {
 		if(isBeforeMin() && isAfterMax()) {
@@ -65,6 +65,7 @@ public class ConsumerController {
 			logger.info("BASE ATUALIZADA EM: " + LocalDateTime.now().toString());
 		}
 	}
+	
 	@Scheduled(cron = "* 0 23 * * *")
 	public void run2() {
 		routineToConsumer(3);

@@ -10,9 +10,9 @@ public class BrandRepositoryImp {
 	BrandRepository brandRepository;
 
 	public Brand checkBrand(String name) {
-		Brand brand = brandRepository.findByName(name);
+		Brand brand = brandRepository.findByName(name.toUpperCase());
 		if(brand == null) {
-			brand = new Brand(name);
+			brand = new Brand(name.toUpperCase());
 			brandRepository.save(brand);
 		}
 		return brand;
