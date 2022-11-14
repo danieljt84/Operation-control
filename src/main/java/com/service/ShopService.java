@@ -11,14 +11,22 @@ public class ShopService {
 
 	@Autowired
 	ShopRepository shopRepository;
-	
+
 	public Shop checkShop(String name, Long idSystem) {
-		Shop shop = shopRepository.findByName(name);
-		if(shop == null && name!=null) {
-			shop = new Shop(name.toUpperCase());
+		try {
+			Shop shop = null;
+			if (name != null) {
+				shop = shopRepository.findByName(name);
+				if (shop == null) {
+					shop = new Shop(name.toUpperCase());
+				}
+				if (idSystem != null) shop.setIdSystem(idSystem);
+				shopRepository.save(shop);
+			}
+			return shop;
+		} catch (Exception e) {
+			return null;
 		}
-		if(idSystem != null) shop.setIdSystem(idSystem);
-		shopRepository.save(shop);
-		return shop;
+
 	}
 }

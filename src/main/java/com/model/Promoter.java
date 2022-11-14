@@ -28,8 +28,7 @@ public class Promoter {
 	public Promoter() {
 		super();
 	}
-		
-
+	
 	public Long getIdSystem() {
 		return idSystem;
 	}

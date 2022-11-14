@@ -35,12 +35,19 @@ public class PromoterService {
 	}
 	
 	public Promoter checkPromoter( String namePromoter) {
-		Promoter promoter = promoterRepository.findByName(namePromoter);
-		if (promoter == null && namePromoter!=null) {
-			Promoter newPromoter = new Promoter(namePromoter.toUpperCase());
-			promoter = promoterRepository.save(newPromoter);
+		try {
+			Promoter promoter = null;
+			if(namePromoter!=null) {
+				promoter = promoterRepository.findByName(namePromoter);
+				if (promoter == null) {
+					Promoter newPromoter = new Promoter(namePromoter.toUpperCase());
+					promoter = promoterRepository.save(newPromoter);
+				}
+			}
+			return promoter;
+		}catch (Exception e) {
+			return null;
 		}
-		return promoter;
 	}
 	
 	public void updateIfHasUpdate(Promoter promoter,Team team,String cpf, String idSystem) {

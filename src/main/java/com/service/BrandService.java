@@ -34,14 +34,16 @@ public class BrandService {
 	
 	public Brand checkBrand(String name) {
 		try {
-			Brand brand = brandRepository.findByName(name);
-			if(brand == null && name!=null) {
-				brand = new Brand(name.toUpperCase());
-				brandRepository.save(brand);
+			Brand brand = null;
+			if(name!=null) {
+				 brand = brandRepository.findByName(name);
+				if(brand == null) {
+					brand = new Brand(name.toUpperCase());
+					brandRepository.save(brand);
+				}
 			}
 			return brand;
 		}catch (Exception e) {
-			System.out.println(e);
 			return null;
 		}
 		

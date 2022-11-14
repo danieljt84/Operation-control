@@ -76,7 +76,7 @@ public class ApiLaivonService {
 				JsonNode root = objectMapper.readTree(response);
 				return convertJSONToDataOperation(root);
 			} catch (Exception e) {
-				System.out.println(e);
+				
 			}
 		}
 	}
