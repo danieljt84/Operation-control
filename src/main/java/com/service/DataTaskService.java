@@ -33,6 +33,7 @@ import com.model.Holyday;
 import com.model.Project;
 import com.model.Promoter;
 import com.model.Task;
+import com.model.Task_Activity;
 import com.model.Team;
 import com.repository.DataTaskCustomRepository;
 import com.repository.DataTaskRepository;
@@ -88,7 +89,7 @@ public class DataTaskService {
 		List<DataTask> datas = dataTaskRepository.findByDate(localDate);
 		for (DataTask data : datas) {
 			InfoPercentual infoPercentual = new InfoPercentual();
-			data.getTasks().stream().map(t -> t.getActivities()).findAny().ifPresentOrElse(list -> {
+			data.getTasks().stream().map(t -> t.getTask_Activities()).findAny().ifPresentOrElse(list -> {
 				infoPercentual.setCountActivities((long) list.size());
 
 			}, () -> System.out.println("u"));
@@ -368,7 +369,7 @@ public class DataTaskService {
 		List<LocalDateTime> starts = new ArrayList<LocalDateTime>();
 
 		for (Task task : dataTask.getTasks()) {
-			for (Activity activity : task.getActivities()) {
+			for (Task_Activity activity : task.getTask_Activities()) {
 				starts.add(activity.getStart());
 			}
 		}
@@ -380,7 +381,7 @@ public class DataTaskService {
 		List<LocalDateTime> ends = new ArrayList<LocalDateTime>();
 
 		for (Task task : dataTask.getTasks()) {
-			for (Activity activity : task.getActivities()) {
+			for (Task_Activity activity : task.getTask_Activities()) {
 				ends.add(activity.getEnd());
 			}
 		}
@@ -390,14 +391,14 @@ public class DataTaskService {
 	// Elemina as atividade de "check-out" e define a duracao da DataTask
 	public void eliminateChecksDataTaskAndSetDuration(DataTask dataTask) {
 		for (Task task : dataTask.getTasks()) {
-			List<Activity> filterActivities = task.getActivities().stream()
-					.filter(activity -> !activity.getDescription().equals("Check Out")).collect(Collectors.toList());
-			for (Activity activity : filterActivities) {
-				activity.setDuration(subtractDateTime(activity.getStart(), activity.getEnd()));
+			List<Task_Activity> filterActivities = task.getTask_Activities().stream()
+					.filter(taskActivity -> !taskActivity.getActivity().getDescription().equals("Check Out")).collect(Collectors.toList());
+			for (Task_Activity task_Activity : filterActivities) {
+				task_Activity.setDuration(subtractDateTime(task_Activity.getStart(), task_Activity.getEnd()));
 			}
-			task.setActivities(filterActivities);
+			task.setTask_Activities(filterActivities);
 			task.setDuration(
-					sumTime(task.getActivities().stream().map(t -> t.getDuration()).collect(Collectors.toList())));
+					sumTime(task.getTask_Activities().stream().map(t -> t.getDuration()).collect(Collectors.toList())));
 			calculateInfoTask(task);
 			defSituationTask(task);
 		}
@@ -405,9 +406,9 @@ public class DataTaskService {
 
 	public void eliminateCheckInDataTask(DataTask dataTask) {
 		for (Task task : dataTask.getTasks()) {
-			List<Activity> filterActivities = task.getActivities().stream()
-					.filter(activity -> !activity.getDescription().equals("Check In")).collect(Collectors.toList());
-			task.setActivities(filterActivities);
+			List<Task_Activity> filterActivities = task.getTask_Activities().stream()
+					.filter(taskActivity -> !taskActivity.getActivity().getDescription().equals("Check In")).collect(Collectors.toList());
+			task.setTask_Activities(filterActivities);
 		}
 	}
 
@@ -451,10 +452,10 @@ public class DataTaskService {
 
 	// Calcula o numero de atividades por status e insere na Task
 	public void calculateInfoTask(Task task) {
-		task.setActivityTotal(task.getActivities().size());
-		int done = task.getActivities().stream().filter(activity -> activity.getSituation().equals("completa"))
+		task.setActivityTotal(task.getTask_Activities().size());
+		int done = task.getTask_Activities().stream().filter(activity -> activity.getSituation().equals("completa"))
 				.collect(Collectors.toList()).size();
-		int missing = task.getActivities().stream().filter(activity -> activity.getSituation().equals("sem historico"))
+		int missing = task.getTask_Activities().stream().filter(activity -> activity.getSituation().equals("sem historico"))
 				.collect(Collectors.toList()).size();
 		task.setActivityDone(done);
 		task.setActivityMissing(missing);

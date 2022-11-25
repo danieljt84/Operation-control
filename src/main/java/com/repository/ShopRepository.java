@@ -10,7 +10,7 @@ import com.model.Shop;
 @Repository
 public interface ShopRepository extends JpaRepository<Shop,Long>{
 	
-	@Query(value = "select s from Shop s where upper(s.name) like CONCAT('%',upper(:name),'%')" )
+	@Query(value = "select s from Shop s where upper(s.name) like upper(:name)" )
 	Shop findByName(@Param(value = "name") String name);
 
 }

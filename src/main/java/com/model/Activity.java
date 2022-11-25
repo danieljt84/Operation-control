@@ -1,9 +1,4 @@
 package com.model;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,21 +16,12 @@ public class Activity {
 	@ManyToOne
 	@JoinColumn(name="brand_id")
 	private Brand brand;
-	private String situation;
-	private LocalDateTime start;
-	@Column(name = "_end")
-	private LocalDateTime end;
-	private LocalTime duration;
 	private Long idSystem;
 	
 	public Activity(Activity activity) {
 		this.description = activity.getDescription();
-		this.situation = activity.getSituation();
-		this.start = activity.getStart();
-		this.end = activity.getEnd();
 		this.brand = activity.getBrand();
 		this.type = activity.getType();
-		this.duration = activity.getDuration();
 	}
 	public Activity() {
 	}
@@ -53,31 +39,12 @@ public class Activity {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public String getSituation() {
-		return situation;
-	}
+	
 	public void setDescription(String description) {
-		if(description.contains("Diária")) this.type = "diaria";
-		if(description.contains("Pesquisa Semana")) this.type = "semanal";
 		this.description = description;
 	} 
 	public String getDescription() {
 		return description;
-	}
-	public void setSituation(String situation) {
-		this.situation = situation;
-	}
-	public LocalDateTime getStart() {
-		return start;
-	}
-	public void setStart(LocalDateTime start) {
-		this.start = start;
-	}
-	public LocalDateTime getEnd() {
-		return end;
-	}
-	public void setEnd(LocalDateTime end) {
-		this.end = end;
 	}
 	public String getType() {
 		return type;
@@ -90,11 +57,5 @@ public class Activity {
 	}
 	public void setBrand(Brand brand) {
 		this.brand = brand;
-	}
-	public LocalTime getDuration() {
-		return duration;
-	}
-	public void setDuration(LocalTime duration) {
-		this.duration = duration;
 	}
 }

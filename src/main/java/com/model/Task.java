@@ -33,9 +33,9 @@ public class Task {
 	private Integer activityDone;
 	private Integer activityMissing;
 	private String type;
-	@OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.EAGER)
-	private List<Activity> activities;
-	
+	@OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
+	private List<Task_Activity> task_Activities;
+
 	public Task() {
 		// TODO Auto-generated constructor stub
 	}
@@ -49,8 +49,8 @@ public class Task {
 		this.activityTotal = task.getActivityTotal();
 		this.activityDone = task.getActivityDone();
 		this.activityMissing = task.getActivityMissing();
-		this.activities = task.getActivities();
 		this.type = task.getType();
+		this.task_Activities = task.getTask_Activities();
 	}
 
 	public String getType() {
@@ -128,12 +128,11 @@ public class Task {
 	public void setActivityMissing(Integer activityMissing) {
 		this.activityMissing = activityMissing;
 	}
-
-	public List<Activity> getActivities() {
-		return activities;
+	public List<Task_Activity> getTask_Activities() {
+		return task_Activities;
 	}
-
-	public void setActivities(List<Activity> activities) {
-		this.activities = activities;
+	public void setTask_Activities(List<Task_Activity> task_Activities) {
+		this.task_Activities = task_Activities;
 	}
+	
 }

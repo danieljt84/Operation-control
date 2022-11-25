@@ -1,27 +1,22 @@
-package com.service.api;
+package com.controller.api;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.LocalDateTime;
-import java.time.Period;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.client.RestTemplate;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.model.Activity;
@@ -30,17 +25,18 @@ import com.model.DataTask;
 import com.model.Promoter;
 import com.model.Shop;
 import com.model.Task;
+import com.model.Task_Activity;
 import com.model.Team;
-import com.repository.BrandRepositoryImp;
 import com.repository.TeamRepositoryImp;
+import com.service.ActivityService;
 import com.service.BrandService;
 import com.service.PromoterService;
 import com.service.ShopService;
 import com.util.PropertiesReader;
 
-@Service
-public class ApiLaivonService {
-
+@Controller
+public class LaivonApiController {
+	
 	RestTemplate restTemplate;
 	ObjectMapper objectMapper;
 	@Autowired
@@ -52,9 +48,10 @@ public class ApiLaivonService {
 	@Autowired
 	PromoterService promoterService;
 	String project;
-
-	public List<DataTask> getResume(String _project,LocalDate date) {
-		
+	@Autowired
+	ActivityService activityService;
+	
+	public JsonNode getJSON(String _project,LocalDate date) {
 		while(true) {
 			objectMapper = new ObjectMapper();
 			restTemplate = new RestTemplate();
@@ -74,14 +71,15 @@ public class ApiLaivonService {
 				HttpEntity<String> request = new HttpEntity<String>(bodyJSON.toString(), headers);
 				response = restTemplate.postForEntity(urlLaivon, request, String.class).getBody();
 				JsonNode root = objectMapper.readTree(response);
-				return convertJSONToDataOperation(root);
+				return root;
 			} catch (Exception e) {
 				System.out.println(e);
 			}
 		}
 	}
-
-	public List<DataTask> convertJSONToDataOperation(JsonNode root) {
+	
+	
+	public List<DataTask> convertJSONinDataOperation(JsonNode root) {
 		List<DataTask> datasTask = new ArrayList<DataTask>();
 		for (JsonNode dado : root.path("dados")) {
 			String namePromoter = dado.path("agente").asText();
@@ -114,19 +112,21 @@ public class ApiLaivonService {
 					task.setStart(convertTime(node_task.path("inicio").asText()));
 					task.setEnd(convertTime(node_task.path("fim").asText()));
 					task.setType(node_task.path("tipo").asText());
-					List<Activity> activities = new ArrayList<>();
+					List<Task_Activity> task_Activities = new ArrayList<>();
 					for(JsonNode node_activities: node_task.path("dados_atividade")) {
-						Activity activity = new Activity();
-						activity.setDescription(node_activities.path("descricao").asText());
-						activity.setIdSystem(node_activities.path("id").asLong());
 						Brand brand = brandService.checkBrand(this.getNameBrand(node_activities.path("descricao").asText()));
-						activity.setBrand(brand);
-						activity.setStart(convertLocalDate(node_activities.path("inicio").asText()));
-						activity.setEnd(convertLocalDate(node_activities.path("fim").asText()));
-						activity.setSituation(node_activities.path("situação").asText());
-						activities.add(new Activity(activity));
+						Activity activity = activityService.check(node_activities.path("descricao").asText(), node_activities.path("id").asLong(), brand);
+						if(activity!=null) {
+							Task_Activity task_Activity = new Task_Activity();
+                            task_Activity.setActivity(activity);
+                            task_Activity.setTask(task);
+                            task_Activity.setStart(convertLocalDate(node_activities.path("inicio").asText()));
+                            task_Activity.setEnd(convertLocalDate(node_activities.path("fim").asText()));
+                            task_Activity.setSituation(node_activities.path("situação").asText());
+    						task_Activities.add(new Task_Activity(task_Activity));
+						}
 					}
-					task.setActivities(activities);
+					task.setTask_Activities(task_Activities);
 					tasks.add(new Task(task));
 				}
 				dataTask.setTasks(tasks);
@@ -162,6 +162,5 @@ public class ApiLaivonService {
 			return null;
 		}
 	}
-
-
+	
 }

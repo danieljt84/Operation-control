@@ -1,41 +1,25 @@
 package com.controller;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.UnexpectedRollbackException;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.model.Activity;
+import com.controller.api.LaivonApiController;
 import com.model.DataTask;
-import com.model.Project;
-import com.model.Promoter;
-import com.model.Task;
-import com.repository.DataTaskRepository;
-import com.repository.PromoterRepository;
 import com.service.DataTaskService;
 import com.service.ExcelService;
 import com.service.PromoterService;
 import com.service.api.ApiEmployeeService;
-import com.service.api.ApiLaivonService;
 import com.util.ProjectAdapter;
 
 @Component
@@ -47,7 +31,7 @@ public class ConsumerController {
 	@Autowired
 	PromoterService promoterService;
 	@Autowired
-	ApiLaivonService apiService;
+	LaivonApiController laivonApiController;
 	@Autowired
 	ApiEmployeeService apiEmployeeService;
 	@Autowired
@@ -79,7 +63,7 @@ public class ConsumerController {
 		Set<Long> idsPromoters = new HashSet<>();
 		for (int i = 0; i <= daysBetween; i++) {
 			for (ProjectAdapter project : ProjectAdapter.values()) {
-				List<DataTask> datas = apiService.getResume(project.getDescription(), startDate.plusDays(i));
+				List<DataTask> datas = laivonApiController.convertJSONinDataOperation(laivonApiController.getJSON(project.getDescription(), startDate.plusDays(i)));
 				for (DataTask data : datas) {
 					dataTaskService.eliminateChecksDataTaskAndSetDuration(data);
 					dataTaskService.calculateInfoDataTask(data);
