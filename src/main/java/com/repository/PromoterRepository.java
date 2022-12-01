@@ -15,8 +15,8 @@ import com.model.Promoter;
 @Repository
 public interface PromoterRepository extends JpaRepository<Promoter, Long> {
 	
-	@Query(value = "select p from Promoter p where upper(p.name) like upper(:name)")
-	Promoter findByName(@Param(value = "name") String name);
+	@Query(value = "select p from Promoter p where upper(p.name) like upper(:name) or p.idSystem = :idSystem")
+	Promoter findByNameOrIdSystem(@Param(value = "name") String name, @Param(value = "idSystem") Long idSystem);
 	@Query(value = "select p from Promoter p, Team t where p.team.id = t.id and t.name=:nameTeam")
 	List<Promoter> findByNameTeam(@Param("nameTeam") String nameTeam);
 	@Modifying

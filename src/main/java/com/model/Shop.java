@@ -2,6 +2,8 @@ package com.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -11,10 +13,11 @@ public class Shop {
 	
 	@Id@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@Column(unique = true)
 	private String name;
 	@Column(unique = true)
 	private Long idSystem;
+	@Enumerated(EnumType.STRING)
+	private Project project;
 	
 	public Shop() {
 		super();
@@ -41,4 +44,12 @@ public class Shop {
 	public void setName(String name) {
 		this.name = name;
 	}
+	public Project getProject() {
+		return project;
+	}
+	public void setProject(Project project) {
+		this.project = project;
+	}
+	
+	
 }

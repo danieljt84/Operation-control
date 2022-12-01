@@ -8,6 +8,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.ManyToOne;
 
 import com.model.Activity;
 import com.util.finance.BonusPerValueType;
@@ -15,25 +16,12 @@ import com.util.finance.BonusPerValueType;
 @DiscriminatorValue(value = "PER_PRICE")
 @Entity
 public class BonusPerPrice extends Bonus {
-	
-	private Map<Activity, BigDecimal> activity_Value;
-	@Enumerated(EnumType.STRING)
-	private BonusPerValueType bonusPerValueType;
+	@ManyToOne
+	private DataActivity dataActivity;
+	private BigDecimal price;
 	private LocalDate start;
 	private LocalDate end;
 	
-	public Map<Activity, BigDecimal> getActivity_Value() {
-		return activity_Value;
-	}
-	public void setActivity_Value(Map<Activity, BigDecimal> activity_Value) {
-		this.activity_Value = activity_Value;
-	}
-	public BonusPerValueType getBonusPerValueType() {
-		return bonusPerValueType;
-	}
-	public void setBonusPerValueType(BonusPerValueType bonusPerValueType) {
-		this.bonusPerValueType = bonusPerValueType;
-	}
 	public LocalDate getStart() {
 		return start;
 	}
@@ -45,5 +33,17 @@ public class BonusPerPrice extends Bonus {
 	}
 	public void setEnd(LocalDate end) {
 		this.end = end;
+	}
+	public DataActivity getDataActivity() {
+		return dataActivity;
+	}
+	public void setDataActivity(DataActivity dataActivity) {
+		this.dataActivity = dataActivity;
+	}
+	public BigDecimal getPrice() {
+		return price;
+	}
+	public void setPrice(BigDecimal price) {
+		this.price = price;
 	}
 }

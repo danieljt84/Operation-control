@@ -45,7 +45,7 @@ public class ConsumerController {
 	@Scheduled(fixedDelay =3600000, initialDelay = 10000)
 	public void run() {
 		if(isBeforeMin() && isAfterMax()) {
-			routineToConsumer(0);
+			routineToConsumer(7);
 			logger.info("BASE ATUALIZADA EM: " + LocalDateTime.now().toString());
 		}
 	}

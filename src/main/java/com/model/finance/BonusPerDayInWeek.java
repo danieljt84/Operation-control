@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
 import com.model.Activity;
 
@@ -13,16 +14,12 @@ import com.model.Activity;
 @DiscriminatorValue(value = "PER_DAY_IN_WEEK")
 public class BonusPerDayInWeek extends Bonus {
 	
-	private Map<Activity, Long> activity_day;
+	@ManyToOne
+	private DataActivity dataActivity;
+	private Integer daysInWeek;
 	private LocalDate start;
 	private LocalDate end;
 	
-	public Map<Activity, Long> getActivity_day() {
-		return activity_day;
-	}
-	public void setActivity_day(Map<Activity, Long> activity_day) {
-		this.activity_day = activity_day;
-	}
 	public LocalDate getStart() {
 		return start;
 	}
@@ -34,5 +31,17 @@ public class BonusPerDayInWeek extends Bonus {
 	}
 	public void setEnd(LocalDate end) {
 		this.end = end;
+	}
+	public DataActivity getDataActivity() {
+		return dataActivity;
+	}
+	public void setDataActivity(DataActivity dataActivity) {
+		this.dataActivity = dataActivity;
+	}
+	public Integer getDaysInWeek() {
+		return daysInWeek;
+	}
+	public void setDaysInWeek(Integer daysInWeek) {
+		this.daysInWeek = daysInWeek;
 	}
 }

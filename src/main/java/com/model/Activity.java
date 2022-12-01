@@ -1,10 +1,14 @@
 package com.model;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
+import org.apache.tomcat.util.net.Acceptor.AcceptorState;
 
 @Entity
 public class Activity {
@@ -16,12 +20,15 @@ public class Activity {
 	@ManyToOne
 	@JoinColumn(name="brand_id")
 	private Brand brand;
+	@Enumerated(EnumType.STRING)
+	private Project project;
 	private Long idSystem;
 	
 	public Activity(Activity activity) {
 		this.description = activity.getDescription();
 		this.brand = activity.getBrand();
 		this.type = activity.getType();
+		this.project = activity.getProject();
 	}
 	public Activity() {
 	}
@@ -57,5 +64,11 @@ public class Activity {
 	}
 	public void setBrand(Brand brand) {
 		this.brand = brand;
+	}
+	public Project getProject() {
+		return project;
+	}
+	public void setProject(Project project) {
+		this.project = project;
 	}
 }

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.model.Activity;
 import com.model.Brand;
+import com.model.Project;
 import com.repository.ActivityRepository;
 
 @Service
@@ -14,7 +15,7 @@ public class ActivityService {
 	ActivityRepository activityRepository;
 	
 	
-	public Activity check(String description, Long idSystem, Brand brand) {
+	public Activity check(String description, Long idSystem, Brand brand,String project) {
 		if(description != null && idSystem != null) {
 			Activity activity = activityRepository.findByDescriptionOrIdSystem(description, idSystem);
 			if(activity==null) {
@@ -22,6 +23,7 @@ public class ActivityService {
 				activity.setBrand(brand);
 				activity.setDescription(description.toUpperCase());
 				activity.setIdSystem(idSystem);
+				activity.setProject(Project.getEnum(project));
 				activity = save(activity);
 			}
 			return activity;

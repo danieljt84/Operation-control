@@ -85,8 +85,11 @@ public class LaivonApiController {
 			String namePromoter = dado.path("agente").asText();
 			Team team = teamRepository.checkTeam(dado.path("equipe").asText());
 			String cpf = dado.path("agente_matricula").asText();
-			String idSystem = dado.path("agente_id").asText();
-			Promoter promoter = promoterService.checkPromoter(namePromoter);
+			long idSystem = dado.path("agente_id").asLong();
+			if(namePromoter.equals("ASSAÍ ALCANTARA - HIBRIDO - MARCOS ADRIANO DA COSTA SILVA")) {
+				System.out.println("ok");
+			}
+			Promoter promoter = promoterService.checkPromoter(namePromoter,idSystem);
 			promoterService.updateIfHasUpdate(promoter,team,cpf,idSystem);
 			for (JsonNode node_tasks : dado.path("dados_agente")) {
 				DataTask dataTask = new DataTask();
@@ -103,7 +106,7 @@ public class LaivonApiController {
 				List<Task> tasks = new ArrayList<>();
 				for(JsonNode node_task : node_tasks.path("dados_tarefa")) {
 					Task task = new Task();
-					Shop shop = shopService.checkShop(node_task.path("local").asText(),node_task.path("local_id").asLong());
+					Shop shop = shopService.checkShop(node_task.path("local").asText(),node_task.path("local_id").asLong(),project);
 					task.setShop(shop);
 					task.setActivityTotal(node_task.path("atividades totais").asInt());
 					task.setActivityDone(node_task.path("atividades executadas").asInt());
@@ -115,7 +118,7 @@ public class LaivonApiController {
 					List<Task_Activity> task_Activities = new ArrayList<>();
 					for(JsonNode node_activities: node_task.path("dados_atividade")) {
 						Brand brand = brandService.checkBrand(this.getNameBrand(node_activities.path("descricao").asText()));
-						Activity activity = activityService.check(node_activities.path("descricao").asText(), node_activities.path("id").asLong(), brand);
+						Activity activity = activityService.check(node_activities.path("descricao").asText(), node_activities.path("id").asLong(), brand,project);
 						if(activity!=null) {
 							Task_Activity task_Activity = new Task_Activity();
                             task_Activity.setActivity(activity);
