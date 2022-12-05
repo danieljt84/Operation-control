@@ -14,7 +14,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.model.User;
 import com.repository.UserRepository;
-import com.service.TokenService;
+import com.service.auth.TokenService;
 
 
 public class AutenticacaoViaTokenFilter extends OncePerRequestFilter {

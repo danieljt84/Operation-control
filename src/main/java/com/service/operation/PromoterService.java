@@ -1,4 +1,4 @@
-package com.service;
+package com.service.operation;
 
 import java.util.List;
 import java.util.Set;
@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.model.Promoter;
 import com.model.Team;
-import com.repository.PromoterRepository;
+import com.repository.operation.PromoterRepository;
 import com.util.Status;
 
 @Service

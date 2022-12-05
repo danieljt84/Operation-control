@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.model.Brand;
-import com.service.BrandService;
-import com.service.DataTaskService;
-import com.service.ExcelService;
+import com.service.operation.BrandService;
+import com.service.operation.DataTaskService;
+import com.service.operation.ExcelService;
 
 @RestController
 @RequestMapping(value = "/report")

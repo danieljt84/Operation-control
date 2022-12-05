@@ -1,11 +1,11 @@
-package com.service;
+package com.service.operation;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.model.Brand;
-import com.repository.BrandRepository;
+import com.repository.operation.BrandRepository;
 
 @Service
 public class BrandService {

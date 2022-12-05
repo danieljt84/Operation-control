@@ -27,11 +27,11 @@ import com.model.Shop;
 import com.model.Task;
 import com.model.Task_Activity;
 import com.model.Team;
-import com.repository.TeamRepositoryImp;
-import com.service.ActivityService;
-import com.service.BrandService;
-import com.service.PromoterService;
-import com.service.ShopService;
+import com.repository.operation.TeamRepositoryImp;
+import com.service.operation.ActivityService;
+import com.service.operation.BrandService;
+import com.service.operation.PromoterService;
+import com.service.operation.ShopService;
 import com.util.PropertiesReader;
 
 @Controller

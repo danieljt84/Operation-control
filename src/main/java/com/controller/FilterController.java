@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.model.Brand;
-import com.service.BrandService;
-import com.service.FilterService;
+import com.service.operation.BrandService;
+import com.service.operation.FilterService;
 
 @RestController
 @RequestMapping("/filter")

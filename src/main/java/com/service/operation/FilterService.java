@@ -1,4 +1,4 @@
-package com.service;
+package com.service.operation;
 
 import java.time.LocalDate;
 
@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.controller.filter.FilterActivationDTO;
-import com.repository.FilterRepositorImp;
+import com.repository.operation.FilterRepositorImp;
 
 @Service
 public class FilterService {

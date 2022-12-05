@@ -1,11 +1,15 @@
-package com.service;
+package com.service.operation;
+
+import java.util.Optional;
+
+import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.model.Project;
 import com.model.Shop;
-import com.repository.ShopRepository;
+import com.repository.operation.ShopRepository;
 
 @Service
 public class ShopService {
@@ -25,6 +29,15 @@ public class ShopService {
 			return shop;
 		}catch (Exception e) {
 			return null;
+		}
+	}
+	
+	public Shop findById(Long id) {
+		Optional<Shop> optional = shopRepository.findById(id);
+		if(optional.isPresent()) {
+			return optional.get();
+		}else {
+			throw new EntityNotFoundException("LOJA -"+id+"- NÃO ENCONTRADA");
 		}
 	}
 }

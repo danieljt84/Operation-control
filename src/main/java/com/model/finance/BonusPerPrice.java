@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Map;
 
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -20,6 +21,7 @@ public class BonusPerPrice extends Bonus {
 	private DataActivity dataActivity;
 	private BigDecimal price;
 	private LocalDate start;
+	@Column(name = "_end")
 	private LocalDate end;
 	
 	public LocalDate getStart() {

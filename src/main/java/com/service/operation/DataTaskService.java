@@ -1,4 +1,4 @@
-package com.service;
+package com.service.operation;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -35,9 +35,9 @@ import com.model.Promoter;
 import com.model.Task;
 import com.model.Task_Activity;
 import com.model.Team;
-import com.repository.DataTaskCustomRepository;
-import com.repository.DataTaskRepository;
-import com.repository.TeamRepository;
+import com.repository.operation.DataTaskCustomRepository;
+import com.repository.operation.DataTaskRepository;
+import com.repository.operation.TeamRepository;
 import com.util.ProjectAdapter;
 import com.util.Status;
 import com.util.model.AjudaDeCusto;

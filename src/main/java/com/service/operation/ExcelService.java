@@ -1,4 +1,4 @@
-package com.service;
+package com.service.operation;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.model.Promoter;
-import com.repository.DataTaskRepository;
+import com.repository.operation.DataTaskRepository;
 import com.util.model.AjudaDeCusto;
 
 @Component

@@ -1,4 +1,4 @@
-package com.service;
+package com.service.auth;
 
 import java.util.Date;
 import java.util.HashMap;

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.controller.dto.TokenDTO;
 import com.controller.dto.UserDTO;
 import com.model.User;
-import com.service.TokenService;
+import com.service.auth.TokenService;
 
 @RestController
 @RequestMapping(value = "/login")

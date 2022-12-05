@@ -1,4 +1,8 @@
-package com.service;
+package com.service.operation;
+
+import java.util.Optional;
+
+import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -6,7 +10,8 @@ import org.springframework.stereotype.Service;
 import com.model.Activity;
 import com.model.Brand;
 import com.model.Project;
-import com.repository.ActivityRepository;
+import com.model.finance.DataActivity;
+import com.repository.operation.ActivityRepository;
 
 @Service
 public class ActivityService {
@@ -38,6 +43,15 @@ public class ActivityService {
 		}catch (Exception e) {
 			System.out.println(e);
 			return null;
+		}
+	}
+	
+	public Activity findById(Long id) {
+		Optional<Activity> optional = activityRepository.findById(id);
+		if (optional.isPresent()) {
+			return optional.get();
+		} else {
+			throw new EntityNotFoundException("ATIVIDADE -" + id + "- NÃO ENCONTRADO");
 		}
 	}
 

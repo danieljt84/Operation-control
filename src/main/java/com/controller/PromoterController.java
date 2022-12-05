@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.service.PromoterService;
+import com.service.operation.PromoterService;
 
 @RestController()
 @RequestMapping(value = "/promoter")

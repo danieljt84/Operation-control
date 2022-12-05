@@ -16,10 +16,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import com.controller.api.LaivonApiController;
 import com.model.DataTask;
-import com.service.DataTaskService;
-import com.service.ExcelService;
-import com.service.PromoterService;
 import com.service.api.ApiEmployeeService;
+import com.service.operation.DataTaskService;
+import com.service.operation.ExcelService;
+import com.service.operation.PromoterService;
 import com.util.ProjectAdapter;
 
 @Component
@@ -45,7 +45,7 @@ public class ConsumerController {
 	@Scheduled(fixedDelay =3600000, initialDelay = 10000)
 	public void run() {
 		if(isBeforeMin() && isAfterMax()) {
-			routineToConsumer(7);
+			routineToConsumer(1);
 			logger.info("BASE ATUALIZADA EM: " + LocalDateTime.now().toString());
 		}
 	}

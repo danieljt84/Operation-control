@@ -26,7 +26,7 @@ public class DataActivity {
 	@ManyToOne
 	private Shop shop;
 	private BigDecimal price;
-	private Long hoursContracted;
+	private Double hoursContracted;
 	private Long daysInWeekContracted;
 	private String type;
 	
@@ -54,10 +54,10 @@ public class DataActivity {
 	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
-	public Long getHoursContracted() {
+	public Double getHoursContracted() {
 		return hoursContracted;
 	}
-	public void setHoursContracted(Long hoursContracted) {
+	public void setHoursContracted(Double hoursContracted) {
 		this.hoursContracted = hoursContracted;
 	}
 	public Long getDaysInWeekContracted() {

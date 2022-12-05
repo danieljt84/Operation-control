@@ -16,8 +16,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.filter.AutenticacaoViaTokenFilter;
 import com.repository.UserRepository;
-import com.service.AutenticacaoService;
-import com.service.TokenService;
+import com.service.auth.AutenticacaoService;
+import com.service.auth.TokenService;
 
 
 @EnableWebSecurity
