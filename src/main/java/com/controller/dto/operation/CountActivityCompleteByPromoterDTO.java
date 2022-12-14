@@ -1,4 +1,4 @@
-package com.controller.dto;
+package com.controller.dto.operation;
 
 import java.util.ArrayList;
 import java.util.Comparator;

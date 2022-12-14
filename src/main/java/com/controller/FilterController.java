@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.model.Brand;
+import com.service.FilterService;
 import com.service.operation.BrandService;
-import com.service.operation.FilterService;
 
 @RestController
 @RequestMapping("/filter")
@@ -37,5 +37,16 @@ public class FilterController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
+	
+	@GetMapping("/datatable/dataactivity")
+	public ResponseEntity getAllValuesPossibleToDataTableDataActivity() {
+		try {
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(filterService.getAllValuesPossibleToFilterToDataTableDataActivity());
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+
 
 }

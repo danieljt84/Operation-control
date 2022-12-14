@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
-import com.controller.dto.ShopDTO;
+import com.controller.dto.operation.ShopDTO;
 
 public class DataActivityDTO {
 

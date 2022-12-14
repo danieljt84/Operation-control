@@ -5,6 +5,8 @@ import java.time.LocalDate;
 
 import javax.annotation.Generated;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,6 +17,7 @@ import javax.persistence.Table;
 
 import com.model.Activity;
 import com.model.Shop;
+import com.util.Status;
 
 @Entity
 @Table(schema = "finance")
@@ -32,6 +35,8 @@ public class DataActivity {
 	private String type;
 	private LocalDate createdAt;
 	private LocalDate finishedAt;
+	@Enumerated(EnumType.STRING)
+	private Status status;
 	
 	public Long getId() {
 		return id;
@@ -87,4 +92,11 @@ public class DataActivity {
 	public void setFinishedAt(LocalDate finishedAt) {
 		this.finishedAt = finishedAt;
 	}
+	public Status getStatus() {
+		return status;
+	}
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+	
 }

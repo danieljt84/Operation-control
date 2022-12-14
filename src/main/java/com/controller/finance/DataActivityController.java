@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.controller.dto.BrandDTO;
-import com.controller.dto.ShopDTO;
 import com.controller.dto.finance.ActivityDTO;
 import com.controller.dto.finance.DataActivityDTO;
+import com.controller.dto.operation.BrandDTO;
+import com.controller.dto.operation.ShopDTO;
 import com.controller.form.DataActivityForm;
 import com.model.finance.DataActivity;
 import com.service.finance.DataActivityService;

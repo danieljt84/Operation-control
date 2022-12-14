@@ -1,6 +1,6 @@
 package com.controller.dto.finance;
 
-import com.controller.dto.BrandDTO;
+import com.controller.dto.operation.BrandDTO;
 
 public class ActivityDTO {
 	

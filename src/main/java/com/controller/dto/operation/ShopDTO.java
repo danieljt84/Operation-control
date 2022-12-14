@@ -1,4 +1,4 @@
-package com.controller.dto;
+package com.controller.dto.operation;
 
 public class ShopDTO {
 	

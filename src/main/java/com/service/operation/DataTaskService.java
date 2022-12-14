@@ -21,10 +21,10 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.controller.dto.CargaHorariaDTO;
-import com.controller.dto.CountActivityCompleteByPromoterDTO;
-import com.controller.dto.CountActivityCompleteDTO;
-import com.controller.dto.PercentByDateAndTeamDTO;
+import com.controller.dto.operation.CargaHorariaDTO;
+import com.controller.dto.operation.CountActivityCompleteByPromoterDTO;
+import com.controller.dto.operation.CountActivityCompleteDTO;
+import com.controller.dto.operation.PercentByDateAndTeamDTO;
 import com.controller.form.FilterForm;
 import com.model.Activity;
 import com.model.Brand;

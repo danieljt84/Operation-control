@@ -1,4 +1,4 @@
-package com.controller.filter;
+package com.controller.dto.filter;
 
 import java.util.List;
 

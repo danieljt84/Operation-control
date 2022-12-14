@@ -1,7 +1,8 @@
-package com.controller.dto;
+package com.controller.dto.operation;
 
 import java.util.List;
 
+import com.controller.dto.UserDTO;
 import com.model.User;
 
 public class TokenDTO {
