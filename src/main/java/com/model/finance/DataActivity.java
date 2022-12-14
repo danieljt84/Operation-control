@@ -1,6 +1,7 @@
 package com.model.finance;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import javax.annotation.Generated;
 import javax.persistence.Entity;
@@ -29,6 +30,8 @@ public class DataActivity {
 	private Double hoursContracted;
 	private Long daysInWeekContracted;
 	private String type;
+	private LocalDate createdAt;
+	private LocalDate finishedAt;
 	
 	public Long getId() {
 		return id;
@@ -71,5 +74,17 @@ public class DataActivity {
 	}
 	public void setType(String type) {
 		this.type = type;
+	}
+	public LocalDate getCreatedAt() {
+		return createdAt;
+	}
+	public void setCreatedAt(LocalDate createdAt) {
+		this.createdAt = createdAt;
+	}
+	public LocalDate getFinishedAt() {
+		return finishedAt;
+	}
+	public void setFinishedAt(LocalDate finishedAt) {
+		this.finishedAt = finishedAt;
 	}
 }
