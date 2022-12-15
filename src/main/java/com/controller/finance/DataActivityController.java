@@ -74,5 +74,9 @@ public class DataActivityController {
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(dtos);
 	}
+	
+	public ResponseEntity findByFilter(@RequestBody Filter) {
+		
+	}
 
 }
