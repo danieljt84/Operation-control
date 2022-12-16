@@ -37,28 +37,33 @@ public class FilterRepositorImp{
 	}
 
 	public List<Object> getAllValuesToShopPossibleToFilterInDataTableDataActivity() {
-		Query query = entityManager.createNativeQuery("select distinct s.\"name\"  from finance.data_activity da, shop s where s.id = da.shop_id and da.status = 'ATIVO'");
+		Query query = entityManager.createNativeQuery("select distinct s.\"name\"  from finance.data_activity da, shop s where s.id = da.shop_id");
+    	return query.getResultList();
+	}
+	
+	public List<Object> getAllValuesToProjectPossibleToFilterInDataTableDataActivity() {
+		Query query = entityManager.createNativeQuery("select distinct s.project  from finance.data_activity da, shop s where s.id = da.shop_id");
     	return query.getResultList();
 	}
 	
 
 	public List<Object> getAllValuesToDescriptionPossibleToFilterInDataTableDataActivity() {
-		Query query = entityManager.createNativeQuery("select distinct a.description  from finance.data_activity da, activity a where a.id = da.activity_id and da.status = 'ATIVO'");
+		Query query = entityManager.createNativeQuery("select distinct a.description  from finance.data_activity da, activity a where a.id = da.activity_id");
     	return query.getResultList();
 	}
 	
 	public List<Object> getAllValuesToBrandDescriptionPossibleToFilterInDataTableDataActivity() {
-		Query query = entityManager.createNativeQuery("select distinct b.\"name\"  from finance.data_activity da, activity a, brand b where a.id = da.activity_id and a.brand_id = b.id and da.status = 'ATIVO'");
+		Query query = entityManager.createNativeQuery("select distinct b.\"name\"  from finance.data_activity da, activity a, brand b where a.id = da.activity_id and a.brand_id = b.id");
     	return query.getResultList();
 	}
 	
 	public List<Object> getAllValuesToHoursContractedPossibleToFilterInDataTableDataActivity() {
-		Query query = entityManager.createNativeQuery("select distinct da.hours_contracted from finance.data_activity da where da.status = 'ATIVO'");
+		Query query = entityManager.createNativeQuery("select distinct da.hours_contracted from finance.data_activity da");
     	return query.getResultList();
 	}
 	
 	public List<Object> getAllValuesToDaysInWeekContractedPossibleToFilterInDataTableDataActivity() {
-		Query query = entityManager.createNativeQuery("select distinct da.days_in_week_contracted from finance.data_activity da where da.status = 'ATIVO'");
+		Query query = entityManager.createNativeQuery("select distinct da.days_in_week_contracted from finance.data_activity da");
     	return query.getResultList();
 	}
 

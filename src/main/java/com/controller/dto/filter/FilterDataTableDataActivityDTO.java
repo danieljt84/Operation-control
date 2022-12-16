@@ -9,6 +9,7 @@ public class FilterDataTableDataActivityDTO {
 	private List<Object> shop;
 	private List<Object> hoursContracted;
 	private List<Object> daysInWeekContracted;
+	private List<Object> project;
 	public List<Object> getBrand() {
 		return brand;
 	}
@@ -39,4 +40,11 @@ public class FilterDataTableDataActivityDTO {
 	public void setDaysInWeekContracted(List<Object> daysInWeekContracted) {
 		this.daysInWeekContracted = daysInWeekContracted;
 	}
+	public List<Object> getProject() {
+		return project;
+	}
+	public void setProject(List<Object> project) {
+		this.project = project;
+	}
+	
 }

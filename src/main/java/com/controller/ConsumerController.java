@@ -50,7 +50,7 @@ public class ConsumerController {
 		}
 	}
 	
-	@Scheduled(cron = "* 0 23 * * *")
+	//@Scheduled(cron = "* 0 23 * * *")
 	public void run2() {
 		routineToConsumer(3);
 		logger.info("BASE DE 3 DIAS ANTERIORES ATUALIZADA EM: " + LocalDateTime.now().toString());

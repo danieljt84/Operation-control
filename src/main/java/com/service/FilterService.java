@@ -29,6 +29,7 @@ public class FilterService {
 		filterDataTableDataActivityDTO.setDaysInWeekContracted(filterRepositorImp.getAllValuesToDaysInWeekContractedPossibleToFilterInDataTableDataActivity());
 		filterDataTableDataActivityDTO.setDescription(filterRepositorImp.getAllValuesToDescriptionPossibleToFilterInDataTableDataActivity());
 		filterDataTableDataActivityDTO.setHoursContracted(filterRepositorImp.getAllValuesToHoursContractedPossibleToFilterInDataTableDataActivity());
+		filterDataTableDataActivityDTO.setProject(filterRepositorImp.getAllValuesToProjectPossibleToFilterInDataTableDataActivity());
 		return filterDataTableDataActivityDTO;
 	}
 	

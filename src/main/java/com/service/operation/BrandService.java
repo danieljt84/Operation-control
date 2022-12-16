@@ -1,6 +1,9 @@
 package com.service.operation;
 
 import java.util.List;
+import java.util.Optional;
+
+import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,39 +12,48 @@ import com.repository.operation.BrandRepository;
 
 @Service
 public class BrandService {
-	
+
 	@Autowired
 	BrandRepository brandRepository;
-	
-	public List<Brand> getBrands() throws Exception{
+
+	public List<Brand> getBrands() throws Exception {
 		try {
 			return brandRepository.findAll();
 
-		}catch (Exception e) {
+		} catch (Exception e) {
 			throw new Exception("ERRO NO CARREGAMENTO DA LISTA");
 		}
 	}
-	
+
 	public Brand getBrandByNameContaining(String name) throws Exception {
 		try {
 			return brandRepository.findByNameContaining(name);
-		}catch (Exception e) {
+		} catch (Exception e) {
 			throw new Exception("ERRO NO CARREGAMENTO DA BRAND");
 		}
 	}
-	
+
+	public Brand findById(Long id) {
+		Optional<Brand> optional = brandRepository.findById(id);
+		if (optional.isPresent()) {
+			return optional.get();
+		} else {
+			throw new EntityNotFoundException();
+		}
+	}
+
 	public Brand checkBrand(String name) {
 		try {
 			Brand brand = brandRepository.findByName(name);
-			if(brand == null && name!=null) {
+			if (brand == null && name != null) {
 				brand = new Brand(name.toUpperCase());
 				brandRepository.save(brand);
 			}
 			return brand;
-		}catch (Exception e) {
+		} catch (Exception e) {
 			return null;
 		}
-		
+
 	}
 
 }

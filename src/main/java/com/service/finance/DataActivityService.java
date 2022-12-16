@@ -1,5 +1,6 @@
 package com.service.finance;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,14 +9,18 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.controller.form.FilterDataTableDataActivityForm;
 import com.model.finance.DataActivity;
-import com.repository.DataActivityRepository;
+import com.repository.finance.DataActivityCustomRepository;
+import com.repository.finance.DataActivityRepository;
 
 @Service
 public class DataActivityService {
 
 	@Autowired
 	DataActivityRepository dataActivityRepository;
+	@Autowired
+	DataActivityCustomRepository dataActivityCustomRepository;
 
 	public DataActivity save(DataActivity dataActivity) {
 		return this.dataActivityRepository.save(dataActivity);
@@ -43,6 +48,10 @@ public class DataActivityService {
 		reference.setShop(dataActivity.getShop());
 		reference.setType(dataActivity.getType());
 		return dataActivityRepository.save(reference);
+	}
+	
+	public List<BigInteger> findByFilter(FilterDataTableDataActivityForm filter){
+		return dataActivityCustomRepository.findByFilter(filter);
 	}
 
 }
