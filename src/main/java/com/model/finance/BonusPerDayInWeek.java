@@ -15,16 +15,8 @@ import com.model.Activity;
 @DiscriminatorValue(value = "PER_DAY_IN_WEEK")
 public class BonusPerDayInWeek extends Bonus {
 	
-	@ManyToOne
-	private DataActivity dataActivity;
 	private Integer daysInWeek;
 	
-	public DataActivity getDataActivity() {
-		return dataActivity;
-	}
-	public void setDataActivity(DataActivity dataActivity) {
-		this.dataActivity = dataActivity;
-	}
 	public Integer getDaysInWeek() {
 		return daysInWeek;
 	}

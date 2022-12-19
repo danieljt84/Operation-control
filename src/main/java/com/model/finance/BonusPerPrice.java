@@ -2,6 +2,7 @@ package com.model.finance;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Column;
@@ -17,21 +18,13 @@ import com.util.finance.BonusPerValueType;
 @DiscriminatorValue(value = "PER_PRICE")
 @Entity
 public class BonusPerPrice extends Bonus {
-	@ManyToOne
-	private DataActivity dataActivity;
+	
 	private BigDecimal price;
 	
-	public DataActivity getDataActivity() {
-		return dataActivity;
-	}
-	public void setDataActivity(DataActivity dataActivity) {
-		this.dataActivity = dataActivity;
-	}
 	public BigDecimal getPrice() {
 		return price;
 	}
 	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
-
 }
