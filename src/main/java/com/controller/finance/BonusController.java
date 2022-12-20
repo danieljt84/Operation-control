@@ -55,6 +55,4 @@ public class BonusController {
 		List<BonusDTO> dtos = bonusService.findAll().stream().map(bonus -> modelMapper.map(bonus, BonusDTO.class)).collect(Collectors.toList());
 		return ResponseEntity.status(HttpStatus.OK).body(dtos);
 	}
-	
-	
 }

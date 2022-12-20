@@ -1,5 +1,6 @@
 package com.service.operation;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
@@ -53,6 +54,10 @@ public class ActivityService {
 		} else {
 			throw new EntityNotFoundException("ATIVIDADE -" + id + "- NÃO ENCONTRADO");
 		}
+	}
+	
+	public List<Activity> findAll(){
+		return activityRepository.findAll();
 	}
 
 }
