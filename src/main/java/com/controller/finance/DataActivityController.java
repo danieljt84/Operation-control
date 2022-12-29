@@ -3,7 +3,9 @@ package com.controller.finance;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,6 +42,8 @@ public class DataActivityController {
 	ShopService shopService;
 	@Autowired
 	BrandService brandService;
+	@Autowired
+	ModelMapper modelMapper;
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public ResponseEntity save(@RequestBody DataActivityForm dataActivityForm) {
@@ -81,9 +85,9 @@ public class DataActivityController {
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(dtos);
 	}
-	
-    @RequestMapping(value="/list",method = RequestMethod.POST)
-    @ResponseBody
+
+	@RequestMapping(value = "/list", method = RequestMethod.POST)
+	@ResponseBody
 	public ResponseEntity findByFilter(@RequestBody FilterDataTableDataActivityForm form) {
 		var datas = dataActivityService.findByFilter(form);
 		List<DataActivityDTO> dtos = new ArrayList<>();
@@ -105,4 +109,10 @@ public class DataActivityController {
 		return ResponseEntity.status(HttpStatus.OK).body(dtos);
 	}
 
+	@RequestMapping(value = "/shop", method = RequestMethod.POST)
+	public ResponseEntity getShopsByActivity(@RequestBody List<Long> activityIds) {
+		List<ShopDTO> dtos = dataActivityService.getShopsByActivity(activityIds).stream()
+				.map(shop -> modelMapper.map(shop, ShopDTO.class)).collect(Collectors.toList());
+		return ResponseEntity.status(HttpStatus.OK).body(dtos);
+	}
 }

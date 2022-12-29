@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.controller.form.FilterDataTableDataActivityForm;
+import com.model.Shop;
 import com.model.finance.DataActivity;
 import com.repository.finance.DataActivityCustomRepository;
 import com.repository.finance.DataActivityRepository;
@@ -35,11 +36,11 @@ public class DataActivityService {
 		}
 	}
 
-	public List<DataActivity> findAll(){
+	public List<DataActivity> findAll() {
 		return dataActivityRepository.findAll();
 	}
 
-	public DataActivity update(DataActivity dataActivity){
+	public DataActivity update(DataActivity dataActivity) {
 		DataActivity reference = dataActivityRepository.getById(dataActivity.getId());
 		reference.setActivity(dataActivity.getActivity());
 		reference.setDaysInWeekContracted(dataActivity.getDaysInWeekContracted());
@@ -49,9 +50,12 @@ public class DataActivityService {
 		reference.setType(dataActivity.getType());
 		return dataActivityRepository.save(reference);
 	}
-	
-	public List<BigInteger> findByFilter(FilterDataTableDataActivityForm filter){
+
+	public List<BigInteger> findByFilter(FilterDataTableDataActivityForm filter) {
 		return dataActivityCustomRepository.findByFilter(filter);
 	}
 
+	public List<Shop> getShopsByActivity(List<Long> activityIds) {
+		return dataActivityRepository.getShopsByActivity(activityIds);
+	}
 }

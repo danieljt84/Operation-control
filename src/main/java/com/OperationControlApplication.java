@@ -18,8 +18,10 @@ import com.controller.RoutineController;
 @EnableTransactionManagement
 @EnableScheduling
 public class OperationControlApplication {
+	
 	static ConfigurableApplicationContext context;
 	static RoutineController routineController;
+	
 	public static final Logger LOG = LoggerFactory.getLogger(OperationControlApplication.class);
 
 	public static void main(String[] args) {
