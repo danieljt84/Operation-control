@@ -11,6 +11,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.Cascade;
 
 @Entity
 public class Task_Activity {
@@ -20,7 +23,7 @@ public class Task_Activity {
 	@ManyToOne
 	@JoinColumn(name = "activity_id")
 	private Activity activity;
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne
 	@JoinColumn(name = "task_id")
 	private Task task;
 	private String type;

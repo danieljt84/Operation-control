@@ -1,5 +1,6 @@
 package com.service.operation;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +31,7 @@ public class ActivityService {
 				activity.setDescription(description.toUpperCase());
 				activity.setIdSystem(idSystem);
 				activity.setProject(Project.getEnum(project));
+				activity.setCreatedAt(LocalDate.now());
 				activity = save(activity);
 			}
 			return activity;

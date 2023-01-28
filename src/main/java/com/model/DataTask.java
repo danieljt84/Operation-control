@@ -39,7 +39,7 @@ public class DataTask{
 	private int taskCanceled;
 	private int taskDone;
 	private int taskDoing;
-	@OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.EAGER)
+	@OneToMany(fetch = FetchType.EAGER)
 	private List<Task> tasks;
 	private String project;	
 	@Convert(converter = DurationConverter.class)

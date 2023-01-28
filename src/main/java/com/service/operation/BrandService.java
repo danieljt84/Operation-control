@@ -1,5 +1,6 @@
 package com.service.operation;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,6 +48,7 @@ public class BrandService {
 			Brand brand = brandRepository.findByName(name);
 			if (brand == null && name != null) {
 				brand = new Brand(name.toUpperCase());
+				brand.setCreatedAt(LocalDate.now());
 				brandRepository.save(brand);
 			}
 			return brand;

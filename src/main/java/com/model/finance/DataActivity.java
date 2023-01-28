@@ -38,6 +38,15 @@ public class DataActivity {
 	@Enumerated(EnumType.STRING)
 	private Status status;
 	
+	
+	 public DataActivity(Long id) {
+		this.id = id;
+	}
+	 
+	 public DataActivity() {
+		// TODO Auto-generated constructor stub
+	}
+	
 	public Long getId() {
 		return id;
 	}

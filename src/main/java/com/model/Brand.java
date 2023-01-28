@@ -1,5 +1,7 @@
 package com.model;
 
+import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,6 +14,7 @@ public class Brand {
 	private Long id;
 	@Column(unique = true)
 	private String name;
+	private LocalDate createdAt;
 	
 	public Brand() {
 		super();
@@ -30,6 +33,12 @@ public class Brand {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public LocalDate getCreatedAt() {
+		return createdAt;
+	}
+	public void setCreatedAt(LocalDate createdAt) {
+		this.createdAt = createdAt;
 	}
 	
 	

@@ -12,7 +12,7 @@ import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 
-import com.controller.form.FilterDataTableDataActivityForm;
+import com.controller.form.finance.FilterDataTableDataActivityForm;
 import com.model.finance.DataActivity;
 
 @Repository

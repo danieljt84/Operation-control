@@ -27,6 +27,7 @@ public interface DataTaskRepository extends JpaRepository<DataTask, Long>{
 	List<DataTask> findByDateBetweenAndPromoterName(LocalDate start, LocalDate end,String name);
 	List<DataTask> findByDateBetweenAndProject(LocalDate start, LocalDate end,String project);
 	List<DataTask> findByDateAndPromoterTeam(LocalDate date,Team team);
+	Optional<DataTask> findByPromoterAndDate(Promoter promoter, LocalDate date);
 	@Query(value = "select count(a)  from data_task dt, task t ,activity a,data_task_tasks dtt , team t2,  task_activities ta where dt.id = dtt.data_task_id and dtt.tasks_id = t.id and t2.id = dt.team_id and t.id = ta.task_id and ta.activities_id = a.id and t2.id = :idTeam and  dt.\"date\"=:date and a.description like 'Pesquisa%' and a.situation = 'completa'",nativeQuery = true)
 	Integer getCountActivityCompleteByTeam(@Param(value ="date")  LocalDate date, @Param(value ="idTeam") Long idTeam);
 	@Query(value = "select count(a)  from data_task dt, task t ,activity a,data_task_tasks dtt , team t2,  task_activities ta where dt.id = dtt.data_task_id and dtt.tasks_id = t.id and t2.id = dt.team_id and t.id = ta.task_id and ta.activities_id = a.id and t2.id = :idTeam and  dt.\"date\"=:date and a.description like 'Pesquisa%' and a.situation = 'sem historico'",nativeQuery = true)

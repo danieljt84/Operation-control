@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.controller.dto.finance.BonusDTO;
-import com.controller.form.BonusForm;
+import com.controller.form.finance.BonusForm;
 import com.model.finance.Bonus;
 import com.model.finance.BonusPerDayInWeek;
 import com.model.finance.BonusPerPrice;

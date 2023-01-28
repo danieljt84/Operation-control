@@ -9,7 +9,7 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.controller.form.FilterDataTableDataActivityForm;
+import com.controller.form.finance.FilterDataTableDataActivityForm;
 import com.model.Shop;
 import com.model.finance.DataActivity;
 import com.repository.finance.DataActivityCustomRepository;

@@ -1,4 +1,6 @@
 package com.model;
+import java.time.LocalDate;
+
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -23,6 +25,7 @@ public class Activity {
 	@Enumerated(EnumType.STRING)
 	private Project project;
 	private Long idSystem;
+	private LocalDate createdAt;
 	
 	public Activity(Activity activity) {
 		this.description = activity.getDescription();
@@ -70,5 +73,11 @@ public class Activity {
 	}
 	public void setProject(Project project) {
 		this.project = project;
+	}
+	public LocalDate getCreatedAt() {
+		return createdAt;
+	}
+	public void setCreatedAt(LocalDate createdAt) {
+		this.createdAt = createdAt;
 	}
 }

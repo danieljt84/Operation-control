@@ -8,6 +8,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,16 +28,19 @@ import com.model.Shop;
 import com.model.Task;
 import com.model.Task_Activity;
 import com.model.Team;
+import com.repository.operation.Task_ActivityRepositoy;
 import com.repository.operation.TeamRepositoryImp;
 import com.service.operation.ActivityService;
 import com.service.operation.BrandService;
+import com.service.operation.DataTaskService;
 import com.service.operation.PromoterService;
 import com.service.operation.ShopService;
+import com.service.operation.TaskService;
 import com.util.PropertiesReader;
 
 @Controller
 public class LaivonApiController {
-	
+
 	RestTemplate restTemplate;
 	ObjectMapper objectMapper;
 	@Autowired
@@ -50,9 +54,15 @@ public class LaivonApiController {
 	String project;
 	@Autowired
 	ActivityService activityService;
-	
-	public JsonNode getJSON(String _project,LocalDate date) {
-		while(true) {
+	@Autowired
+	DataTaskService dataTaskService;
+	@Autowired
+	TaskService taskService;
+	@Autowired
+	Task_ActivityRepositoy task_ActivityRepositoy;
+
+	public JsonNode getJSON(String _project, LocalDate date) {
+		while (true) {
 			objectMapper = new ObjectMapper();
 			restTemplate = new RestTemplate();
 			String response = null;
@@ -60,7 +70,7 @@ public class LaivonApiController {
 			String urlLaivon = PropertiesReader.getProp().getProperty("api.url");
 			JSONObject bodyJSON = new JSONObject();
 			bodyJSON.put("password", PropertiesReader.getProp().getProperty("api.password"));
-			bodyJSON.put("tokenapi",PropertiesReader.getProp().getProperty("api.token"));
+			bodyJSON.put("tokenapi", PropertiesReader.getProp().getProperty("api.token"));
 			bodyJSON.put("dateInit", date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 			bodyJSON.put("dateEnd", date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 			bodyJSON.put("enviroment", _project);
@@ -73,12 +83,11 @@ public class LaivonApiController {
 				JsonNode root = objectMapper.readTree(response);
 				return root;
 			} catch (Exception e) {
-				System.out.println(e);
+
 			}
 		}
 	}
-	
-	
+
 	public List<DataTask> convertJSONinDataOperation(JsonNode root) {
 		List<DataTask> datasTask = new ArrayList<DataTask>();
 		for (JsonNode dado : root.path("dados")) {
@@ -86,13 +95,17 @@ public class LaivonApiController {
 			Team team = teamRepository.checkTeam(dado.path("equipe").asText());
 			String cpf = dado.path("agente_matricula").asText();
 			long idSystem = dado.path("agente_id").asLong();
-			if(namePromoter.equals("ASSAÍ ALCANTARA - HIBRIDO - MARCOS ADRIANO DA COSTA SILVA")) {
-				System.out.println("ok");
-			}
-			Promoter promoter = promoterService.checkPromoter(namePromoter,idSystem);
-			promoterService.updateIfHasUpdate(promoter,team,cpf,idSystem);
+			Promoter promoter = promoterService.checkPromoter(namePromoter, idSystem);
+			promoterService.updateIfHasUpdate(promoter, team, cpf, idSystem);
 			for (JsonNode node_tasks : dado.path("dados_agente")) {
-				DataTask dataTask = new DataTask();
+				DataTask dataTask;
+				try {
+					dataTask = dataTaskService.findByPromoterAndDate(promoter, LocalDate
+							.parse(node_tasks.path("data").asText(), DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					dataTask = new DataTask();
+				}
 				dataTask.setProject(project);
 				dataTask.setTeam(team);
 				dataTask.setPromoter(promoter);
@@ -103,10 +116,22 @@ public class LaivonApiController {
 				dataTask.setTaskDone(node_tasks.path("tarefas executadas").asInt());
 				dataTask.setTaskCanceled(node_tasks.path("tarefas canceladas").asInt());
 				dataTask.setSituation(node_tasks.path("situacao").asText());
-				List<Task> tasks = new ArrayList<>();
-				for(JsonNode node_task : node_tasks.path("dados_tarefa")) {
-					Task task = new Task();
-					Shop shop = shopService.checkShop(node_task.path("local").asText(),node_task.path("local_id").asLong(),project);
+				dataTaskService.save(dataTask);
+				for (JsonNode node_task : node_tasks.path("dados_tarefa")) {
+					Shop shop = shopService.checkShop(node_task.path("local").asText(),
+							node_task.path("local_id").asLong(), project);
+					Task task;
+					if (dataTask.getTasks() != null) {
+						task = dataTask.getTasks().stream()
+								.filter(element -> element.getShop()!=null && element.getShop().getId().equals(shop.getId())
+										&& element.getStart().equals(convertTime(node_task.path("inicio").asText())))
+								.findAny().map(element -> element).orElse(new Task());
+						
+					} else {
+						dataTask.setTasks(new ArrayList<>());
+						task = new Task();
+					}
+
 					task.setShop(shop);
 					task.setActivityTotal(node_task.path("atividades totais").asInt());
 					task.setActivityDone(node_task.path("atividades executadas").asInt());
@@ -115,33 +140,44 @@ public class LaivonApiController {
 					task.setStart(convertTime(node_task.path("inicio").asText()));
 					task.setEnd(convertTime(node_task.path("fim").asText()));
 					task.setType(node_task.path("tipo").asText());
-					List<Task_Activity> task_Activities = new ArrayList<>();
-					for(JsonNode node_activities: node_task.path("dados_atividade")) {
-						Brand brand = brandService.checkBrand(this.getNameBrand(node_activities.path("descricao").asText()));
-						Activity activity = activityService.check(node_activities.path("descricao").asText(), node_activities.path("id").asLong(), brand,project);
-						if(activity!=null) {
-							Task_Activity task_Activity = new Task_Activity();
-                            task_Activity.setActivity(activity);
-                            task_Activity.setTask(task);
-                            task_Activity.setStart(convertLocalDate(node_activities.path("inicio").asText()));
-                            task_Activity.setEnd(convertLocalDate(node_activities.path("fim").asText()));
-                            task_Activity.setSituation(node_activities.path("situação").asText());
-    						task_Activities.add(new Task_Activity(task_Activity));
+					if(task.getId()==null) {
+						 taskService.save(task);
+					}
+					for (JsonNode node_activities : node_task.path("dados_atividade")) {
+						Brand brand = brandService
+								.checkBrand(this.getNameBrand(node_activities.path("descricao").asText()));
+						Activity activity = activityService.check(node_activities.path("descricao").asText(),
+								node_activities.path("id").asLong(), brand, project);
+						if (activity != null) {
+							Task_Activity task_Activity;
+							if (task.getTask_Activities() != null) {
+								task_Activity = task.getTask_Activities().stream()
+										.filter(element -> element.getTask().getId()!=null && element.getTask().getId().equals(task.getId())).findAny()
+										.map(element -> element).orElse(new Task_Activity());
+							} else {
+								task.setTask_Activities(new ArrayList<>());
+								task_Activity = new Task_Activity();
+							}
+							task_Activity.setActivity(activity);
+							task_Activity.setStart(convertLocalDate(node_activities.path("inicio").asText()));
+							task_Activity.setEnd(convertLocalDate(node_activities.path("fim").asText()));
+							task_Activity.setSituation(node_activities.path("situação").asText());
+							task_Activity.setTask(taskService.get(task.getId()));
+							task_ActivityRepositoy.save(task_Activity);
+							task.getTask_Activities().add(task_Activity);
 						}
 					}
-					task.setTask_Activities(task_Activities);
-					tasks.add(new Task(task));
+					dataTask.getTasks().add(task);
 				}
-				dataTask.setTasks(tasks);
 				datasTask.add(new DataTask(dataTask));
 			}
 		}
 		return datasTask;
 	}
-	
+
 	public LocalTime convertTime(String time) {
-		if(!time.equals("")) {
-			return LocalTime.parse(time,DateTimeFormatter.ofPattern("HH:mm:ss"));
+		if (!time.equals("")) {
+			return LocalTime.parse(time, DateTimeFormatter.ofPattern("HH:mm:ss"));
 		}
 		return null;
 	}
@@ -153,17 +189,17 @@ public class LaivonApiController {
 		}
 		return null;
 	}
-	
+
 	public String getNameBrand(String description) {
 		try {
-			if(description.contains("- ")) {
+			if (description.contains("- ")) {
 				return description.split("- ")[1];
-			}else {
+			} else {
 				return description.split("Pesquisa ")[1];
 			}
-		}catch (Exception e) {
+		} catch (Exception e) {
 			return null;
 		}
 	}
-	
+
 }

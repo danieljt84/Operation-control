@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.controller.form.FilterForm;
+import com.controller.form.operation.FilterForm;
 import com.model.Brand;
 import com.service.operation.BrandService;
 import com.service.operation.DataTaskService;

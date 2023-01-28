@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +27,8 @@ import com.controller.dto.operation.CargaHorariaDTO;
 import com.controller.dto.operation.CountActivityCompleteByPromoterDTO;
 import com.controller.dto.operation.CountActivityCompleteDTO;
 import com.controller.dto.operation.PercentByDateAndTeamDTO;
-import com.controller.form.FilterForm;
+import com.controller.form.operation.FilterForm;
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 import com.model.Activity;
 import com.model.Brand;
 import com.model.DataTask;
@@ -57,11 +60,17 @@ public class DataTaskService {
 	TeamRepository teamRepository;
 
 	// Verifica se existe no banco de dados, caso não, salva o mesmo
-	public void checkAndSaveDataTask(DataTask dataTask) {
-		dataTaskRepository.findIdDataTask(dataTask).ifPresentOrElse(id -> {
-			dataTask.setId(id);
-			dataTaskRepository.saveAndFlush(dataTask);
-		}, () -> dataTaskRepository.saveAndFlush(dataTask));
+	public void save(DataTask dataTask) {
+		dataTaskRepository.save(dataTask);
+	}
+	
+	public DataTask findByPromoterAndDate(Promoter promoter, LocalDate date) throws Exception {
+		Optional<DataTask> optional = dataTaskRepository.findByPromoterAndDate(promoter,date);
+		if(optional.isPresent()) {
+			return optional.get();
+		}else {
+			throw new EntityNotFoundException();
+		}
 	}
 
 	// Transforma o objeto para CargaHorariaDTO
@@ -390,25 +399,30 @@ public class DataTaskService {
 
 	// Elemina as atividade de "check-out" e define a duracao da DataTask
 	public void eliminateChecksDataTaskAndSetDuration(DataTask dataTask) {
-		for (Task task : dataTask.getTasks()) {
-			List<Task_Activity> filterActivities = task.getTask_Activities().stream()
-					.filter(taskActivity -> !taskActivity.getActivity().getDescription().equals("Check Out")).collect(Collectors.toList());
-			for (Task_Activity task_Activity : filterActivities) {
-				task_Activity.setDuration(subtractDateTime(task_Activity.getStart(), task_Activity.getEnd()));
+		if(dataTask.getTasks()!=null) {
+			for (Task task : dataTask.getTasks()) {
+				List<Task_Activity> filterActivities = task.getTask_Activities().stream()
+						.filter(taskActivity -> !taskActivity.getActivity().getDescription().equals("CHECK OUT")).collect(Collectors.toList());
+				for (Task_Activity task_Activity : filterActivities) {
+					task_Activity.setDuration(subtractDateTime(task_Activity.getStart(), task_Activity.getEnd()));
+				}
+				task.setTask_Activities(filterActivities);
+				task.setDuration(
+						sumTime(task.getTask_Activities().stream().map(t -> t.getDuration()).collect(Collectors.toList())));
+				calculateInfoTask(task);
+				defSituationTask(task);
 			}
-			task.setTask_Activities(filterActivities);
-			task.setDuration(
-					sumTime(task.getTask_Activities().stream().map(t -> t.getDuration()).collect(Collectors.toList())));
-			calculateInfoTask(task);
-			defSituationTask(task);
 		}
 	}
 
 	public void eliminateCheckInDataTask(DataTask dataTask) {
-		for (Task task : dataTask.getTasks()) {
-			List<Task_Activity> filterActivities = task.getTask_Activities().stream()
-					.filter(taskActivity -> !taskActivity.getActivity().getDescription().equals("Check In")).collect(Collectors.toList());
-			task.setTask_Activities(filterActivities);
+		
+		if(dataTask.getTasks()!=null) {
+			for (Task task : dataTask.getTasks()) {
+				List<Task_Activity> filterActivities = task.getTask_Activities().stream()
+						.filter(taskActivity -> !taskActivity.getActivity().getDescription().equals("CHECK IN")).collect(Collectors.toList());
+				task.setTask_Activities(filterActivities);
+			}	
 		}
 	}
 
@@ -435,19 +449,21 @@ public class DataTaskService {
 
 	// Calcula o numero de tarefas por status e insere no DataTask
 	public void calculateInfoDataTask(DataTask dataTask) {
-		int total = dataTask.getTasks().size();
-		int done = dataTask.getTasks().stream().filter(task -> task.getSituation().equals("COMPLETO"))
-				.collect(Collectors.toList()).size();
-		int cancelled = dataTask.getTasks().stream().filter(task -> task.getSituation().equals("CANCELADA"))
-				.collect(Collectors.toList()).size();
-		int doing = dataTask.getTasks().stream()
-				.filter(task -> task.getSituation().equals("EM CAMPO") || task.getSituation().equals("INCOMPLETO"))
-				.collect(Collectors.toList()).size();
-		dataTask.setTaskDone(done);
-		dataTask.setTaskCanceled(cancelled);
-		dataTask.setTaskDoing(doing);
-		dataTask.setTaskTotal(total);
-		generateDurationDataTask(dataTask);
+		if(dataTask.getTasks()!=null) {
+			int total = dataTask.getTasks().size();
+			int done = dataTask.getTasks().stream().filter(task -> task.getSituation().equals("COMPLETO"))
+					.collect(Collectors.toList()).size();
+			int cancelled = dataTask.getTasks().stream().filter(task -> task.getSituation().equals("CANCELADA"))
+					.collect(Collectors.toList()).size();
+			int doing = dataTask.getTasks().stream()
+					.filter(task -> task.getSituation().equals("EM CAMPO") || task.getSituation().equals("INCOMPLETO"))
+					.collect(Collectors.toList()).size();
+			dataTask.setTaskDone(done);
+			dataTask.setTaskCanceled(cancelled);
+			dataTask.setTaskDoing(doing);
+			dataTask.setTaskTotal(total);
+			generateDurationDataTask(dataTask);	
+		}
 	}
 
 	// Calcula o numero de atividades por status e insere na Task

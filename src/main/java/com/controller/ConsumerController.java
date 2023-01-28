@@ -16,10 +16,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import com.controller.api.LaivonApiController;
 import com.model.DataTask;
+import com.model.Task_Activity;
 import com.service.api.ApiEmployeeService;
 import com.service.operation.DataTaskService;
 import com.service.operation.ExcelService;
 import com.service.operation.PromoterService;
+import com.service.operation.TaskService;
 import com.util.ProjectAdapter;
 
 @Component
@@ -36,18 +38,21 @@ public class ConsumerController {
 	ApiEmployeeService apiEmployeeService;
 	@Autowired
 	ExcelService excelService;
+	@Autowired
+	TaskService taskService;
 	private static Logger logger = LoggerFactory.getLogger(RoutineController.class);
 	
 	public ConsumerController(ConfigurableApplicationContext context) {
 		this.context = context;
 	}
     
-	//@Scheduled(fixedDelay =3600000, initialDelay = 10000)
+	@Scheduled(fixedDelay =3600000, initialDelay = 10000)
 	public void run() {
-		if(isBeforeMin() && isAfterMax()) {
-			routineToConsumer(7);
+		//if(isBeforeMin() && isAfterMax()) {
+
+		routineToConsumer(7);
 			logger.info("BASE ATUALIZADA EM: " + LocalDateTime.now().toString());
-		}
+		//}
 	}
 	
 	//@Scheduled(cron = "* 0 23 * * *")
@@ -68,7 +73,9 @@ public class ConsumerController {
 					dataTaskService.eliminateChecksDataTaskAndSetDuration(data);
 					dataTaskService.calculateInfoDataTask(data);
 					dataTaskService.defSituationDataTask(data);
-					dataTaskService.checkAndSaveDataTask(data);
+					if(data.getTasks()!=null) {						
+						dataTaskService.save(data);
+					}
 					idsPromoters.add(data.getId());
 				}
 			}

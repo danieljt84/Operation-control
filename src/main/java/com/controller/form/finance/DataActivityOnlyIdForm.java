@@ -1,4 +1,4 @@
-package com.controller.form;
+package com.controller.form.finance;
 
 public class DataActivityOnlyIdForm {
 	

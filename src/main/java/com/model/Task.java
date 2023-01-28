@@ -33,7 +33,7 @@ public class Task {
 	private Integer activityDone;
 	private Integer activityMissing;
 	private String type;
-	@OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "task")
 	private List<Task_Activity> task_Activities;
 
 	public Task() {
@@ -41,6 +41,7 @@ public class Task {
 	}
 	public Task(Task task) {
 		super();
+		this.id = task.getId();
 		this.shop = task.getShop();
 		this.situation = task.getSituation();
 		this.start = task.getStart();
