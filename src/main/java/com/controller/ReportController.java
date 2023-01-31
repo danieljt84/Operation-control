@@ -60,10 +60,10 @@ public class ReportController {
 	
 	@PostMapping
 	@RequestMapping("/previstorealizado")
-	public ResponseEntity getPrevistoRealizado(@RequestParam(name = "nameBrand",required = false) String nameBrand,@RequestParam  String initialDate,@RequestParam String finalDate) {
+	public ResponseEntity getPrevistoRealizado(@RequestParam(name = "idBrand",required = false) Long idBrand,@RequestParam  String initialDate,@RequestParam String finalDate) {
         HttpHeaders headers = new HttpHeaders();
 		try {
-			Brand brand = brandService.getBrandByNameContaining(nameBrand);
+			Brand brand = brandService.findById(idBrand);
 			List<String[]> datas = dataTaskService.getPrevistoRealizaoToReport(brand,LocalDate.parse(initialDate), LocalDate.parse(finalDate));
 		    byte[] excelFile = excelService.createExcelPrevistoRealizado(datas);
 		    

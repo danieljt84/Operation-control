@@ -558,10 +558,10 @@ public class DataTaskService {
 	}
 	
 	public Map<LocalDate, Integer> getCountActivityCompleteWithDateBetweenDateByBrand(LocalDate initialDate, LocalDate finalDate, Brand brand){
-		long daysBetween = ChronoUnit.DAYS.between(finalDate, initialDate);
+		long daysBetween = ChronoUnit.DAYS.between(initialDate, finalDate);
 		Map<LocalDate, Integer> date_count = new HashMap<>();
 		for(int i = 0; i<= daysBetween;i++) {
-			Integer count = dataTaskRepository.getCountActivityCompleteByBrand(initialDate.plusDays(i), initialDate.plusDays(i+1), brand.getId());
+			Integer count = dataTaskRepository.getCountActivityCompleteByBrand(initialDate.plusDays(i), initialDate.plusDays(i), brand.getId());
 			date_count.put(initialDate.plusDays(i), count);
 		}
 		return date_count;
@@ -578,7 +578,7 @@ public class DataTaskService {
 	}
 
 	public Integer getCountActivityMissingByBrand(LocalDate date, Brand brand) {
-		return dataTaskRepository.getCountActivityMissingByBrand(date, brand.getId());
+		return dataTaskRepository.getCountActivityMissingByBrand(date, date, brand.getId());
 	}
 	
 	public Integer getCountActivityMissingBetweenDateByBrand(LocalDate initialDate, LocalDate finalDate, Brand brand) {
@@ -652,7 +652,7 @@ public class DataTaskService {
 	public List<String[]> getPrevistoVsrealizado(LocalDate start, LocalDate end, ProjectAdapter[] projects) {
 		List<String[]> datas = new ArrayList<>();
 		for (ProjectAdapter project : projects) {
-			datas.addAll(dataTaskRepository.getRealizadovsProgramado(start, end, project.getDescription()));
+			datas.addAll(dataTaskRepository.getRealizadovsProgramado(start, end, project.name()));
 		}
 		return datas;
 	}

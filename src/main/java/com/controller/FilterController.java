@@ -26,9 +26,9 @@ public class FilterController {
 
 	@GetMapping("/activation")
 	public ResponseEntity getAllValuesPossibleToActivation(@RequestParam String initialDate,
-			@RequestParam String finalDate, @RequestParam String nameBrand) {
+			@RequestParam String finalDate, @RequestParam Long idBrand) {
 		try {
-			Brand brand = brandService.getBrandByNameContaining(nameBrand);
+			Brand brand = brandService.findById(idBrand);
 			return ResponseEntity.status(HttpStatus.OK)
 					.body(filterService.getAllValuesPossibleToFilterToActivation(
 							LocalDate.parse(initialDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")),

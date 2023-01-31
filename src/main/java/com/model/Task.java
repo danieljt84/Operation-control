@@ -14,10 +14,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.ColumnDefault;
 
 @Entity
+@Table(schema = "operation")
 public class Task {
 
 	@Id@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +35,7 @@ public class Task {
 	private Integer activityDone;
 	private Integer activityMissing;
 	private String type;
-	@OneToMany(mappedBy = "task")
+	@OneToMany(mappedBy = "task",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	private List<Task_Activity> task_Activities;
 
 	public Task() {

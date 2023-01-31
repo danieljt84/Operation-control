@@ -6,10 +6,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 import com.util.Status;
 
 @Entity
+@Table(schema = "operation")
 public class Promoter {
 	@Id@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;

@@ -23,9 +23,7 @@ public class DataTaskCustomRepository {
 	
 	public Integer getCountActivityMissingBetweenDateByBrand(LocalDate initialDate, LocalDate finalDate, Long idBrand,Map<String, String[]> filter) {
 		
-		String sql = "select distinct count(a) from data_task dt, task t ,activity a,data_task_tasks dtt , team t2,  task_activities ta, brand b , shop s "
-				+ " where dt.id = dtt.data_task_id and dtt.tasks_id = t.id and t2.id = dt.team_id and t.id = ta.task_id and ta.activities_id = a.id and b.id = a.brand_id and s.id = t.shop_id "
-				+ " and b.id = :idBrand and dt.\"date\" >= :initialDate and  dt.\"date\" <= :finalDate and a.description like 'Pesquisa%' and a.situation = 'sem historico' and t.\"type\" <> 'Remanejada' and  dt.situation <> 'CANCELADO' ";
+		String sql = "select count(a) from data_task dt inner join data_task_tasks dtt on dtt.data_task_id = dt.id inner join task t on dtt.tasks_id = t.id inner join task_activity ta on ta.task_id = t.id inner join team t2 on dt.team_id = t2.id inner join activity a on a.id = ta.activity_id inner join brand b on b.id = a.brand_id inner join shop s on s.id = t.shop_id where b.id = :idBrand and dt.\"date\" >= :initialDate and  dt.\"date\" <= :finalDate and a.description like 'PESQUISA%' and ta.situation = 'sem historico' and t.\"type\" <> 'Remanejada' and  dt.situation <> 'CANCELADO'  ";
 		sql = sql + changeSQLString(sql, filter);
 		Query query = entityManager.createNativeQuery(sql);
 		query.setParameter("idBrand", idBrand);
@@ -40,9 +38,7 @@ public class DataTaskCustomRepository {
 	public Integer getCountActivityCompleteByBrand(LocalDate initialDate, LocalDate finalDate, long idBrand,
 			Map<String, String[]> filter) {
 
-		String sql = "select distinct count(a) from data_task dt, task t ,activity a,data_task_tasks dtt , team t2,  task_activities ta, brand b , shop s "
-				+ " where dt.id = dtt.data_task_id and dtt.tasks_id = t.id and t2.id = dt.team_id and t.id = ta.task_id and ta.activities_id = a.id and b.id = a.brand_id and s.id = t.shop_id "
-				+ " and b.id = :idBrand and a.\"start\" >= :initialDate and  a.\"start\"<= :finalDate  and a.description like 'Pesquisa%' and a.situation = 'completa' ";
+		String sql = "select count(a) from data_task dt inner join data_task_tasks dtt on dtt.data_task_id = dt.id inner join task t on dtt.tasks_id = t.id inner join task_activity ta on ta.task_id = t.id inner join team t2 on dt.team_id = t2.id inner join activity a on a.id = ta.activity_id inner join brand b on b.id = a.brand_id inner join shop s on s.id = t.shop_id where b.id = :idBrand and dt.\"date\" >= :initialDate and  dt.\"date\" <= :finalDate and a.description like 'PESQUISA%' and ta.situation = 'completa' and t.\"type\" <> 'Remanejada' and  dt.situation <> 'CANCELADO' ";
 
 		sql = sql + changeSQLString(sql, filter);
 

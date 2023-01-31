@@ -41,26 +41,25 @@ public class ConsumerController {
 	@Autowired
 	TaskService taskService;
 	private static Logger logger = LoggerFactory.getLogger(RoutineController.class);
-	
+
 	public ConsumerController(ConfigurableApplicationContext context) {
 		this.context = context;
 	}
-    
-	@Scheduled(fixedDelay =3600000, initialDelay = 10000)
-	public void run() {
-		//if(isBeforeMin() && isAfterMax()) {
 
-		routineToConsumer(7);
+	@Scheduled(fixedDelay = 3600000, initialDelay = 10000)
+	public void run() {
+		if (isBeforeMin() && isAfterMax()) {
+			routineToConsumer(7);
 			logger.info("BASE ATUALIZADA EM: " + LocalDateTime.now().toString());
-		//}
+		}
 	}
-	
-	//@Scheduled(cron = "* 0 23 * * *")
+
+	// @Scheduled(cron = "* 0 23 * * *")
 	public void run2() {
 		routineToConsumer(3);
 		logger.info("BASE DE 3 DIAS ANTERIORES ATUALIZADA EM: " + LocalDateTime.now().toString());
 	}
-	
+
 	private void routineToConsumer(long daysToSubtract) {
 		LocalDate endDate = LocalDate.now();
 		LocalDate startDate = endDate.minusDays(daysToSubtract);
@@ -68,12 +67,13 @@ public class ConsumerController {
 		Set<Long> idsPromoters = new HashSet<>();
 		for (int i = 0; i <= daysBetween; i++) {
 			for (ProjectAdapter project : ProjectAdapter.values()) {
-				List<DataTask> datas = laivonApiController.convertJSONinDataOperation(laivonApiController.getJSON(project.getDescription(), startDate.plusDays(i)));
+				List<DataTask> datas = laivonApiController.convertJSONinDataOperation(
+						laivonApiController.getJSON(project.getDescription(), startDate.plusDays(i)));
 				for (DataTask data : datas) {
-					dataTaskService.eliminateChecksDataTaskAndSetDuration(data);
-					dataTaskService.calculateInfoDataTask(data);
-					dataTaskService.defSituationDataTask(data);
-					if(data.getTasks()!=null) {						
+					if (data.getTasks().size() != 0) {
+						dataTaskService.eliminateChecksDataTaskAndSetDuration(data);
+						dataTaskService.calculateInfoDataTask(data);
+						dataTaskService.defSituationDataTask(data);
 						dataTaskService.save(data);
 					}
 					idsPromoters.add(data.getId());
@@ -81,8 +81,9 @@ public class ConsumerController {
 			}
 		}
 		promoterService.updateStatusToInativo(idsPromoters);
+		taskService.deleteAllTasksWithOutDataTask();
 	}
-	
+
 	private static boolean isBeforeMin() {
 		LocalTime agora = LocalTime.now();
 		LocalTime limite = LocalTime.parse("22:00", DateTimeFormatter.ISO_TIME);

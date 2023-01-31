@@ -17,12 +17,14 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
-@Table(name = "_user")
+@Table(name = "_user",schema = "operation")
 public class User implements UserDetails{
 	@Id@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String username;
 	private String password;
+	private String img;
+	
 	@ManyToOne
 	private Role role;
 	@ManyToMany
@@ -82,5 +84,11 @@ public class User implements UserDetails{
 	public boolean isEnabled() {
 		// TODO Auto-generated method stub
 		return true;
+	}
+	public String getImg() {
+		return img;
+	}
+	public void setImg(String img) {
+		this.img = img;
 	}
 }

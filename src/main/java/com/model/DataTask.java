@@ -19,12 +19,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
 
 import com.util.DurationConverter;
 
 @Entity
+@Table(schema = "operation")
 public class DataTask{
 	@Id@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -39,7 +41,7 @@ public class DataTask{
 	private int taskCanceled;
 	private int taskDone;
 	private int taskDoing;
-	@OneToMany(fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	private List<Task> tasks;
 	private String project;	
 	@Convert(converter = DurationConverter.class)

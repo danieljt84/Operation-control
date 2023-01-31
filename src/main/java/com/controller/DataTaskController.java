@@ -56,9 +56,9 @@ public class DataTaskController {
 	
 	@GetMapping
 	@RequestMapping("/countactivitycompletebybrand")
-	public ResponseEntity getCountActivityCompleteByBrand(@RequestParam String date,@RequestParam(name = "brand") String nameBrand) {
+	public ResponseEntity getCountActivityCompleteByBrand(@RequestParam String date,@RequestParam(name = "idBrand") Long idBrand) {
 		try {
-			Brand brand = brandService.getBrandByNameContaining(nameBrand);
+			Brand brand = brandService.findById(idBrand);
 			return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityCompleteByBrand(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")), brand));
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -67,9 +67,9 @@ public class DataTaskController {
 	}
 	
 	@RequestMapping(value = "/countactivitycompletebetweendatebybrand",method = RequestMethod.GET)
-	public ResponseEntity getCountActivityCompleteBetweenDateByBrand(@RequestParam String initialDate,@RequestParam String finalDate, @RequestParam(name = "brand") String nameBrand) {
+	public ResponseEntity getCountActivityCompleteBetweenDateByBrand(@RequestParam String initialDate,@RequestParam String finalDate, @RequestParam(name = "idBrand") Long idBrand) {
 		try {
-			Brand brand = brandService.getBrandByNameContaining(nameBrand);
+			Brand brand = brandService.findById(idBrand);
 			return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityCompleteBetweenDateByBrand(LocalDate.parse(initialDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")),LocalDate.parse(finalDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")), brand));
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -78,13 +78,13 @@ public class DataTaskController {
 	}
 	
 	@RequestMapping(value = "/countactivitycompletebetweendatebybrand",method = RequestMethod.POST)
-	public ResponseEntity getCountActivityCompleteBetweenDateByBrand(@RequestParam String initialDate,@RequestParam String finalDate, @RequestParam(name = "brand") String nameBrand, @RequestBody FilterForm filterForm) {
+	public ResponseEntity getCountActivityCompleteBetweenDateByBrand(@RequestParam String initialDate,@RequestParam String finalDate, @RequestParam(name = "idBrand") Long idBrand, @RequestBody FilterForm filterForm) {
 		try {
-			Brand brand = brandService.getBrandByNameContaining(nameBrand);
+			Brand brand = brandService.findById(idBrand);
 			if(filterForm.getFilter()!= null) {
 				return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityCompleteBetweenDateByBrand(LocalDate.parse(initialDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")),LocalDate.parse(finalDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")), brand,filterForm.getFilter()));
 			}else {
-				return getCountActivityCompleteBetweenDateByBrand(initialDate,finalDate,nameBrand);
+				return getCountActivityCompleteBetweenDateByBrand(initialDate,finalDate,idBrand);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -93,9 +93,9 @@ public class DataTaskController {
 	}
 	
 	@RequestMapping(value = "/countactivitycompletewithdatebetweendatebybrand",method = RequestMethod.GET)
-	public ResponseEntity getCountActivityWithDateCompleteBetweenDateByBrand(@RequestParam String initialDate,@RequestParam String finalDate, @RequestParam(name = "brand") String nameBrand) {
+	public ResponseEntity getCountActivityWithDateCompleteBetweenDateByBrand(@RequestParam String initialDate,@RequestParam String finalDate, @RequestParam(name = "idBrand") Long idBrand) {
 		try {
-			Brand brand = brandService.getBrandByNameContaining(nameBrand);
+			Brand brand = brandService.findById(idBrand);
 			return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityCompleteWithDateBetweenDateByBrand(LocalDate.parse(initialDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")),LocalDate.parse(finalDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")), brand));
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -104,13 +104,13 @@ public class DataTaskController {
 	}
 	
 	@RequestMapping(value = "/countactivitycompletewithdatebetweendatebybrand",method = RequestMethod.POST)
-	public ResponseEntity getCountActivityWithDateCompleteBetweenDateByBrand(@RequestParam String initialDate,@RequestParam String finalDate, @RequestParam(name = "brand") String nameBrand,@RequestBody FilterForm filterForm) {
+	public ResponseEntity getCountActivityWithDateCompleteBetweenDateByBrand(@RequestParam String initialDate,@RequestParam String finalDate, @RequestParam(name = "idBrand") Long idBrand,@RequestBody FilterForm filterForm) {
 		try {
-			Brand brand = brandService.getBrandByNameContaining(nameBrand);
+			Brand brand = brandService.findById(idBrand);
 			if(filterForm.getFilter()!= null) {
 				
 			}
-			return getCountActivityWithDateCompleteBetweenDateByBrand(initialDate,finalDate,nameBrand);
+			return getCountActivityWithDateCompleteBetweenDateByBrand(initialDate,finalDate,idBrand);
 		}catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -119,9 +119,9 @@ public class DataTaskController {
 	
 	@GetMapping
 	@RequestMapping("/countactivitymissingbybrand")
-	public ResponseEntity getCountActivityMissingByBrand(@RequestParam String date,@RequestParam(name = "brand") String nameBrand) {
+	public ResponseEntity getCountActivityMissingByBrand(@RequestParam String date,@RequestParam(name = "idBrand") Long idBrand) {
 		try {
-			Brand brand = brandService.getBrandByNameContaining(nameBrand);
+			Brand brand = brandService.findById(idBrand);
 			return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityMissingByBrand(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")), brand));
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -131,9 +131,9 @@ public class DataTaskController {
 	
 	@GetMapping
 	@RequestMapping("/countactivitydoingbybrand")
-	public ResponseEntity getCountActivityDoingByBrand(@RequestParam String date,@RequestParam(name = "brand") String nameBrand) {
+	public ResponseEntity getCountActivityDoingByBrand(@RequestParam String date,@RequestParam(name = "idBrand") Long idBrand) {
 		try {
-			Brand brand = brandService.getBrandByNameContaining(nameBrand);
+			Brand brand = brandService.findById(idBrand);
 			return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityDoingByBrand(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")), brand));
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -142,9 +142,9 @@ public class DataTaskController {
 	}
 	
 	@RequestMapping(value="/countactivitymissingbetweendatebybrand",method = RequestMethod.GET)
-	public ResponseEntity getCountActivityMissingBetweenDateByBrand(@RequestParam String initialDate,@RequestParam String finalDate, @RequestParam(name = "brand") String nameBrand) {
+	public ResponseEntity getCountActivityMissingBetweenDateByBrand(@RequestParam String initialDate,@RequestParam String finalDate,@RequestParam(name = "idBrand") Long idBrand) {
 		try {
-			Brand brand = brandService.getBrandByNameContaining(nameBrand);
+			Brand brand = brandService.findById(idBrand);
 			return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityMissingBetweenDateByBrand(LocalDate.parse(initialDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")),LocalDate.parse(finalDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")), brand));
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -153,13 +153,13 @@ public class DataTaskController {
 	}
 
 	@RequestMapping(value="/countactivitymissingbetweendatebybrand",method = RequestMethod.POST)
-	public ResponseEntity getCountActivityMissingBetweenDateByBrand(@RequestParam String initialDate,@RequestParam String finalDate, @RequestParam(name = "brand") String nameBrand,@RequestBody FilterForm filterForm) {
+	public ResponseEntity getCountActivityMissingBetweenDateByBrand(@RequestParam String initialDate,@RequestParam String finalDate, @RequestParam(name = "idBrand") Long idBrand,@RequestBody FilterForm filterForm) {
 		try {
-			Brand brand = brandService.getBrandByNameContaining(nameBrand);
+			Brand brand = brandService.findById(idBrand);
 			if(filterForm.getFilter()!=null) {
 				return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityMissingBetweenDateByBrand(LocalDate.parse(initialDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")),LocalDate.parse(finalDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")), brand,filterForm.getFilter()));
 			}else {
-				return getCountActivityMissingBetweenDateByBrand(initialDate,finalDate,nameBrand);
+				return getCountActivityMissingBetweenDateByBrand(initialDate,finalDate,idBrand);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();

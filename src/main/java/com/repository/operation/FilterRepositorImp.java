@@ -17,9 +17,7 @@ public class FilterRepositorImp{
 	EntityManager entityManager;
 	
 	public List<Object> getAllValuesToShopPossibleToFilter(LocalDate initialDate, LocalDate finalDate, Long brandId) {
-		Query query = entityManager.createNativeQuery("select distinct  s.\"name\" from data_task dt, task t ,activity a,data_task_tasks dtt , team t2,  task_activities ta, brand b , shop s\r\n"
-				+ "where dt.id = dtt.data_task_id and dtt.tasks_id = t.id and t2.id = dt.team_id and t.id = ta.task_id and ta.activities_id = a.id and b.id = a.brand_id and s.id = t.shop_id \r\n"
-				+ "and dt.\"date\" >= :initialDate and dt.\"date\" <= :finalDate and a.brand_id = :idBrand and dt.situation <>'CANCELADO'");
+		Query query = entityManager.createNativeQuery("select distinct  s.\"name\" from data_task dt inner join data_task_tasks dtt on dtt.data_task_id = dt.id inner join task t on dtt.tasks_id = t.id inner join task_activity ta on ta.task_id = t.id inner join team t2 on dt.team_id = t2.id inner join activity a on a.id = ta.activity_id inner join brand b on a.brand_id = b.id inner join shop s on s.id = t.shop_id where dt.\"date\" >= :initialDate and dt.\"date\" <= :finalDate and a.brand_id = :idBrand and dt.situation <>'CANCELADO';");
 		query.setParameter("idBrand", brandId);
     	query.setParameter("initialDate", initialDate);
     	query.setParameter("finalDate", finalDate);
@@ -27,9 +25,7 @@ public class FilterRepositorImp{
 	}
 	
 	public List<Object> getAllValuesToProjectPossibleToFilter(LocalDate initialDate, LocalDate finalDate, Long brandId) {
-		Query query = entityManager.createNativeQuery("select distinct  dt.project  from data_task dt, task t ,activity a,data_task_tasks dtt , team t2,  task_activities ta, brand b , shop s\r\n"
-				+ "where dt.id = dtt.data_task_id and dtt.tasks_id = t.id and t2.id = dt.team_id and t.id = ta.task_id and ta.activities_id = a.id and b.id = a.brand_id and s.id = t.shop_id \r\n"
-				+ "and dt.\"date\" >= :initialDate and dt.\"date\" <= :finalDate and a.brand_id = :idBrand and dt.situation <>'CANCELADO'");
+		Query query = entityManager.createNativeQuery("select distinct  dt.project from data_task dt inner join data_task_tasks dtt on dtt.data_task_id = dt.id inner join task t on dtt.tasks_id = t.id inner join task_activity ta on ta.task_id = t.id inner join team t2 on dt.team_id = t2.id inner join activity a on a.id = ta.activity_id inner join brand b on a.brand_id = b.id inner join shop s on s.id = t.shop_id where dt.\"date\" >= :initialDate and dt.\"date\" <= :finalDate and a.brand_id = :idBrand and dt.situation <>'CANCELADO';");
 		query.setParameter("idBrand", brandId);
     	query.setParameter("initialDate", initialDate);
     	query.setParameter("finalDate", finalDate);

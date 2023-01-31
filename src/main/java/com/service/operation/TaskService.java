@@ -28,5 +28,10 @@ public class TaskService {
 	public Task get(Long id) {
 		return taskRepository.getById(id);
 	}
+	
+	public void deleteAllTasksWithOutDataTask() {
+       List<Task> tasks = taskRepository.findWithOutDataTask();
+       taskRepository.deleteAll(tasks);
+	}
 
 }

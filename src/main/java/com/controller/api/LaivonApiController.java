@@ -76,14 +76,15 @@ public class LaivonApiController {
 			bodyJSON.put("enviroment", _project);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
-
 			try {
 				HttpEntity<String> request = new HttpEntity<String>(bodyJSON.toString(), headers);
-				response = restTemplate.postForEntity(urlLaivon, request, String.class).getBody();
+				response = restTemplate
+						.postForEntity(urlLaivon,request, String.class)
+						.getBody();
 				JsonNode root = objectMapper.readTree(response);
 				return root;
 			} catch (Exception e) {
-
+				System.out.println(e);
 			}
 		}
 	}
@@ -116,21 +117,20 @@ public class LaivonApiController {
 				dataTask.setTaskDone(node_tasks.path("tarefas executadas").asInt());
 				dataTask.setTaskCanceled(node_tasks.path("tarefas canceladas").asInt());
 				dataTask.setSituation(node_tasks.path("situacao").asText());
-				dataTaskService.save(dataTask);
+				dataTask.setTasks(new ArrayList<>());
 				for (JsonNode node_task : node_tasks.path("dados_tarefa")) {
 					Shop shop = shopService.checkShop(node_task.path("local").asText(),
 							node_task.path("local_id").asLong(), project);
-					Task task;
-					if (dataTask.getTasks() != null) {
-						task = dataTask.getTasks().stream()
-								.filter(element -> element.getShop()!=null && element.getShop().getId().equals(shop.getId())
-										&& element.getStart().equals(convertTime(node_task.path("inicio").asText())))
-								.findAny().map(element -> element).orElse(new Task());
-						
-					} else {
-						dataTask.setTasks(new ArrayList<>());
-						task = new Task();
-					}
+					/*
+					 * if (dataTask.getTasks() != null) { task = dataTask.getTasks().stream()
+					 * .filter(element -> element.getShop()!=null &&
+					 * element.getShop().getId().equals(shop.getId()) &&
+					 * element.get.equals(convertTime(node_task.path("inicio").asText())))
+					 * .findAny().map(element -> element).orElse(new Task());
+					 * 
+					 * } else { dataTask.setTasks(new ArrayList<>()); task = new Task(); }
+					 */
+					Task task = new Task();
 
 					task.setShop(shop);
 					task.setActivityTotal(node_task.path("atividades totais").asInt());
@@ -140,9 +140,6 @@ public class LaivonApiController {
 					task.setStart(convertTime(node_task.path("inicio").asText()));
 					task.setEnd(convertTime(node_task.path("fim").asText()));
 					task.setType(node_task.path("tipo").asText());
-					if(task.getId()==null) {
-						 taskService.save(task);
-					}
 					for (JsonNode node_activities : node_task.path("dados_atividade")) {
 						Brand brand = brandService
 								.checkBrand(this.getNameBrand(node_activities.path("descricao").asText()));
@@ -152,8 +149,9 @@ public class LaivonApiController {
 							Task_Activity task_Activity;
 							if (task.getTask_Activities() != null) {
 								task_Activity = task.getTask_Activities().stream()
-										.filter(element -> element.getTask().getId()!=null && element.getTask().getId().equals(task.getId())).findAny()
-										.map(element -> element).orElse(new Task_Activity());
+										.filter(element -> element.getTask().getId() != null
+												&& element.getTask().getId().equals(task.getId()))
+										.findAny().map(element -> element).orElse(new Task_Activity());
 							} else {
 								task.setTask_Activities(new ArrayList<>());
 								task_Activity = new Task_Activity();
@@ -162,14 +160,13 @@ public class LaivonApiController {
 							task_Activity.setStart(convertLocalDate(node_activities.path("inicio").asText()));
 							task_Activity.setEnd(convertLocalDate(node_activities.path("fim").asText()));
 							task_Activity.setSituation(node_activities.path("situação").asText());
-							task_Activity.setTask(taskService.get(task.getId()));
-							task_ActivityRepositoy.save(task_Activity);
+							task_Activity.setTask(task);
 							task.getTask_Activities().add(task_Activity);
 						}
 					}
 					dataTask.getTasks().add(task);
 				}
-				datasTask.add(new DataTask(dataTask));
+				datasTask.add(dataTask);
 			}
 		}
 		return datasTask;

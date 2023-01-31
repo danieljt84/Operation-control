@@ -12,10 +12,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.Cascade;
 
 @Entity
+@Table(schema = "operation")
 public class Task_Activity {
 	
 	@Id@GeneratedValue(strategy = GenerationType.IDENTITY)
