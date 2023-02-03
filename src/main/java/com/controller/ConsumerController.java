@@ -46,7 +46,7 @@ public class ConsumerController {
 		this.context = context;
 	}
 
-	@Scheduled(fixedDelay = 3600000, initialDelay = 10000)
+	//@Scheduled(fixedDelay = 3600000, initialDelay = 10000)
 	public void run() {
 		if (isBeforeMin() && isAfterMax()) {
 			routineToConsumer(7);

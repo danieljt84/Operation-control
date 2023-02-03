@@ -16,20 +16,12 @@ public class PropertiesReader {
 		Properties props = new Properties();
 		FileInputStream file;
 		try {
-			file = new FileInputStream(new File(PropertiesReader.class.getClassLoader().getResource("data.properties").toURI()));
+			file = new FileInputStream(new File("C:\\Users\\Daniel\\Documents\\Projetos\\Controle Operacional\\Operation-control\\src\\main\\resources\\data.properties"));
 			props.load(file);
 			return props;
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+	    }
+		return props;
 	}
-
 }

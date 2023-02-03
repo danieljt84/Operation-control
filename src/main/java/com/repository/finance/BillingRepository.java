@@ -19,14 +19,16 @@ public class BillingRepository{
 	EntityManager entityManager;
 	
 	
-	public List<Object[]> getSummaryBillingWithOutInactive(){
-		Query query = entityManager.createNativeQuery("select sb.id_data_activity, sb.sum_bill from public.summary_billing sb where sb.started_at_inactive is null;");
+	public List<Object[]> getSummaryBillingWithOutInactive(LocalDate start){
+		Query query = entityManager.createNativeQuery("select * from finance.summary_billing sb where sb.last_finished_at < :start or (sb.last_finished_at is null and sb.last_started_at is null);");
+		query.setParameter("start", start);
 		return query.getResultList();
 	}
 	
-	public List<Object[]> getSummaryBillingWithInactive(LocalDate start){
-		Query query = entityManager.createNativeQuery("select sb.id_data_activity, sb.sum_bill, sb.started_at_inactive from public.summary_billing sb where sb.started_at_inactive >= :start");
+	public List<Object[]> getSummaryBillingWithInactive(LocalDate start,LocalDate end){
+		Query query = entityManager.createNativeQuery("select * from finance.summary_billing sb where sb.last_finished_at > :start or (sb.last_finished_at is null or sb.last_started_at is not null) and (sb.last_finished_at > :end and sb.last_started_at < :start )");
 		query.setParameter("start", start);
+		query.setParameter("end", start);
 		return query.getResultList();
 	}
 
