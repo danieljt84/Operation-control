@@ -1,9 +1,11 @@
 package com.controller.dto.operation;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.model.Project;
 
+@JsonInclude(Include.NON_NULL)
 public class ShopDTO {
-	
 	private Long id;
 	private String name;
 	private Project project;

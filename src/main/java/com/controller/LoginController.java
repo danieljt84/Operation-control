@@ -40,7 +40,7 @@ public class LoginController {
 
 		try {
 			Authentication authentication = authManager.authenticate(dadosLogin);
-			Map<String, Object> user_token = tokenService.gerarToken(authentication);
+			Map<String, Object> user_token = tokenService.generateToken(authentication);
 			return ResponseEntity.ok().body(new TokenDTO((String) user_token.get("token")
 					,"Bearer"
 					,new UserDTO().convertToDTO((User) user_token.get("user"), modelMapper)));

@@ -49,10 +49,7 @@ public class UserDTO {
 	}
 
 	public UserDTO convertToDTO(User user,ModelMapper modelMapper) {
-		List<TeamDTO> teamsDTO = user.getTeams().stream()
-				.map(team -> modelMapper.map(team, TeamDTO.class)).collect(Collectors.toList());
 		UserDTO dto = modelMapper.map(user, UserDTO.class);
-		dto.setTeamsDTO(teamsDTO);
 	    return dto;
 	}
 }

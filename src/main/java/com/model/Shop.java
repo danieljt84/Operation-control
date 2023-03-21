@@ -7,6 +7,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -18,7 +19,7 @@ public class Shop {
 	private String name;
 	@Column(unique = true)
 	private Long idSystem;
-	@Enumerated(EnumType.STRING)
+	@ManyToOne
 	private Project project;
 	
 	public Shop() {

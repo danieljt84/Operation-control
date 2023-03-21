@@ -21,7 +21,7 @@ import javax.persistence.JoinColumn;
 @Table(schema = "operation")
 public class Holyday {
 	
-	@Id@GeneratedValue(strategy = GenerationType.AUTO)
+	@Id@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private LocalDate date;
 	private String description;

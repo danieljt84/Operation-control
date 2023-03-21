@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.model.Activity;
 import com.model.Brand;
 import com.model.DataTask;
+import com.model.Project;
 import com.model.Promoter;
 import com.model.Shop;
 import com.model.Task;
@@ -33,6 +34,7 @@ import com.repository.operation.TeamRepositoryImp;
 import com.service.operation.ActivityService;
 import com.service.operation.BrandService;
 import com.service.operation.DataTaskService;
+import com.service.operation.ProjectService;
 import com.service.operation.PromoterService;
 import com.service.operation.ShopService;
 import com.service.operation.TaskService;
@@ -51,7 +53,7 @@ public class LaivonApiController {
 	TeamRepositoryImp teamRepository;
 	@Autowired
 	PromoterService promoterService;
-	String project;
+	Project project;
 	@Autowired
 	ActivityService activityService;
 	@Autowired
@@ -59,9 +61,11 @@ public class LaivonApiController {
 	@Autowired
 	TaskService taskService;
 	@Autowired
+	ProjectService projectService;
+	@Autowired
 	Task_ActivityRepositoy task_ActivityRepositoy;
 
-	public JsonNode getJSON(String _project, LocalDate date) {
+	public JsonNode getJSON(Project _project, LocalDate date) {
 		while (true) {
 			objectMapper = new ObjectMapper();
 			restTemplate = new RestTemplate();
@@ -73,7 +77,7 @@ public class LaivonApiController {
 			bodyJSON.put("tokenapi", PropertiesReader.getProp().getProperty("api.token"));
 			bodyJSON.put("dateInit", date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 			bodyJSON.put("dateEnd", date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-			bodyJSON.put("enviroment", _project);
+			bodyJSON.put("enviroment", _project.getNameApi());
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			try {
@@ -107,7 +111,7 @@ public class LaivonApiController {
 					// TODO Auto-generated catch block
 					dataTask = new DataTask();
 				}
-				dataTask.setProject(project);
+				dataTask.setProject(projectService.check(project));
 				dataTask.setTeam(team);
 				dataTask.setPromoter(promoter);
 				dataTask.setSituation(node_tasks.path("situação").asText());

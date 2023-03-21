@@ -2,6 +2,10 @@ package com.controller;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,16 +15,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.controller.form.operation.FilterForm;
+import com.controller.dto.filter.FilterActivationDTO;
+import com.controller.form.filter.FilterForm;
 import com.model.Brand;
+import com.model.Project;
+import com.repository.operation.DataTaskRepository;
+import com.service.auth.TokenService;
 import com.service.operation.BrandService;
 import com.service.operation.DataTaskService;
 import com.service.operation.TeamService;
-import com.util.ProjectAdapter;
 
 @Controller
 @RequestMapping("/datatask")
@@ -32,6 +40,10 @@ public class DataTaskController {
 	TeamService teamService;
 	@Autowired
 	BrandService brandService;
+	@Autowired
+	DataTaskRepository dataTaskRepository;
+	
+
 	
 	@GetMapping
 	@RequestMapping("/countactivitycomplete")
@@ -56,73 +68,9 @@ public class DataTaskController {
 	
 	@GetMapping
 	@RequestMapping("/countactivitycompletebybrand")
-	public ResponseEntity getCountActivityCompleteByBrand(@RequestParam String date,@RequestParam(name = "idBrand") Long idBrand) {
+	public ResponseEntity getCountActivityCompleteByBrand(@RequestParam String date,@RequestParam(name = "idsBrand") List<Long> idsBrand,@RequestParam(name = "idsProject",required = false) List<Long> idsProject) {
 		try {
-			Brand brand = brandService.findById(idBrand);
-			return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityCompleteByBrand(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")), brand));
-		}catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-		}
-	}
-	
-	@RequestMapping(value = "/countactivitycompletebetweendatebybrand",method = RequestMethod.GET)
-	public ResponseEntity getCountActivityCompleteBetweenDateByBrand(@RequestParam String initialDate,@RequestParam String finalDate, @RequestParam(name = "idBrand") Long idBrand) {
-		try {
-			Brand brand = brandService.findById(idBrand);
-			return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityCompleteBetweenDateByBrand(LocalDate.parse(initialDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")),LocalDate.parse(finalDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")), brand));
-		}catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-		}
-	}
-	
-	@RequestMapping(value = "/countactivitycompletebetweendatebybrand",method = RequestMethod.POST)
-	public ResponseEntity getCountActivityCompleteBetweenDateByBrand(@RequestParam String initialDate,@RequestParam String finalDate, @RequestParam(name = "idBrand") Long idBrand, @RequestBody FilterForm filterForm) {
-		try {
-			Brand brand = brandService.findById(idBrand);
-			if(filterForm.getFilter()!= null) {
-				return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityCompleteBetweenDateByBrand(LocalDate.parse(initialDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")),LocalDate.parse(finalDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")), brand,filterForm.getFilter()));
-			}else {
-				return getCountActivityCompleteBetweenDateByBrand(initialDate,finalDate,idBrand);
-			}
-		}catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-		}
-	}
-	
-	@RequestMapping(value = "/countactivitycompletewithdatebetweendatebybrand",method = RequestMethod.GET)
-	public ResponseEntity getCountActivityWithDateCompleteBetweenDateByBrand(@RequestParam String initialDate,@RequestParam String finalDate, @RequestParam(name = "idBrand") Long idBrand) {
-		try {
-			Brand brand = brandService.findById(idBrand);
-			return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityCompleteWithDateBetweenDateByBrand(LocalDate.parse(initialDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")),LocalDate.parse(finalDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")), brand));
-		}catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-		}
-	}
-	
-	@RequestMapping(value = "/countactivitycompletewithdatebetweendatebybrand",method = RequestMethod.POST)
-	public ResponseEntity getCountActivityWithDateCompleteBetweenDateByBrand(@RequestParam String initialDate,@RequestParam String finalDate, @RequestParam(name = "idBrand") Long idBrand,@RequestBody FilterForm filterForm) {
-		try {
-			Brand brand = brandService.findById(idBrand);
-			if(filterForm.getFilter()!= null) {
-				
-			}
-			return getCountActivityWithDateCompleteBetweenDateByBrand(initialDate,finalDate,idBrand);
-		}catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-		}
-	}
-	
-	@GetMapping
-	@RequestMapping("/countactivitymissingbybrand")
-	public ResponseEntity getCountActivityMissingByBrand(@RequestParam String date,@RequestParam(name = "idBrand") Long idBrand) {
-		try {
-			Brand brand = brandService.findById(idBrand);
-			return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityMissingByBrand(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")), brand));
+				return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityCompleteByBrand(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")), idsBrand,(idsProject!=null)? idsProject : null));
 		}catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -131,36 +79,9 @@ public class DataTaskController {
 	
 	@GetMapping
 	@RequestMapping("/countactivitydoingbybrand")
-	public ResponseEntity getCountActivityDoingByBrand(@RequestParam String date,@RequestParam(name = "idBrand") Long idBrand) {
+	public ResponseEntity getCountActivityDoingByBrand(@RequestParam String date,@RequestParam(name = "idsBrand") List<Long> idsBrand,@RequestParam(name = "idsProject",required = false) List<Long> idsProject) {
 		try {
-			Brand brand = brandService.findById(idBrand);
-			return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityDoingByBrand(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")), brand));
-		}catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-		}
-	}
-	
-	@RequestMapping(value="/countactivitymissingbetweendatebybrand",method = RequestMethod.GET)
-	public ResponseEntity getCountActivityMissingBetweenDateByBrand(@RequestParam String initialDate,@RequestParam String finalDate,@RequestParam(name = "idBrand") Long idBrand) {
-		try {
-			Brand brand = brandService.findById(idBrand);
-			return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityMissingBetweenDateByBrand(LocalDate.parse(initialDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")),LocalDate.parse(finalDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")), brand));
-		}catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-		}
-	}
-
-	@RequestMapping(value="/countactivitymissingbetweendatebybrand",method = RequestMethod.POST)
-	public ResponseEntity getCountActivityMissingBetweenDateByBrand(@RequestParam String initialDate,@RequestParam String finalDate, @RequestParam(name = "idBrand") Long idBrand,@RequestBody FilterForm filterForm) {
-		try {
-			Brand brand = brandService.findById(idBrand);
-			if(filterForm.getFilter()!=null) {
-				return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityMissingBetweenDateByBrand(LocalDate.parse(initialDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")),LocalDate.parse(finalDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")), brand,filterForm.getFilter()));
-			}else {
-				return getCountActivityMissingBetweenDateByBrand(initialDate,finalDate,idBrand);
-			}
+			return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityDoingByBrand(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")), idsBrand,(idsProject!=null)? idsProject : null));
 		}catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -168,11 +89,57 @@ public class DataTaskController {
 	}
 	
 	@GetMapping
-	@RequestMapping("/previstorealizado")
-	public ResponseEntity getPrevistoRealizado(@RequestParam String date) {
-		var today = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+	@RequestMapping("/countactivitymissingbybrand")
+	public ResponseEntity getCountActivityMissingByBrand(@RequestParam String date,@RequestParam(name = "idsBrand") List<Long> idsBrand,@RequestParam(name = "idsProject",required = false) List<Long> idsProject) {
 		try {
-			return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getPrevistoVsrealizado(today.withDayOfMonth(1),today,ProjectAdapter.values()));
+			return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityMissingByBrand(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")), idsBrand,(idsProject!=null)? idsProject : null));
+		}catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+	
+	@RequestMapping(value = "/countactivitycompletebetweendatebybrand",method = RequestMethod.POST)
+	public ResponseEntity getCountActivityCompleteBetweenDateByBrand(@RequestParam String initialDate,@RequestParam String finalDate, @RequestParam(name = "idsBrand") List<Long> idsBrand,@RequestBody(required = false)  FilterForm filter) {
+		try {
+			return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityCompleteBetweenDateByBrand(LocalDate.parse(initialDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")),LocalDate.parse(finalDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")), idsBrand,filter));
+		}catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+	
+	@RequestMapping(value="/countactivitymissingbetweendatebybrand",method = RequestMethod.POST)
+	public ResponseEntity getCountActivityMissingBetweenDateByBrand(@RequestParam String initialDate,@RequestParam String finalDate, @RequestParam(name = "idsBrand") List<Long> idsBrand,@RequestBody(required = false)  FilterForm filter) {
+		try {
+			return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityMissingBetweenDateByBrand(LocalDate.parse(initialDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")),LocalDate.parse(finalDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")), idsBrand,filter));
+
+		}catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+	
+	
+	@RequestMapping(value = "/countactivitycompletewithdatebetweendatebybrand",method = RequestMethod.POST)
+	public ResponseEntity getCountActivityWithDateCompleteBetweenDateByBrand(@RequestParam String initialDate,@RequestParam String finalDate, @RequestParam(name = "idsBrand") List<Long> idsBrand,@RequestBody(required = false) FilterForm filter) {
+		try {
+			return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityCompleteWithDateBetweenDateByBrand(LocalDate.parse(initialDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")),LocalDate.parse(finalDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")), idsBrand,filter));
+		}catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+	
+
+	
+	@PostMapping
+	@RequestMapping("/previstorealizado")
+	public ResponseEntity getPrevistoRealizado(@RequestParam String date,@RequestParam(name = "idsBrand") List<Long> idsBrand,FilterActivationDTO filter) {
+		var today = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		List<Brand> brands = idsBrand.stream().map(id -> brandService.findById(id)).collect(Collectors.toList());
+		try {
+			return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getPrevistoVsrealizado(today.withDayOfMonth(1),today,null));
 		}catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

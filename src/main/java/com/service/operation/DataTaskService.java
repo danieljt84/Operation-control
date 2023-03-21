@@ -27,9 +27,7 @@ import com.controller.dto.operation.CargaHorariaDTO;
 import com.controller.dto.operation.CountActivityCompleteByPromoterDTO;
 import com.controller.dto.operation.CountActivityCompleteDTO;
 import com.controller.dto.operation.PercentByDateAndTeamDTO;
-import com.controller.form.operation.FilterForm;
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
-import com.model.Activity;
+import com.controller.form.filter.FilterForm;
 import com.model.Brand;
 import com.model.DataTask;
 import com.model.Holyday;
@@ -38,10 +36,8 @@ import com.model.Promoter;
 import com.model.Task;
 import com.model.Task_Activity;
 import com.model.Team;
-import com.repository.operation.DataTaskCustomRepository;
 import com.repository.operation.DataTaskRepository;
 import com.repository.operation.TeamRepository;
-import com.util.ProjectAdapter;
 import com.util.Status;
 import com.util.model.AjudaDeCusto;
 import com.util.model.InfoPercentual;
@@ -52,8 +48,6 @@ public class DataTaskService {
 
 	@Autowired
 	DataTaskRepository dataTaskRepository;
-	@Autowired
-	DataTaskCustomRepository dataTaskCustomRepository;
 	@Autowired
 	HolydayService holydayService;
 	@Autowired
@@ -74,7 +68,7 @@ public class DataTaskService {
 	}
 
 	// Transforma o objeto para CargaHorariaDTO
-	public List<CargaHorariaDTO> getReportDTOs(String start, String end, String project) {
+	public List<CargaHorariaDTO> getReportDTOs(String start, String end,String project) {
 		List<CargaHorariaDTO> dtos = new ArrayList<CargaHorariaDTO>();
 		for (Object[] object : convertToReportByProject(start, end, project)) {
 			CargaHorariaDTO dto = new CargaHorariaDTO((String) object[0], (String) object[1], (String) object[2],
@@ -545,61 +539,42 @@ public class DataTaskService {
 		return countActivityCompleteDTOs;
 	}
 
-	public Integer getCountActivityCompleteByBrand(LocalDate date, Brand brand) {
-		return dataTaskRepository.getCountActivityCompleteByBrand(date, date.plusDays(1), brand.getId());
+	public Integer getCountActivityCompleteByBrand(LocalDate date, List<Long> idsBrands,List<Long> idsProject) {
+		return dataTaskRepository.getCountActivityCompleteByBrand(date, date.plusDays(1),idsBrands,(idsProject!=null)? idsProject : new ArrayList<>());
 	}
 	
-	public Integer getCountActivityCompleteBetweenDateByBrand(LocalDate initialDate, LocalDate finalDate, Brand brand) {
-		return dataTaskRepository.getCountActivityCompleteByBrand(initialDate, finalDate.plusDays(1), brand.getId());
+	public Integer getCountActivityDoingByBrand(LocalDate date, List<Long> idsBrands,List<Long> idsProject) {
+		return dataTaskRepository.getCountActivityDoingByBrand(date, date.plusDays(1),idsBrands,(idsProject!=null)? idsProject : new ArrayList<>());
 	}
 	
-	public Integer getCountActivityCompleteBetweenDateByBrand(LocalDate initialDate, LocalDate finalDate, Brand brand,Map<String, String[]> filter) {
-		return (Integer) dataTaskCustomRepository.getCountActivityCompleteByBrand(initialDate, finalDate.plusDays(1), brand.getId(),filter);
+	public Integer getCountActivityMissingByBrand(LocalDate date, List<Long> idsBrands,List<Long> idsProject) {
+		return dataTaskRepository.getCountActivityMissingByBrand(date, date.plusDays(1),idsBrands,(idsProject!=null)? idsProject : new ArrayList<>());
 	}
 	
-	public Map<LocalDate, Integer> getCountActivityCompleteWithDateBetweenDateByBrand(LocalDate initialDate, LocalDate finalDate, Brand brand){
+	public Integer getCountActivityCompleteBetweenDateByBrand(LocalDate initialDate, LocalDate finalDate, List<Long> idsBrands,FilterForm filter) {
+		return dataTaskRepository.getCountActivityCompleteBetweenDateByBrand(initialDate, finalDate, idsBrands,(filter!=null && filter.getProjects()!=null)? filter.getProjects() : new ArrayList<>(),(filter!=null && filter.getShops()!=null)? filter.getShops() : new ArrayList<>());
+	}
+	
+	
+	public Integer getCountActivityMissingBetweenDateByBrand(LocalDate initialDate, LocalDate finalDate, List<Long> idsBrands,FilterForm filter) {
+		return dataTaskRepository.getCountActivityMissingBetweenDateByBrand(initialDate, finalDate, idsBrands,(filter!=null && filter.getProjects()!=null)? filter.getProjects() : new ArrayList<>(),(filter!=null && filter.getShops()!=null)? filter.getShops() : new ArrayList<>());
+	}
+	
+	public Map<LocalDate, Integer> getCountActivityCompleteWithDateBetweenDateByBrand(LocalDate initialDate, LocalDate finalDate, List<Long> idsBrands,FilterForm filter){
 		long daysBetween = ChronoUnit.DAYS.between(initialDate, finalDate);
 		Map<LocalDate, Integer> date_count = new HashMap<>();
 		for(int i = 0; i<= daysBetween;i++) {
-			Integer count = dataTaskRepository.getCountActivityCompleteByBrand(initialDate.plusDays(i), initialDate.plusDays(i), brand.getId());
+			Integer count = dataTaskRepository.getCountActivityCompleteByBrand(initialDate.plusDays(i), initialDate.plusDays(i), idsBrands,(filter!=null && filter.getProjects()!=null)? filter.getProjects() : new ArrayList<>(),(filter!=null && filter.getShops()!=null)? filter.getShops() : new ArrayList<>());
 			date_count.put(initialDate.plusDays(i), count);
 		}
 		return date_count;
 	}
 	
-	public Map<LocalDate, Integer> getCountActivityCompleteWithDateBetweenDateByBrand(LocalDate initialDate, LocalDate finalDate, Brand brand,Map<String, String[]> filter){
-		long daysBetween = ChronoUnit.DAYS.between(initialDate, finalDate);
-		Map<LocalDate, Integer> date_count = new HashMap<>();
-		for(int i = 0; i<= daysBetween;i++) {
-			Integer count = dataTaskCustomRepository.getCountActivityCompleteByBrand(initialDate.plusDays(i), initialDate.plusDays(i+1), brand.getId(),filter);
-			date_count.put(initialDate.plusDays(i), count);
-		}
-		return date_count;
-	}
-
-	public Integer getCountActivityMissingByBrand(LocalDate date, Brand brand) {
-		return dataTaskRepository.getCountActivityMissingByBrand(date, date, brand.getId());
-	}
-	
-	public Integer getCountActivityMissingBetweenDateByBrand(LocalDate initialDate, LocalDate finalDate, Brand brand) {
-		return dataTaskRepository.getCountActivityMissingBetweenDateByBrand(initialDate,finalDate, brand.getId());
-	}
-	
-	public Integer getCountActivityMissingBetweenDateByBrand(LocalDate initialDate, LocalDate finalDate, Brand brand,Map<String, String[]> filter) {
-		return dataTaskCustomRepository.getCountActivityMissingBetweenDateByBrand(initialDate,finalDate, brand.getId(),filter);
-	}
-	
-	public Integer getCountActivityDoingByBrand(LocalDate date, Brand brand) {
-		return dataTaskRepository.getCountActivityDoingByBrand(date, brand.getId());
-	}
 
 	public List<CountActivityCompleteByPromoterDTO> getCountActivityCompleteByPromoterByTeam(LocalDate date,
 			List<Team> teams) {
 		List<CountActivityCompleteByPromoterDTO> activityCompleteByPromoterDTOs = new ArrayList<>();
 		for (Team team : teams) {
-			if (team.getName().contains("Marcela")) {
-				System.out.println("ok");
-			}
 			List<Object[]> promoters_complete = dataTaskRepository.getCountActivityCompleteByTeamAndPromoter(date,
 					team.getId());
 			List<Object[]> promoters_missing = dataTaskRepository.getCountActivityMissingByTeamAndPromoter(date,
@@ -649,16 +624,17 @@ public class DataTaskService {
 		return activityCompleteByPromoterDTOs;
 	}
 
-	public List<String[]> getPrevistoVsrealizado(LocalDate start, LocalDate end, ProjectAdapter[] projects) {
+	public List<String[]> getPrevistoVsrealizado(LocalDate start, LocalDate end,  List<Project> projects) {
 		List<String[]> datas = new ArrayList<>();
-		for (ProjectAdapter project : projects) {
-			datas.addAll(dataTaskRepository.getRealizadovsProgramado(start, end, project.name()));
+		for (Project project : projects) {
+			datas.addAll(dataTaskRepository.getRealizadovsProgramado(start, end, project.getName()));
 		}
 		return datas;
 	}
 	
-	public List<String[]> getPrevistoRealizaoToReport(Brand brand, LocalDate start, LocalDate end){
-		return dataTaskRepository.getPrevistoRealizadoToReport(start, end, brand.getId());
+	public List<String[]> getPrevistoRealizaoToReport(LocalDate initialDate, LocalDate finalDate,List<Brand> brands, FilterForm filter){
+		
+		return dataTaskRepository.getPrevistoRealizadoToReport(initialDate, finalDate, brands.stream().map(Brand::getId).collect(Collectors.toList()),(filter!=null && filter.getShops()!=null)? filter.getShops() : new ArrayList<>(),(filter!=null && filter.getProjects()!=null)? filter.getProjects() : new ArrayList<>());
 	}
 
 	

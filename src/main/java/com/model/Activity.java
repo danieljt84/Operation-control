@@ -22,7 +22,7 @@ public class Activity {
 	@ManyToOne
 	@JoinColumn(name="brand_id")
 	private Brand brand;
-	@Enumerated(EnumType.STRING)
+	@ManyToOne
 	private Project project;
 	private Long idSystem;
 	private LocalDate createdAt;

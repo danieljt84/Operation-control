@@ -1,24 +1,38 @@
 package com.model;
 
-public enum Project {
-	FIXO_RJ("4pmktcfixo"),COMPARTILHADO_RJ("4pmktcompartilhado"),COMPARTILHADO_SP("4pmktcompartilhadosp"),COMPARTILHADO_ES("4pmktcompartilhadoes"),COMPARTILHADO_BA("4pmktcompartilhadoba"),EXCLUSIVO_RJ(""),ROYAL("royal4pmkt");
-	String description;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "project", schema = "operation")
+public class Project {
 	
-	private Project(String description) {
-		this.description = description;
+	@Id
+	private Long id;
+	private String name;
+	private String nameApi;
+	
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getNameApi() {
+		return nameApi;
+	}
+	public void setNameApi(String nameApi) {
+		this.nameApi = nameApi;
 	}
 
-	public String getDescription() {
-		return description;
-	}
-	
-
-    public static Project getEnum(String value) {
-        if(value == null)
-            throw new IllegalArgumentException();
-        for(Project v : values())
-            if(value.equalsIgnoreCase(v.getDescription())) return v;
-        throw new IllegalArgumentException();
-    }
 	
 }

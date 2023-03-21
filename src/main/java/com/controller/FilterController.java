@@ -2,6 +2,8 @@ package com.controller;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,13 +28,13 @@ public class FilterController {
 
 	@GetMapping("/activation")
 	public ResponseEntity getAllValuesPossibleToActivation(@RequestParam String initialDate,
-			@RequestParam String finalDate, @RequestParam Long idBrand) {
+			@RequestParam String finalDate, @RequestParam(name ="idsBrand") List<Long> idsBrand) {
 		try {
-			Brand brand = brandService.findById(idBrand);
+			List<Brand> brands = idsBrand.stream().map(id -> brandService.findById(id)).collect(Collectors.toList());
 			return ResponseEntity.status(HttpStatus.OK)
 					.body(filterService.getAllValuesPossibleToFilterToActivation(
 							LocalDate.parse(initialDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")),
-							LocalDate.parse(finalDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")), brand.getId()));
+							LocalDate.parse(finalDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")), brands));
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}

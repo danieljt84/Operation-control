@@ -43,7 +43,8 @@ public class DataTask{
 	private int taskDoing;
 	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	private List<Task> tasks;
-	private String project;	
+	@ManyToOne
+	private Project project;	
 	@Convert(converter = DurationConverter.class)
 	private Duration duration;
 	
@@ -57,6 +58,7 @@ public class DataTask{
 		this.team = data.getTeam();
 		this.project = data.getProject();
 		this.promoter = data.getPromoter();
+		this.project = data.getProject();
 	}
 	
 	public Duration getDuration() {
@@ -133,28 +135,10 @@ public class DataTask{
 	public void setTasks(List<Task> tasks) {
 		this.tasks = tasks;
 	}
-	public String getProject() {
+	public Project getProject() {
 		return project;
 	}
-	public void setProject(String project) {
-		switch (project) {
-		case "4pmktcfixo":
-			this.project = Project.FIXO_RJ.toString();
-			break;
-		case "4pmktcompartilhado":
-			this.project = Project.COMPARTILHADO_RJ.toString();
-			break;
-		case "4pmktcompartilhadoes":
-			this.project = Project.COMPARTILHADO_ES.toString();
-			break;
-		case "4pmktcompartilhadosp":
-			this.project = Project.COMPARTILHADO_SP.toString();
-			break;
-		case "4pmktcompartilhadoba":
-			this.project = Project.COMPARTILHADO_BA.toString();
-			break;
-		default:
-			break;
-		}
+	public void setProject(Project project) {
+		this.project = project;
 	}
 }

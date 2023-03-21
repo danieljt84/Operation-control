@@ -12,7 +12,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "brand",schema = "operation")
 public class Brand {
-	@Id@GeneratedValue(strategy = GenerationType.AUTO)
+	@Id@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@Column(unique = true)
 	private String name;

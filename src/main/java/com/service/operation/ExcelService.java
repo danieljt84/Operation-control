@@ -1,26 +1,31 @@
 package com.service.operation;
 
+import java.awt.Color;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.xssf.streaming.SXSSFRow;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.model.Project;
 import com.model.Promoter;
 import com.repository.operation.DataTaskRepository;
 import com.util.model.AjudaDeCusto;
@@ -34,7 +39,14 @@ public class ExcelService {
 	DataTaskRepository dataTaskRepository;
 	@Autowired
 	DataTaskService dataTaskService;
-
+	private XSSFRow row;
+	private XSSFCell cell;
+	private XSSFCellStyle styleGray;
+	private XSSFCellStyle styleGreen;
+	private XSSFCellStyle styleRed;
+	private XSSFCellStyle styleBlack;
+	private XSSFCellStyle styleOrange;
+	private FileOutputStream fileOutputStream;
 
 	public byte[] createExcel(String start, String end) throws IOException {
 		workbook = new XSSFWorkbook();
@@ -194,23 +206,169 @@ public class ExcelService {
 		sheet = workbook.createSheet();
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		int cont = 1;
-		
+
 		XSSFRow rowhead = sheet.createRow((short) 0);
 		rowhead.createCell(0).setCellValue("DATA");
 		rowhead.createCell(1).setCellValue("LOJA");
 		rowhead.createCell(2).setCellValue("STATUS");
-		
-		for(String[] data : datas) {
+
+		for (String[] data : datas) {
 			XSSFRow row = sheet.createRow((short) cont++);
-            row.createCell(0).setCellValue(data[0]);
-            row.createCell(1).setCellValue(data[1]);
-            row.createCell(2).setCellValue(data[2]);
+			row.createCell(0).setCellValue(data[0]);
+			row.createCell(1).setCellValue(data[1]);
+			row.createCell(2).setCellValue(data[2]);
 		}
 		try {
 			workbook.write(bos);
 			workbook.close();
-		}catch (Exception e) {
+		} catch (Exception e) {
 		}
 		return bos.toByteArray();
+	}
+
+	public byte[] createExcelRealizadoVsProgramado(List<String[]> datas, LocalDate initialDate, LocalDate finalDate)
+			throws Exception {
+		workbook = new XSSFWorkbook();
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		getCellGreen();
+		getCellGrey();
+		getCellRed();
+		getCellBlack();
+		getCellOrange();
+		getFontWhiteBold();
+		long count = ChronoUnit.DAYS.between(initialDate, finalDate);
+		sheet = workbook.createSheet();
+		int lastrow = 0;
+		row = sheet.createRow(lastrow++);
+		cell = row.createCell(0);
+		cell.setCellStyle(styleBlack);
+		cell.setCellValue("PROJETO");
+		cell = row.createCell(1);
+		cell.setCellStyle(styleBlack);
+		cell.setCellValue("MARCA");
+		cell = row.createCell(2);
+		cell.setCellStyle(styleBlack);
+		cell.setCellValue("LOJA");
+		for (int i = 3; (i - 3) <= count; i++) {
+			cell = row.createCell(i);
+			cell.setCellStyle(styleBlack);
+			cell.setCellValue(initialDate.plusDays(i - 3).format(DateTimeFormatter.ofPattern("dd/MM")));
+		}
+		// Capturo todas as marcas e lojas
+		List<String> brands = datas.stream().map(element -> element[2]).distinct().collect(Collectors.toList());
+
+		for (String brand : brands) {
+			List<String> projects = datas.stream().map(element -> element[1]).distinct().collect(Collectors.toList());
+			for (String project : projects) {
+				var shops = datas.stream().filter(data -> data[2].equals(brand) && data[1].equals(project))
+						.map(element -> element[3]).distinct().collect(Collectors.toList());
+				for (String shop : shops) {
+					var datas_filter = datas.stream().filter(data -> data[3].equals(shop) && data[2].equals(brand))
+							.collect(Collectors.toList());
+					row = sheet.createRow(lastrow++);
+					row.createCell(0).setCellValue(project);
+					row.createCell(1).setCellValue(brand);
+					row.createCell(2).setCellValue(shop);
+					for (int i = 3; (i - 3) <= count; i++) {
+						String date = initialDate.plusDays(i - 3).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+						Optional<String[]> data_filter;
+						var filters = datas_filter.stream().filter(data -> data[0].equals(date))
+								.collect(Collectors.toList());
+						if (filters.size() == 1) {
+							data_filter = Optional.of(filters.get(0));
+
+						} else {
+							if (filters.size() > 1) {
+								data_filter = filters.stream().filter(element -> element[4].equals("completa"))
+										.findFirst();
+							} else {
+								data_filter = Optional.empty();
+							}
+						}
+
+						if (data_filter.isEmpty()) {
+							cell = row.createCell(i);
+							cell.setCellStyle(this.styleGray);
+							cell.setCellValue("NÃO PROGRAMADO");
+						} else {
+							if (data_filter.get()[4].contains("COMPLETA")) {
+								cell = row.createCell(i);
+								cell.setCellStyle(this.styleGreen);
+								cell.setCellValue("REALIZADO");
+
+							}
+							if (data_filter.get()[4].contains("NÃO REALIZADO")) {
+								cell = row.createCell(i);
+								cell.setCellStyle(this.styleRed);
+								cell.setCellValue("NÃO REALIZADO");
+							}
+							if (data_filter.get()[4].contains("CANCELADA")) {
+								cell = row.createCell(i);
+								cell.setCellStyle(this.styleOrange);
+								cell.setCellValue("CANCELADA");
+							}
+						}
+					}
+				}
+			}
+		}
+		try {
+			workbook.write(bos);
+			workbook.close();
+		} catch (Exception e) {
+		}
+		return bos.toByteArray();
+	}
+
+	private void getCellGrey() {
+		this.styleGray = this.workbook.createCellStyle();
+		this.styleGray.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+		this.styleGray.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		this.styleGray.setAlignment(HorizontalAlignment.CENTER);
+	}
+
+	private void getCellGreen() {
+		this.styleGreen = this.workbook.createCellStyle();
+		this.styleGreen.setFillForegroundColor(new XSSFColor(new Color(0, 176, 80)));
+		this.styleGreen.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		this.styleGreen.setAlignment(HorizontalAlignment.CENTER);
+		this.styleGreen.setFont(getFontWhiteBold());
+
+	}
+
+	private void getCellRed() {
+		this.styleRed = this.workbook.createCellStyle();
+		this.styleRed.setFillForegroundColor(new XSSFColor(Color.red));
+		this.styleRed.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		this.styleRed.setAlignment(HorizontalAlignment.CENTER);
+	}
+
+	private void getCellOrange() {
+		this.styleOrange = this.workbook.createCellStyle();
+		this.styleOrange.setFillForegroundColor(new XSSFColor(Color.orange));
+		this.styleOrange.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		this.styleOrange.setAlignment(HorizontalAlignment.CENTER);
+	}
+
+	private void getCellBlack() {
+		this.styleBlack = this.workbook.createCellStyle();
+		this.styleBlack.setFillForegroundColor(new XSSFColor(java.awt.Color.BLACK));
+		this.styleBlack.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		this.styleBlack.setAlignment(HorizontalAlignment.CENTER);
+		this.styleBlack.setFont(getFontWhiteBold());
+	}
+
+	private XSSFFont getFontWhiteBold() {
+		var fontBold = this.workbook.createFont();
+		fontBold.setBold(true);
+		fontBold.setColor(IndexedColors.WHITE.getIndex());
+		return fontBold;
+	}
+
+	private XSSFFont getFontBold() {
+		var fontBold = this.workbook.createFont();
+		fontBold.setBold(true);
+		fontBold.setColor(IndexedColors.BLACK.getIndex());
+		return fontBold;
 	}
 }

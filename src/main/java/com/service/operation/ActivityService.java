@@ -22,7 +22,7 @@ public class ActivityService {
 	ActivityRepository activityRepository;
 	
 	
-	public Activity check(String description, Long idSystem, Brand brand,String project) {
+	public Activity check(String description, Long idSystem, Brand brand,Project project) {
 		if(description != null && idSystem != null) {
 			Activity activity = activityRepository.findByDescriptionOrIdSystem(description, idSystem);
 			if(activity==null) {
@@ -30,7 +30,7 @@ public class ActivityService {
 				activity.setBrand(brand);
 				activity.setDescription(description.toUpperCase());
 				activity.setIdSystem(idSystem);
-				activity.setProject(Project.getEnum(project));
+				activity.setProject(project);
 				activity.setCreatedAt(LocalDate.now());
 				activity = save(activity);
 			}

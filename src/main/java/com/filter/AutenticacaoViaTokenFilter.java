@@ -32,7 +32,7 @@ public class AutenticacaoViaTokenFilter extends OncePerRequestFilter {
 		
 		String token = recuperarToken(request);
 		
-		boolean valido = tokenService.isValidoToken(token);
+		boolean valido = tokenService.isValidToken(token);
 		
 		if(valido) {
 			autenticarCliente(token);

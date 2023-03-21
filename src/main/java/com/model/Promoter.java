@@ -13,7 +13,7 @@ import com.util.Status;
 @Entity
 @Table(schema = "operation")
 public class Promoter {
-	@Id@GeneratedValue(strategy = GenerationType.AUTO)
+	@Id@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@Column(unique = true)
 	private String name;
