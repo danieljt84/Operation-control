@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -47,6 +48,7 @@ public class DataTaskController {
 	
 	@GetMapping
 	@RequestMapping("/countactivitycomplete")
+	@Cacheable("countactivitycomplete")
 	public ResponseEntity getCountActivityCompleteByTeam(@RequestParam String date) {
 		try {
 			return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityCompleteByTeam(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")), teamService.getAll()));
@@ -57,6 +59,7 @@ public class DataTaskController {
 	
 	@GetMapping
 	@RequestMapping("/countactivitycompletebypromoter")
+	@Cacheable("countactivitycompletebypromoter")
 	public ResponseEntity getCountActivityCompleteByTeamAndPromoter(@RequestParam String date) {
 		try {
 			return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityCompleteByPromoterByTeam(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")), teamService.getAll()));
@@ -68,6 +71,7 @@ public class DataTaskController {
 	
 	@GetMapping
 	@RequestMapping("/countactivitycompletebybrand")
+	@Cacheable("countactivitycompletebybrand")
 	public ResponseEntity getCountActivityCompleteByBrand(@RequestParam String date,@RequestParam(name = "idsBrand") List<Long> idsBrand,@RequestParam(name = "idsProject",required = false) List<Long> idsProject) {
 		try {
 				return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityCompleteByBrand(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")), idsBrand,(idsProject!=null)? idsProject : null));
@@ -79,6 +83,7 @@ public class DataTaskController {
 	
 	@GetMapping
 	@RequestMapping("/countactivitydoingbybrand")
+	@Cacheable("countactivitydoingbybrand")
 	public ResponseEntity getCountActivityDoingByBrand(@RequestParam String date,@RequestParam(name = "idsBrand") List<Long> idsBrand,@RequestParam(name = "idsProject",required = false) List<Long> idsProject) {
 		try {
 			return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityDoingByBrand(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")), idsBrand,(idsProject!=null)? idsProject : null));
@@ -90,6 +95,7 @@ public class DataTaskController {
 	
 	@GetMapping
 	@RequestMapping("/countactivitymissingbybrand")
+	@Cacheable("countactivitymissingbybrand")
 	public ResponseEntity getCountActivityMissingByBrand(@RequestParam String date,@RequestParam(name = "idsBrand") List<Long> idsBrand,@RequestParam(name = "idsProject",required = false) List<Long> idsProject) {
 		try {
 			return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityMissingByBrand(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")), idsBrand,(idsProject!=null)? idsProject : null));
@@ -100,6 +106,7 @@ public class DataTaskController {
 	}
 	
 	@RequestMapping(value = "/countactivitycompletebetweendatebybrand",method = RequestMethod.POST)
+	@Cacheable("teste")
 	public ResponseEntity getCountActivityCompleteBetweenDateByBrand(@RequestParam String initialDate,@RequestParam String finalDate, @RequestParam(name = "idsBrand") List<Long> idsBrand,@RequestBody(required = false)  FilterForm filter) {
 		try {
 			return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityCompleteBetweenDateByBrand(LocalDate.parse(initialDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")),LocalDate.parse(finalDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")), idsBrand,filter));
@@ -110,6 +117,7 @@ public class DataTaskController {
 	}
 	
 	@RequestMapping(value="/countactivitymissingbetweendatebybrand",method = RequestMethod.POST)
+	@Cacheable("countactivitymissingbetweendatebybrand")
 	public ResponseEntity getCountActivityMissingBetweenDateByBrand(@RequestParam String initialDate,@RequestParam String finalDate, @RequestParam(name = "idsBrand") List<Long> idsBrand,@RequestBody(required = false)  FilterForm filter) {
 		try {
 			return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityMissingBetweenDateByBrand(LocalDate.parse(initialDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")),LocalDate.parse(finalDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")), idsBrand,filter));
@@ -122,6 +130,7 @@ public class DataTaskController {
 	
 	
 	@RequestMapping(value = "/countactivitycompletewithdatebetweendatebybrand",method = RequestMethod.POST)
+	@Cacheable("countactivitycompletewithdatebetweendatebybrand")
 	public ResponseEntity getCountActivityWithDateCompleteBetweenDateByBrand(@RequestParam String initialDate,@RequestParam String finalDate, @RequestParam(name = "idsBrand") List<Long> idsBrand,@RequestBody(required = false) FilterForm filter) {
 		try {
 			return ResponseEntity.status(HttpStatus.OK).body(dataTaskService.getCountActivityCompleteWithDateBetweenDateByBrand(LocalDate.parse(initialDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")),LocalDate.parse(finalDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")), idsBrand,filter));
@@ -135,6 +144,7 @@ public class DataTaskController {
 	
 	@PostMapping
 	@RequestMapping("/previstorealizado")
+	@Cacheable("previstorealizado")
 	public ResponseEntity getPrevistoRealizado(@RequestParam String date,@RequestParam(name = "idsBrand") List<Long> idsBrand,FilterActivationDTO filter) {
 		var today = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		List<Brand> brands = idsBrand.stream().map(id -> brandService.findById(id)).collect(Collectors.toList());

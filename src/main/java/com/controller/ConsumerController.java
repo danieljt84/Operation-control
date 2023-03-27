@@ -49,13 +49,13 @@ public class ConsumerController {
 
 	@Scheduled(fixedDelay = 3600000, initialDelay = 10000)
 	public void run() {
-		//if(isBeforeMin() && isAfterMax()) {
+		if(isBeforeMin() && isAfterMax()) {
 			routineToConsumer(2);
 			logger.info("BASE ATUALIZADA EM: " + LocalDateTime.now().toString());
-		//}
+		}
 	}
 
-	// @Scheduled(cron = "* 0 23 * * *")
+	 @Scheduled(cron = "* 0 23 * * *")
 	public void run2() {
 		routineToConsumer(3);
 		logger.info("BASE DE 3 DIAS ANTERIORES ATUALIZADA EM: " + LocalDateTime.now().toString());

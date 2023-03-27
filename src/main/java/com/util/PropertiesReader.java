@@ -16,7 +16,7 @@ public class PropertiesReader {
 		Properties props = new Properties();
 		FileInputStream file;
 		try {
-			file = new FileInputStream(new File("C:\\Users\\Daniel\\Documents\\Projetos\\Controle Operacional\\Operation-control\\src\\main\\resources\\data.properties"));
+			file = new FileInputStream(new File("/home/projetos/operation-control/resources/data.properties"));
 			props.load(file);
 			return props;
 		} catch (Exception e) {

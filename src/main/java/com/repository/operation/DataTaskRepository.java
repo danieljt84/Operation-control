@@ -91,9 +91,11 @@ public interface DataTaskRepository extends JpaRepository<DataTask, Long>{
 			+ "and dt.\"date\" >= :initialDate "
 			+ "and  dt.\"date\" <= :finalDate"
 			+ " and a.description like 'PESQUISA%' "
-			+ "and ta.situation = 'completa' "
+			+ "and ta.situation = 'sem historico' "
 			+ "and t.\"type\" <> 'Remanejada' "
 			+ "and  dt.situation <> 'CANCELADO' "
+			+ "and (dt.task_doing <> 0"
+			+ "or dt.task_done <> 0) "
 			+ "and (CASE WHEN COALESCE(:idsProject,null) is not null THEN pr.id IN (:idsProject) ELSE true END) ;",nativeQuery = true)
 	
    Integer getCountActivityDoingByBrand(@Param(value ="initialDate")  LocalDate initialDate,@Param(value ="finalDate") LocalDate finalDate, @Param(value ="idsBrand") List<Long> idsBrand, @Param(value ="idsProject") List<Long> idsProject);
@@ -114,6 +116,7 @@ public interface DataTaskRepository extends JpaRepository<DataTask, Long>{
 			+ " and ta.situation  = 'sem historico' "
 			+ "and t.\"type\"  <> 'Remanejada' "
 			+ "and  dt.situation <> 'CANCELADO' "
+			+ "and (dt.task_done = 0 and dt.task_doing = 0) "
 			+ "and (CASE WHEN COALESCE(:idsProject,null) is not null THEN pr.id IN (:idsProject) ELSE true END) ;",nativeQuery = true)
 	Integer getCountActivityMissingByBrand(@Param(value ="initialDate")  LocalDate initialDate,@Param(value ="finalDate") LocalDate finalDate, @Param(value ="idsBrand") List<Long> idsBrand, @Param(value ="idsProject") List<Long> idsProject);
 	

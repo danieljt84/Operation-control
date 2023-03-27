@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -17,6 +18,7 @@ import com.controller.RoutineController;
 @EnableJpaRepositories
 @EnableTransactionManagement
 @EnableScheduling
+@EnableCaching
 public class OperationControlApplication {
 	
 	static ConfigurableApplicationContext context;

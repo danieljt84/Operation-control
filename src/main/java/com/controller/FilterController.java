@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +28,7 @@ public class FilterController {
 	BrandService brandService;
 
 	@GetMapping("/activation")
+	@Cacheable("activation")
 	public ResponseEntity getAllValuesPossibleToActivation(@RequestParam String initialDate,
 			@RequestParam String finalDate, @RequestParam(name ="idsBrand") List<Long> idsBrand) {
 		try {
@@ -35,16 +37,6 @@ public class FilterController {
 					.body(filterService.getAllValuesPossibleToFilterToActivation(
 							LocalDate.parse(initialDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")),
 							LocalDate.parse(finalDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")), brands));
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-		}
-	}
-	
-	@GetMapping("/datatable/dataactivity")
-	public ResponseEntity getAllValuesPossibleToDataTableDataActivity() {
-		try {
-			return ResponseEntity.status(HttpStatus.OK)
-					.body(filterService.getAllValuesPossibleToFilterToDataTableDataActivity());
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
