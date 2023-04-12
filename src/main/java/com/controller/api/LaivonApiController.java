@@ -73,7 +73,6 @@ public class LaivonApiController {
 			project = _project;
 			String urlLaivon = PropertiesReader.getProp().getProperty("api.url");
 			JSONObject bodyJSON = new JSONObject();
-			bodyJSON.put("password", PropertiesReader.getProp().getProperty("api.password"));
 			bodyJSON.put("tokenapi", PropertiesReader.getProp().getProperty("api.token"));
 			bodyJSON.put("dateInit", date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 			bodyJSON.put("dateEnd", date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));

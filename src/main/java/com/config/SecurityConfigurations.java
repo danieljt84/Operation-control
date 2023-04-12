@@ -13,6 +13,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.filter.AutenticacaoViaTokenFilter;
 import com.repository.UserRepository;
@@ -22,40 +24,14 @@ import com.service.auth.TokenService;
 
 @EnableWebSecurity
 @Configuration
-public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
-
-	@Autowired
-	private AutenticacaoService autenticacaoService;
+public class SecurityConfigurations extends WebSecurityConfigurerAdapter   {
 	
-	@Autowired
-	private TokenService tokenService;
-	
-	@Autowired
-	private UserRepository repository;
-	
-	@Override
-	@Bean
-	protected AuthenticationManager authenticationManager() throws Exception {
-		return super.authenticationManager();
-	}
-	
-	//Configuracoes de autenticacao
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(autenticacaoService).passwordEncoder(new BCryptPasswordEncoder());
-	}
-	
-	//Configuracoes de autorizacao
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		 http.cors().and().csrf().disable();
-	}
-		
-	
-	@Override
-	public void configure(WebSecurity web) throws Exception {
-	    web.ignoring()
-	        .antMatchers("/**.html", "/v2/api-docs", "/webjars/**", "/configuration/**", "/swagger-resources/**");
-	}
+	    
+	    @Override
+	    protected void configure(HttpSecurity http) throws Exception {
+	        http.cors().and().csrf().disable()
+	            .authorizeRequests().anyRequest().permitAll();
+	    }
+	          
 	
 }

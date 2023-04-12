@@ -24,12 +24,12 @@ public class FilterService {
 	FilterRepositorImp filterRepositorImp;
 
 	public FilterActivationDTO getAllValuesPossibleToFilterToActivation(LocalDate initialDate, LocalDate finalDate,
-			List<Brand> brands) {
+			List<Long> brands, List<Long> idsProject) {
 		FilterActivationDTO filterActivationDTO = new FilterActivationDTO();
 		filterActivationDTO.setShop(generateShopDTO(filterRepositorImp.getAllValuesToShopPossibleToFilter(initialDate, finalDate,
-				brands.stream().map(Brand::getId).collect(Collectors.toList()))));
+				brands,idsProject)));
 		filterActivationDTO.setProject(generateProjectDTO(filterRepositorImp.getAllValuesToProjectPossibleToFilter(initialDate, finalDate,
-				brands.stream().map(Brand::getId).collect(Collectors.toList()))));
+				brands,idsProject)));
 		return filterActivationDTO;
 	}
 

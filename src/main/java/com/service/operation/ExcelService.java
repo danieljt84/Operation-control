@@ -255,15 +255,16 @@ public class ExcelService {
 			cell.setCellValue(initialDate.plusDays(i - 3).format(DateTimeFormatter.ofPattern("dd/MM")));
 		}
 		// Capturo todas as marcas e lojas
-		List<String> brands = datas.stream().map(element -> element[2]).distinct().collect(Collectors.toList());
+		List<String> projects = datas.stream().map(element -> element[1]).distinct().collect(Collectors.toList());
+		
+		for(String project: projects) {
+			List<String> brands = datas.stream().map(element -> element[2]).distinct().collect(Collectors.toList());
 
-		for (String brand : brands) {
-			List<String> projects = datas.stream().map(element -> element[1]).distinct().collect(Collectors.toList());
-			for (String project : projects) {
-				var shops = datas.stream().filter(data -> data[2].equals(brand) && data[1].equals(project))
-						.map(element -> element[3]).distinct().collect(Collectors.toList());
+			for (String brand : brands) {
+				var shops = datas.stream().filter(data -> data[1].equals(project) && data[2].equals(brand)).map(element -> element[3]).distinct()
+						.collect(Collectors.toList());
 				for (String shop : shops) {
-					var datas_filter = datas.stream().filter(data -> data[3].equals(shop) && data[2].equals(brand))
+					var datas_filter = datas.stream().filter(data -> data[1].equals(project) && data[2].equals(brand) && data[3].equals(shop))
 							.collect(Collectors.toList());
 					row = sheet.createRow(lastrow++);
 					row.createCell(0).setCellValue(project);
@@ -279,8 +280,15 @@ public class ExcelService {
 
 						} else {
 							if (filters.size() > 1) {
-								data_filter = filters.stream().filter(element -> element[4].equals("completa"))
-										.findFirst();
+								data_filter = filters.stream().filter(element -> element[4].equals("COMPLETA")).findFirst();
+								if (data_filter.isEmpty()) {
+									data_filter = filters.stream().filter(element -> element[4].equals("NÃO REALIZADO"))
+											.findFirst();
+									if (data_filter.isEmpty()) {
+										data_filter = filters.stream().filter(element -> element[4].equals("CANCELADA"))
+												.findFirst();
+									}
+								}
 							} else {
 								data_filter = Optional.empty();
 							}
@@ -292,22 +300,26 @@ public class ExcelService {
 							cell.setCellValue("NÃO PROGRAMADO");
 						} else {
 							if (data_filter.get()[4].contains("COMPLETA")) {
-								cell = row.createCell(i);
-								cell.setCellStyle(this.styleGreen);
-								cell.setCellValue("REALIZADO");
-
+									cell = row.createCell(i);
+									cell.setCellStyle(this.styleGreen);
+									cell.setCellValue("REALIZADO");
+									continue;
 							}
 							if (data_filter.get()[4].contains("NÃO REALIZADO")) {
 								cell = row.createCell(i);
 								cell.setCellStyle(this.styleRed);
 								cell.setCellValue("NÃO REALIZADO");
+								continue;
+
 							}
 							if (data_filter.get()[4].contains("CANCELADA")) {
 								cell = row.createCell(i);
-								cell.setCellStyle(this.styleOrange);
 								cell.setCellValue("CANCELADA");
+								continue;
+
 							}
 						}
+
 					}
 				}
 			}
