@@ -35,7 +35,7 @@ public class Task {
 	private Integer activityDone;
 	private Integer activityMissing;
 	private String type;
-	@OneToMany(mappedBy = "task",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "task",cascade = CascadeType.ALL,fetch = FetchType.EAGER, orphanRemoval = true)
 	private List<Task_Activity> task_Activities;
 
 	public Task() {

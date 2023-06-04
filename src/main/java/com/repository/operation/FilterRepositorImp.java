@@ -18,7 +18,7 @@ public class FilterRepositorImp{
 	EntityManager entityManager;
 	
 	public List<Object[]> getAllValuesToShopPossibleToFilter(LocalDate initialDate, LocalDate finalDate, List<Long> idsBrand, List<Long> idsProjects) {
-		Query query = entityManager.createNativeQuery("select distinct  s.id, s.\"name\" from data_task dt inner join operation.project pr on pr.id = dt.project_id inner join data_task_tasks dtt on dtt.data_task_id = dt.id inner join task t on dtt.tasks_id = t.id inner join task_activity ta on ta.task_id = t.id inner join team t2 on dt.team_id = t2.id inner join activity a on a.id = ta.activity_id inner join brand b on a.brand_id = b.id inner join shop s on s.id = t.shop_id where dt.\"date\" >= :initialDate and dt.\"date\" <= :finalDate and a.brand_id in :idsBrand and dt.situation <>'CANCELADO' and (CASE WHEN COALESCE(:idsProject,null) is not null THEN pr.id IN (:idsProject) ELSE true END);");
+		Query query = entityManager.createNativeQuery("select distinct  s.id, s.\"name\" from operation.data_task dt inner join operation.project pr on pr.id = dt.project_id inner join operation.data_task_tasks dtt on dtt.data_task_id = dt.id inner join operation.task t on dtt.tasks_id = t.id inner join operation.task_activity ta on ta.task_id = t.id inner join operation.activity a on a.id = ta.activity_id inner join operation.brand b on a.brand_id = b.id inner join operation.shop s on s.id = t.shop_id where dt.\"date\" >= :initialDate and dt.\"date\" <= :finalDate and a.brand_id in :idsBrand and dt.situation <>'CANCELADO' and (CASE WHEN COALESCE(:idsProject,null) is not null THEN pr.id IN (:idsProject) ELSE true END);");
 		query.setParameter("idsBrand", idsBrand);
     	query.setParameter("initialDate", initialDate);
     	query.setParameter("finalDate", finalDate);
@@ -27,7 +27,7 @@ public class FilterRepositorImp{
 	}
 	
 	public List<Object[]> getAllValuesToProjectPossibleToFilter(LocalDate initialDate, LocalDate finalDate, List<Long> idsBrand,List<Long> idsProjects) {
-		Query query = entityManager.createNativeQuery("select distinct pr.id, pr.\"name\" from data_task dt inner join data_task_tasks dtt on dtt.data_task_id = dt.id inner join project pr on pr.id = dt.project_id inner join task t on dtt.tasks_id = t.id inner join task_activity ta on ta.task_id = t.id inner join team t2 on dt.team_id = t2.id inner join activity a on a.id = ta.activity_id inner join brand b on a.brand_id = b.id inner join shop s on s.id = t.shop_id where dt.\"date\" >= :initialDate and dt.\"date\" <= :finalDate and a.brand_id in :idsBrand and dt.situation <>'CANCELADO' and (CASE WHEN COALESCE(:idsProject,null) is not null THEN pr.id IN (:idsProject) ELSE true END);");
+		Query query = entityManager.createNativeQuery("select distinct  pr.id, pr.\"name\" from operation.data_task dt inner join operation.project pr on pr.id = dt.project_id inner join operation.data_task_tasks dtt on dtt.data_task_id = dt.id inner join operation.task t on dtt.tasks_id = t.id inner join operation.task_activity ta on ta.task_id = t.id inner join operation.activity a on a.id = ta.activity_id inner join operation.brand b on a.brand_id = b.id inner join operation.shop s on s.id = t.shop_id where dt.\"date\" >= :initialDate and dt.\"date\" <= :finalDate and a.brand_id in :idsBrand and dt.situation <>'CANCELADO' and (CASE WHEN COALESCE(:idsProject,null) is not null THEN pr.id IN (:idsProject) ELSE true END);");
 		query.setParameter("idsBrand", idsBrand);
     	query.setParameter("initialDate", initialDate);
     	query.setParameter("finalDate", finalDate);

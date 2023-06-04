@@ -3,21 +3,23 @@ package com.controller;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
 import com.controller.api.LaivonApiController;
 import com.model.DataTask;
 import com.model.Project;
-import com.model.Task_Activity;
 import com.service.api.ApiEmployeeService;
 import com.service.operation.DataTaskService;
 import com.service.operation.ExcelService;
@@ -50,8 +52,8 @@ public class ConsumerController {
 	@Scheduled(fixedDelay = 3600000, initialDelay = 10000)
 	public void run() {
 		if(isBeforeMin() && isAfterMax()) {
-			//routineToConsumer(2);
-			logger.info("BASE ATUALIZADA EM: " + LocalDateTime.now().toString());
+			//routineToConsumer(0);
+			logger.info("BASE ATUALIZADA EM: " + LocalDateTime.now(ZoneId.of("America/Sao_Paulo")).toString());
 		}
 	}
 
@@ -62,7 +64,7 @@ public class ConsumerController {
 	}
 
 	private void routineToConsumer(long daysToSubtract) {
-		LocalDate endDate = LocalDate.now();
+		LocalDate endDate = LocalDate.now(ZoneId.of("America/Sao_Paulo"));
 		LocalDate startDate = endDate.minusDays(daysToSubtract);
 		long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
 		Set<Long> idsPromoters = new HashSet<>();
@@ -86,7 +88,7 @@ public class ConsumerController {
 	}
 
 	private static boolean isBeforeMin() {
-		LocalTime agora = LocalTime.now();
+		LocalTime agora = LocalTime.now(ZoneId.of("America/Sao_Paulo"));
 		LocalTime limite = LocalTime.parse("22:00", DateTimeFormatter.ISO_TIME);
 		if (agora.isBefore(limite)) {
 			return true;
@@ -96,7 +98,7 @@ public class ConsumerController {
 	}
 
 	private static boolean isAfterMax() {
-		LocalTime agora = LocalTime.now();
+		LocalTime agora = LocalTime.now(ZoneId.of("America/Sao_Paulo"));
 		LocalTime limite = LocalTime.parse("08:00", DateTimeFormatter.ISO_TIME);
 		if (agora.isAfter(limite)) {
 			return true;

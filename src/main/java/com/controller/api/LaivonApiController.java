@@ -38,7 +38,6 @@ import com.service.operation.ProjectService;
 import com.service.operation.PromoterService;
 import com.service.operation.ShopService;
 import com.service.operation.TaskService;
-import com.util.PropertiesReader;
 
 @Controller
 public class LaivonApiController {
@@ -71,12 +70,13 @@ public class LaivonApiController {
 			restTemplate = new RestTemplate();
 			String response = null;
 			project = _project;
-			String urlLaivon = PropertiesReader.getProp().getProperty("api.url");
+			String urlLaivon = "https://back2-dashboard.laivon.com/io/api/v1/4p/resume";
 			JSONObject bodyJSON = new JSONObject();
-			bodyJSON.put("tokenapi", PropertiesReader.getProp().getProperty("api.token"));
+			bodyJSON.put("tokenapi","5156d8bc-ecb5-4cf4-9139-decbb26c2365");
 			bodyJSON.put("dateInit", date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 			bodyJSON.put("dateEnd", date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 			bodyJSON.put("enviroment", _project.getNameApi());
+			bodyJSON.put("password", "-LwaViadoec5");
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			try {
@@ -100,6 +100,9 @@ public class LaivonApiController {
 			String cpf = dado.path("agente_matricula").asText();
 			long idSystem = dado.path("agente_id").asLong();
 			Promoter promoter = promoterService.checkPromoter(namePromoter, idSystem);
+			if(idSystem == 1124217l) {
+				System.out.println("ok");
+			}
 			promoterService.updateIfHasUpdate(promoter, team, cpf, idSystem);
 			for (JsonNode node_tasks : dado.path("dados_agente")) {
 				DataTask dataTask;

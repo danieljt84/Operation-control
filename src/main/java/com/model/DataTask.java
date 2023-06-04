@@ -41,7 +41,7 @@ public class DataTask{
 	private int taskCanceled;
 	private int taskDone;
 	private int taskDoing;
-	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER,orphanRemoval = true)
 	private List<Task> tasks;
 	@ManyToOne
 	private Project project;	

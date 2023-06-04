@@ -12,9 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.controller.dto.operation.EmployeeDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.util.PropertiesReader;
+
 
 @Service
 public class ApiEmployeeService {
@@ -27,6 +26,7 @@ public class ApiEmployeeService {
 		this.objectMapper = new ObjectMapper();
 	}
 	
+	/*
 	public EmployeeDTO getEmployeeByCpfAndApi(String cpf) {
 		String urlApi = PropertiesReader.getProp().getProperty("api.employee.url")
 				+"/employee/cpf/{cpf}";
@@ -44,4 +44,5 @@ public class ApiEmployeeService {
 		}
 		return null;
 	}
+	*/
 }
